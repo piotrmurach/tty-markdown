@@ -2,8 +2,8 @@
 
 [![Gem Version](https://badge.fury.io/rb/tty-markdown.svg)][gem]
 [![Build Status](https://secure.travis-ci.org/piotrmurach/tty-markdown.svg?branch=master)][travis]
-[![Build status](https://ci.appveyor.com/api/projects/status/cj4owy2vlty2q1ko?svg=true)][appveyor]
-[![Maintainability](https://api.codeclimate.com/v1/badges/2f68d5e8ecc271bda820/maintainability)][codeclimate]
+[![Build status](https://ci.appveyor.com/api/projects/status/k4vub4koct329ggd?svg=true)][appveyor]
+[![Maintainability](https://api.codeclimate.com/v1/badges/1656060107c73ac42c2b/maintainability)][codeclimate]
 [![Coverage Status](https://coveralls.io/repos/github/piotrmurach/tty-markdown/badge.svg)][coverage]
 [![Inline docs](http://inch-ci.org/github/piotrmurach/tty-markdown.svg?branch=master)][inchpages]
 
@@ -15,7 +15,7 @@
 [coverage]: https://coveralls.io/github/piotrmurach/tty-markdown
 [inchpages]: http://inch-ci.org/github/piotrmurach/tty-markdown
 
-> Convert a markdown documet into a terminal friendly output.
+> Convert a markdown documet or text into a terminal friendly output.
 
 
 **TTY::Markdown** provides independent markdown processing component for [TTY](https://github.com/piotrmurach/tty) toolkit.
