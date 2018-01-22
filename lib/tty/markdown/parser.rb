@@ -56,7 +56,12 @@ module TTY
       end
 
       def convert_p(el, opts)
-        opts[:result] << ' ' * @current_indent
+        result_before = @stack.last[1][:result].dup
+        indent = ' ' * @current_indent
+        if opts[:parent].type != :blockquote
+          opts[:result] << indent
+        end
+
         case opts[:parent].type
         when :li
           bullet = TTY::Markdown.symbols[:bullet]
@@ -68,11 +73,36 @@ module TTY
         inner(el, opts)
 
         if opts[:parent].type == :blockquote
-          last_lines = opts[:result][-1].split("\n")
-          lines_quoted = last_lines.map { |line| line.insert(0, "| ") }
-          opts[:result][-1] = lines_quoted.join("\n")
+          format_blockquote(result_before, opts[:result])
         end
+
         opts[:result] << "\n"
+      end
+
+      def format_blockquote(result_before, result)
+        indent      = ' ' * @current_indent
+        start_index = result_before.size
+        max_index   = result.size - 1
+        bar_symbol  = TTY::Markdown.symbols[:bar]
+        prefix      = "#{indent}#{@pastel.yellow(bar_symbol)} "
+
+        result.map!.with_index do |str, i|
+          if i == start_index
+            str.insert(0, prefix)
+          end
+
+          if i >= start_index && str.include?("\n")
+            str.lines.map! do |line|
+              if line != str.lines.last || i < max_index
+                line.insert(-1, prefix)
+              else
+                line
+              end
+            end
+          else
+            str
+          end
+        end
       end
 
       def convert_text(el, opts)

@@ -8,11 +8,13 @@ require_relative 'markdown/version'
 module TTY
   module Markdown
     SYMBOLS = {
-      bullet: '●'
+      bullet: '●',
+      bar: '┃'
     }
 
     WIN_SYMBOLS = {
-      bullet: '*'
+      bullet: '*',
+      bar: '│'
     }
 
     # Parse markdown text
