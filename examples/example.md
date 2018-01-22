@@ -10,18 +10,19 @@
   - Item 2
   - Item 3
     - Item 4
-    - Item 5
-      - Item 6
-- Item 7
 
 ### Quote
 
->  Oh, you can put Markdown into a blockquote.
+> Blockquotes are very handy in email to emulate reply text.
+> This line is part of the same quote.
+> *Oh*, you can put **Markdown** into a blockquote.
 
-### Ruby syntax
+### Codeblock
 
 ```ruby
-def hello(name)
-  puts "Hello #{name}"
+class Greeter
+  def hello(name)
+    puts "Hello #{name}"
+  end
 end
 ```
