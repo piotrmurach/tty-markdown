@@ -48,7 +48,9 @@ module TTY
         level = el.options[:level]
         @current_indent = (level - 1) * @indent # Header determines indentation
         indent = ' ' * (level - 1) * @indent
-        opts[:result] << indent + @pastel.lookup(:cyan, :bold)
+        styles = [:cyan, :bold]
+        styles << :underline if level == 1
+        opts[:result] << indent + @pastel.lookup(*styles)
         inner(el, opts)
         opts[:result] << @pastel.lookup(:reset) + "\n"
       end

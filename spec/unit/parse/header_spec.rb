@@ -4,7 +4,7 @@ RSpec.describe TTY::Markdown do
   it "converts top level header" do
     parsed = TTY::Markdown.parse("#Header1")
 
-    expect(parsed).to eq("\e[36;1mHeader1\e[0m\n")
+    expect(parsed).to eq("\e[36;1;4mHeader1\e[0m\n")
   end
 
   it "converts headers" do
@@ -21,7 +21,7 @@ header3 content
     parsed = TTY::Markdown.parse(headers)
 
     expect(parsed).to eq([
-      "\e[36;1mHeader1\e[0m",
+      "\e[36;1;4mHeader1\e[0m",
       "header1 content",
       "",
       "  \e[36;1mHeader2\e[0m",
