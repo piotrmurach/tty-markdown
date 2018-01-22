@@ -67,7 +67,7 @@ module TTY
           bullet = TTY::Markdown.symbols[:bullet]
           index = @stack.last[1][:index] + 1
           symbol = opts[:ordered] ? "#{index}." : bullet
-          opts[:result] << symbol + ' '
+          opts[:result] << @pastel.yellow(symbol) + ' '
         end
 
         inner(el, opts)
