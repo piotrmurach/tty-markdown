@@ -3,6 +3,8 @@
 require 'kramdown/converter'
 require 'pastel'
 
+require_relative 'syntax_highlighter'
+
 module TTY
   module Markdown
     # Converts a Kramdown::Document tree to a terminal friendly output
@@ -10,10 +12,10 @@ module TTY
 
       def initialize(root, **options)
         super
-        @pastel = Pastel.new
         @stack = []
         @current_indent = 0
         @indent = options.fetch(:indent, 2)
+        @pastel = Pastel.new
       end
 
       # Invoke an element conversion
@@ -97,9 +99,16 @@ module TTY
       end
 
       def convert_codespan(el, opts)
-        opts[:result] << @pastel.lookup(:yellow)
-        opts[:result] << el.value
-        opts[:result] << @pastel.lookup(:reset)
+        raw_code = el.value
+        highlighted = SyntaxHighliter.highlight(raw_code)
+        code = highlighted.split("\n").map.with_index do |line, i|
+                if i == 0 # first line
+                  line
+                else
+                  line.insert(0, ' ' * @current_indent)
+                end
+              end
+        opts[:result] << code.join("\n")
       end
 
       def convert_blockquote(el, opts)

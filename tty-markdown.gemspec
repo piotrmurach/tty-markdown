@@ -22,6 +22,8 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "kramdown", '~> 1.16.2'
   spec.add_dependency "pastel",   '~> 0.7.2'
+  spec.add_dependency "rouge",    '~> 3.1.0'
+  spec.add_dependency "tty-color", '~> 0.4.2'
 
   spec.add_development_dependency "bundler", "~> 1.16"
   spec.add_development_dependency "rake", "~> 10.0"

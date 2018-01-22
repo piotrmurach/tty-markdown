@@ -29,7 +29,7 @@ RSpec.describe TTY::Markdown do
     it "convertrs backtics to ansi codes" do
       parsed = TTY::Markdown.parse("Some text with `important` content.")
 
-      expect(parsed).to eq("Some text with \e[33mimportant\e[0m content.\n")
+      expect(parsed).to eq("Some text with \e[38;5;230mimportant\e[39m content.\n")
     end
   end
 end
