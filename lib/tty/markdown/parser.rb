@@ -2,6 +2,7 @@
 
 require 'kramdown/converter'
 require 'pastel'
+require 'strings'
 
 require_relative 'syntax_highlighter'
 
@@ -33,6 +34,7 @@ module TTY
         el.children.each_with_index do |inner_el, i|
           options = opts.dup
           options[:parent] = el
+          options[:prev] = (i == 0 ? nil : el.children[i - 1])
           options[:index] = i
           convert(inner_el, options)
         end
@@ -160,6 +162,138 @@ module TTY
         end
         inner(el, opts)
       end
-    end
+
+      def convert_table(el, opts)
+        opts[:alignment] = el.options[:alignment]
+
+        result = opts[:result]
+        opts[:result] = []
+        data = []
+
+        el.children.each do |container|
+          container.children.each do |row|
+            data_row = []
+            data << data_row
+            row.children.each do |cell|
+              opts[:result] = []
+              cell_data = inner(cell, opts)
+              data_row << cell_data[1][:result]
+            end
+          end
+        end
+
+        opts[:result] = result
+        opts[:table_data] = data
+
+        inner(el, opts)
+      end
+
+      def convert_thead(el, opts)
+        indent = ' ' * @current_indent
+        table_data = opts[:table_data]
+
+        opts[:result] << indent
+        opts[:result] << border(table_data, :top)
+        opts[:result] << "\n"
+        inner(el, opts)
+      end
+
+      # Render horizontal border line
+      #
+      # @param [Array[Array[String]]] table_data
+      #   table rows and cells
+      # @param [Symbol] location
+      #   location out of :top, :mid, :bottom
+      #
+      # @return [String]
+      #
+      # @api private
+      def border(table_data, location)
+        symbols = TTY::Markdown.symbols
+        result = []
+        result << symbols[:"#{location}_left"]
+        max_widths(table_data).each.with_index do |width, i|
+          result << symbols[:"#{location}_center"] if i != 0
+          result << (symbols[:line] * (width + 2))
+        end
+        result << symbols[:"#{location}_right"]
+        @pastel.decorate(result.join, :blue)
+      end
+
+      def convert_tbody(el, opts)
+        indent = ' ' * @current_indent
+        table_data = opts[:table_data]
+
+        opts[:result] << indent
+        if opts[:prev] && opts[:prev].type == :thead
+          opts[:result] << border(table_data, :mid)
+        else
+          opts[:result] << border(table_data, :top)
+        end
+        opts[:result] << "\n"
+
+        inner(el, opts)
+
+        opts[:result] << indent
+        opts[:result] << border(table_data, :bottom)
+        opts[:result] << "\n"
+      end
+
+      def convert_tfoot(el, opts)
+        innert(el, opts)
+      end
+
+      def convert_tr(el, opts)
+        indent = ' ' * @current_indent
+        pipe = TTY::Markdown.symbols[:pipe]
+        table_data = opts[:table_data]
+
+        if opts[:prev] && opts[:prev].type == :tr
+          opts[:result] << indent
+          opts[:result] << border(table_data, :mid)
+          opts[:result] << "\n"
+        end
+
+        opts[:result] << indent + @pastel.decorate("#{pipe} ", :blue)
+        inner(el, opts)
+        opts[:result] << "\n"
+      end
+
+      def convert_td(el, opts)
+        pipe = TTY::Markdown.symbols[:pipe]
+        table_data = opts[:table_data]
+        result = opts[:result]
+        opts[:result] = []
+
+        inner(el, opts)
+
+        column = find_column(table_data, opts[:result])
+        width = max_width(table_data, column)
+        alignment = opts[:alignment][column]
+        align_opts = alignment == :default ? {} : {direction: alignment}
+
+        result << Strings.align(opts[:result].join, width, align_opts) <<
+               " #{@pastel.decorate(pipe, :blue)} "
+      end
+
+      def find_column(table_data, cell)
+        table_data.each do |row|
+          row.size.times do |col|
+            return col if row[col] == cell
+          end
+        end
+      end
+
+      def max_width(table_data, col)
+        table_data.map { |row| Strings.sanitize(row[col].join).length }.max
+      end
+
+      def max_widths(table_data)
+        table_data.first.each_with_index.reduce([]) do |acc, (*, col)|
+          acc << max_width(table_data, col)
+          acc
+        end
+      end
+    end # Parser
   end # Markdown
 end # TTY

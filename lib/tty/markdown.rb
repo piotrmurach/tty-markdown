@@ -9,12 +9,34 @@ module TTY
   module Markdown
     SYMBOLS = {
       bullet: '●',
-      bar: '┃'
+      bar: '┃',
+      pipe: '│',
+      line: '─',
+      top_left: '┌',
+      top_right: '┐',
+      top_center: '┬',
+      mid_left: '├',
+      mid_right: '┤',
+      mid_center: '┼',
+      bottom_right: '┘',
+      bottom_left: '└',
+      bottom_center: '┴'
     }
 
     WIN_SYMBOLS = {
       bullet: '*',
-      bar: '│'
+      bar: '│',
+      pipe: '|',
+      line: '─',
+      top_left: '+',
+      top_right: '+',
+      top_center: '+',
+      mid_left: '+',
+      mid_right: '+',
+      mid_center: '+',
+      bottom_right: '+',
+      bottom_left: '+',
+      bottom_center: '+'
     }
 
     # Parse markdown text
