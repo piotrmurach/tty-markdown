@@ -46,10 +46,21 @@ puts parsed
 # => "\e[36;1mHello\e[0m\n"
 ```
 
+### List
+
+```markdown
+- Item 1
+  - Item 2
+  - Item 3
+    - Item 4
+- Item 5
+```
+
+### Codeblock
+
 The parser can highlight syntax of many programming languages. Given the markdown codeblock with language specification:
 
-````
-code_snippet =<<-TEXT
+````markdown
 ```ruby
 class Greeter
   def hello(name)
@@ -57,7 +68,6 @@ class Greeter
   end
 end
 ```
-TEXT
 ````
 
 and converting this snippet:
@@ -69,6 +79,16 @@ parsed = TTY::Markdown.parse(code_snippet)
 will be parsed into:
 
 ![Code highlight](https://cdn.rawgit.com/piotrmurach/tty-markdown/master/assets/syntax_highlight.png)
+
+### Table
+
+```markdown
+| Tables   |      Are      |  Cool |
+|----------|:-------------:|------:|
+| col 1 is |  left-aligned | $1600 |
+| col 2 is |    centered   |   $12 |
+| col 3 is | right-aligned |    $1 |
+```
 
 ## Development
 
