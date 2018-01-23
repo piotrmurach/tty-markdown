@@ -1,4 +1,6 @@
-# TTY::Markdown
+
+TTY::Markdown
+=============
 
 **tty-markdown** converts markdown document into a terminal friendly output.
 
@@ -10,6 +12,7 @@
   - Item 2
   - Item 3
     - Item 4
+- Item 5
 
 ### Quote
 
@@ -26,3 +29,11 @@ class Greeter
   end
 end
 ```
+
+### Table
+
+| Tables   |      Are      |  Cool |
+|----------|:-------------:|------:|
+| col 1 is |  left-aligned | $1600 |
+| col 2 is |    centered   |   $12 |
+| col 3 is | right-aligned |    $1 |
