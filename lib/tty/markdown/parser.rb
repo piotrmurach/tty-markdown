@@ -336,6 +336,18 @@ module TTY
           opts[:result] << "\n"
         end
       end
+
+      def convert_footnote(*)
+        warning("Footnotes are not supported")
+      end
+
+      def convert_raw(*)
+        warning("Raw content is not supported")
+      end
+
+      def convert_img(*)
+        warning("Images are not supported")
+      end
     end # Parser
   end # Markdown
 end # TTY
