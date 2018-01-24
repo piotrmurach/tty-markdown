@@ -55,6 +55,8 @@ puts parsed
 
 ### List
 
+Both numbered and unordered lists are supported. Given a markdown:
+
 ```markdown
 - Item 1
   - Item 2
@@ -62,6 +64,16 @@ puts parsed
     - Item 4
 - Item 5
 ```
+
+and transforming it:
+
+```ruby
+parsed = TTY::Markdown.parse(markdown_string)
+```
+
+`puts parsed` will produce:
+
+![Code highlight](https://cdn.rawgit.com/piotrmurach/tty-markdown/master/assets/list.png)
 
 ### Codeblock
 
@@ -83,7 +95,7 @@ and converting this snippet:
 parsed = TTY::Markdown.parse(code_snippet)
 ```
 
-will be parsed into:
+`puts parsed` will produce:
 
 ![Code highlight](https://cdn.rawgit.com/piotrmurach/tty-markdown/master/assets/syntax_highlight.png)
 
