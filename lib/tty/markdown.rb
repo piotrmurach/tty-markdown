@@ -43,6 +43,17 @@ module TTY
       bottom_center: '+'
     }
 
+    THEME = {
+      em: :italic,
+      header: [:cyan, :bold],
+      hr: :yellow,
+      link: [:blue, :underline],
+      list: :yellow,
+      strong: [:yellow, :bold],
+      table: :blue,
+      quote: :yellow,
+    }
+
     # Parse markdown text
     #
     # @param [Hash] options

@@ -20,6 +20,7 @@ module TTY
         @pastel = Pastel.new
         @color_opts = {mode: options[:colors]}
         @width = options.fetch(:width) { TTY::Screen.width }
+        @theme = options.fetch(:theme) { TTY::Markdown::THEME }
       end
 
       # Invoke an element conversion
@@ -53,7 +54,7 @@ module TTY
         level = el.options[:level]
         @current_indent = (level - 1) * @indent # Header determines indentation
         indent = ' ' * (level - 1) * @indent
-        styles = [:cyan, :bold]
+        styles = Array(@theme[:header]).dup
         styles << :underline if level == 1
         opts[:result] << indent + @pastel.lookup(*styles)
         inner(el, opts)
@@ -72,7 +73,8 @@ module TTY
           bullet = TTY::Markdown.symbols[:bullet]
           index = @stack.last[1][:index] + 1
           symbol = opts[:ordered] ? "#{index}." : bullet
-          opts[:result] << @pastel.yellow(symbol) + ' '
+          styles = Array(@theme[:list])
+          opts[:result] << @pastel.decorate(symbol, *styles) + ' '
         end
 
         inner(el, opts)
@@ -91,7 +93,8 @@ module TTY
         start_index = result_before.size
         max_index   = result.size - 1
         bar_symbol  = TTY::Markdown.symbols[:bar]
-        prefix      = "#{indent}#{@pastel.yellow(bar_symbol)} "
+        styles = Array(@theme[:quote])
+        prefix      = "#{indent}#{@pastel.decorate(bar_symbol, *styles)} "
 
         result.map!.with_index do |str, i|
           if i == start_index
@@ -118,13 +121,15 @@ module TTY
       end
 
       def convert_strong(el, opts)
-        opts[:result] <<  @pastel.lookup(:yellow, :bold)
+        styles = Array(@theme[:strong])
+        opts[:result] <<  @pastel.lookup(*styles)
         inner(el, opts)
         opts[:result] << @pastel.lookup(:reset)
       end
 
       def convert_em(el, opts)
-        opts[:result] << @pastel.lookup(:italic)
+        styles = Array(@theme[:em])
+        opts[:result] <<  @pastel.lookup(*styles)
         inner(el, opts)
         opts[:result] << @pastel.lookup(:reset)
       end
@@ -222,7 +227,8 @@ module TTY
           result << (symbols[:line] * (width + 2))
         end
         result << symbols[:"#{location}_right"]
-        @pastel.decorate(result.join, :blue)
+        styles = Array(@theme[:table])
+        @pastel.decorate(result.join, *styles)
       end
 
       def convert_tbody(el, opts)
@@ -251,6 +257,7 @@ module TTY
       def convert_tr(el, opts)
         indent = ' ' * @current_indent
         pipe = TTY::Markdown.symbols[:pipe]
+        styles = Array(@theme[:table])
         table_data = opts[:table_data]
 
         if opts[:prev] && opts[:prev].type == :tr
@@ -259,13 +266,14 @@ module TTY
           opts[:result] << "\n"
         end
 
-        opts[:result] << indent + @pastel.decorate("#{pipe} ", :blue)
+        opts[:result] << indent + @pastel.decorate("#{pipe} ", *styles)
         inner(el, opts)
         opts[:result] << "\n"
       end
 
       def convert_td(el, opts)
         pipe = TTY::Markdown.symbols[:pipe]
+        styles = Array(@theme[:table])
         table_data = opts[:table_data]
         result = opts[:result]
         opts[:result] = []
@@ -278,7 +286,7 @@ module TTY
         align_opts = alignment == :default ? {} : {direction: alignment}
 
         result << Strings.align(opts[:result].join, width, align_opts) <<
-               " #{@pastel.decorate(pipe, :blue)} "
+               " #{@pastel.decorate(pipe, *styles)} "
       end
 
       def find_column(table_data, cell)
@@ -304,18 +312,19 @@ module TTY
         indent = ' ' * @current_indent
         symbols = TTY::Markdown.symbols
         width = @width - (indent.length+1) * 2
+        styles = Array(@theme[:hr])
+        line = symbols[:diamond] + symbols[:line] * width + symbols[:diamond]
 
         opts[:result] << indent
-        opts[:result] << @pastel.decorate(symbols[:diamond] +
-                                          symbols[:line] * width +
-                                          symbols[:diamond], :yellow)
+        opts[:result] << @pastel.decorate(line, *styles)
         opts[:result] << "\n"
       end
 
       def convert_a(el, opts)
         symbols = TTY::Markdown.symbols
+        styles = Array(@theme[:link])
         if el.children.size == 1 && el.children[0].type == :text
-          opts[:result] << @pastel.decorate(el.attr['href'], :blue)
+          opts[:result] << @pastel.decorate(el.attr['href'], *styles)
         else
           if el.attr['title']
            opts[:result] << el.attr['title']
@@ -323,7 +332,7 @@ module TTY
             inner(el, opts)
           end
           opts[:result] << " #{symbols[:arrow]} "
-          opts[:result] << @pastel.decorate(el.attr['href'], :blue, :underline)
+          opts[:result] << @pastel.decorate(el.attr['href'], *styles)
           opts[:result] << "\n"
         end
       end
