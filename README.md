@@ -36,7 +36,18 @@ Or install it yourself as:
 
     $ gem install tty-markdown
 
-## Usage
+## Contents
+
+* [1. Usage](#1-usage)
+  * [1.1 List](#11-list)
+  * [1.2 Header](#12-header)
+  * [1.3 Quote](#13-quote)
+  * [1.4 Codeblock](#14-codeblock)
+  * [1.5 Table](#15-table)
+* [2. Options](#2-options)
+  * [2.1 :theme](#21-theme)
+
+## 1. Usage
 
 Using `parse` method, you can transform a markdown string into a terminal formatted content:
 
@@ -53,9 +64,7 @@ parsed = TTY::Markdown.parse('example.md')
 puts parsed
 ```
 
-### Header
-
-### List
+### 1.1 List
 
 Both numbered and unordered lists are supported. Given a markdown:
 
@@ -77,7 +86,7 @@ parsed = TTY::Markdown.parse(markdown_string)
 
 ![Code highlight](https://cdn.rawgit.com/piotrmurach/tty-markdown/master/assets/list.png)
 
-### Header
+### 1.2 Header
 
 ```markdown
 TTY::Markdown
@@ -168,9 +177,9 @@ parsed = TTY::Markdown.parse(markdown_string)
 
 ![Code highlight](https://cdn.rawgit.com/piotrmurach/tty-markdown/master/assets/table.png)
 
-## Options
+## 2. Options
 
-### `:theme`
+### 2.1 `:theme`
 
 A hash of styles that allows to customize specific elements of the markdown text. By default the following styles are used:
 
