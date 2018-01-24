@@ -10,14 +10,12 @@ class Greeter
 end
 ```
     TEXT
-    parsed = TTY::Markdown.parse(markdown)
+    parsed = TTY::Markdown.parse(markdown, colors: 16)
     expect(parsed).to eq([
-     "\e[38;5;230m\e[39m",
-     "\e[38;5;230mclass Greeter\e[39m",
-     "\e[38;5;230m  def say\e[39m",
-     "\e[38;5;230m  end\e[39m",
-     "\e[38;5;230mend\e[39m",
-     "\e[38;5;230m\e[39m\n",
+     "\e[33mclass Greeter\e[0m",
+     "\e[33m  def say\e[0m",
+     "\e[33m  end\e[0m",
+     "\e[33mend\e[0m\n"
     ].join("\n"))
   end
 
@@ -30,13 +28,12 @@ class Greeter
 end
 ```
     TEXT
-    parsed = TTY::Markdown.parse(markdown)
+    parsed = TTY::Markdown.parse(markdown, colors: 16)
     expect(parsed).to eq([
-    "\e[38;5;221;01mclass\e[39;00m\e[38;5;230m \e[39m\e[38;5;155;01mGreeter\e[39;00m\e[38;5;230m\e[39m",
-    "\e[38;5;230m  \e[39m\e[38;5;221;01mdef\e[39;00m\e[38;5;230m \e[39m\e[38;5;153msay\e[39m\e[38;5;230m\e[39m",
-    "\e[38;5;230m  \e[39m\e[38;5;221;01mend\e[39;00m\e[38;5;230m\e[39m",
-    "\e[38;5;230m\e[39m\e[38;5;221;01mend\e[39;00m\e[38;5;230m\e[39m",
-    "\e[38;5;230m\e[39m\n"
+     "\e[33mclass Greeter\e[0m",
+     "\e[33m  def say\e[0m",
+     "\e[33m  end\e[0m",
+     "\e[33mend\e[0m\n"
     ].join("\n"))
   end
 end

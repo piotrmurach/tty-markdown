@@ -45,18 +45,18 @@ module TTY
       # @api public
       def highlight(code, **options)
         lang = guess_lang(code)
-        if lang
-          code = code.dup.lines[1..-1].join
-        end
+        mode = options[:mode] || TTY::Color.mode
+        lines = code.dup.lines
+        code = lines[1...-1].join + lines[-1].strip
 
         lexer = Rouge::Lexer.find_fancy(lang, code) || Rouge::Lexers::PlainText
 
-        if TTY::Color.mode >= 256
+        if mode >= 256
           formatter = Rouge::Formatters::Terminal256.new
           formatter.format(lexer.lex(code))
         else
           pastel = Pastel.new
-          code.lines.map { |line| pastel.yellow(line) }.join
+          code.split("\n").map { |line| pastel.yellow(line) }.join("\n")
         end
       end
       module_function :highlight

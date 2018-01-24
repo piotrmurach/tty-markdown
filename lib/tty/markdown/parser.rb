@@ -17,6 +17,7 @@ module TTY
         @current_indent = 0
         @indent = options.fetch(:indent, 2)
         @pastel = Pastel.new
+        @color_opts = {mode: options[:colors]}
       end
 
       # Invoke an element conversion
@@ -134,7 +135,7 @@ module TTY
 
       def convert_codespan(el, opts)
         raw_code = el.value
-        highlighted = SyntaxHighliter.highlight(raw_code)
+        highlighted = SyntaxHighliter.highlight(raw_code, @color_opts)
         code = highlighted.split("\n").map.with_index do |line, i|
                 if i == 0 # first line
                   line

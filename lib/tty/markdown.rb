@@ -41,6 +41,10 @@ module TTY
 
     # Parse markdown text
     #
+    # @param [Hash] options
+    # @option options [String] :colors
+    #   a number of colors supported
+    #
     # @param [String] source
     #   the source with markdown
     #
