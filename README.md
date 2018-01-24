@@ -53,6 +53,8 @@ parsed = TTY::Markdown.parse('example.md')
 puts parsed
 ```
 
+### Header
+
 ### List
 
 Both numbered and unordered lists are supported. Given a markdown:
@@ -74,6 +76,49 @@ parsed = TTY::Markdown.parse(markdown_string)
 `puts parsed` will produce:
 
 ![Code highlight](https://cdn.rawgit.com/piotrmurach/tty-markdown/master/assets/list.png)
+
+### Header
+
+```markdown
+TTY::Markdown
+=============
+
+**tty-markdown** converts markdown document into a terminal friendly output.
+
+## Examples
+
+### Nested list items
+```
+
+and transforming it:
+
+```ruby
+parsed = TTY::Markdown.parse(markdown_string)
+```
+
+`puts parsed` will output:
+
+![Code highlight](https://cdn.rawgit.com/piotrmurach/tty-markdown/master/assets/headers.png)
+
+### Quote
+
+Given a markdown quote:
+
+```markdown
+> Blockquotes are very handy in email to emulate reply text.
+> This line is part of the same quote.
+> *Oh*, you can put **Markdown** into a blockquote.
+```
+
+and transforming it:
+
+```ruby
+parsed = TTY::Markdown.parse(markdown_string)
+```
+
+`puts parsed` will output:
+
+![Code highlight](https://cdn.rawgit.com/piotrmurach/tty-markdown/master/assets/quote.png)
 
 ### Codeblock
 
