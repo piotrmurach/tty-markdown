@@ -311,6 +311,22 @@ module TTY
                                           symbols[:diamond], :yellow)
         opts[:result] << "\n"
       end
+
+      def convert_a(el, opts)
+        symbols = TTY::Markdown.symbols
+        if el.children.size == 1 && el.children[0].type == :text
+          opts[:result] << @pastel.decorate(el.attr['href'], :blue)
+        else
+          if el.attr['title']
+           opts[:result] << el.attr['title']
+          else
+            inner(el, opts)
+          end
+          opts[:result] << " #{symbols[:arrow]} "
+          opts[:result] << @pastel.decorate(el.attr['href'], :blue, :underline)
+          opts[:result] << "\n"
+        end
+      end
     end # Parser
   end # Markdown
 end # TTY

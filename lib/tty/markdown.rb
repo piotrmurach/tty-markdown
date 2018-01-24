@@ -8,6 +8,7 @@ require_relative 'markdown/version'
 module TTY
   module Markdown
     SYMBOLS = {
+      arrow: '»',
       bullet: '●',
       bar: '┃',
       diamond: '◈',
@@ -25,6 +26,7 @@ module TTY
     }
 
     WIN_SYMBOLS = {
+      arrow: '->',
       bullet: '*',
       diamond: '*',
       bar: '│',
