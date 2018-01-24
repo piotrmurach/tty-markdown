@@ -118,7 +118,7 @@ module TTY
       end
 
       def convert_strong(el, opts)
-        opts[:result] <<  @pastel.lookup(:bold)
+        opts[:result] <<  @pastel.lookup(:yellow, :bold)
         inner(el, opts)
         opts[:result] << @pastel.lookup(:reset)
       end

@@ -9,7 +9,7 @@ RSpec.describe TTY::Markdown do
     TEXT
     parsed = TTY::Markdown.parse(markdown)
     expect(parsed).to eq([
-      "\e[33m#{bar}\e[0m Oh, you can \e[3mput\e[0m \e[1mMarkdown\e[0m into a blockquote.\n"
+      "\e[33m#{bar}\e[0m Oh, you can \e[3mput\e[0m \e[33;1mMarkdown\e[0m into a blockquote.\n"
     ].join)
   end
 
@@ -21,7 +21,7 @@ RSpec.describe TTY::Markdown do
     parsed = TTY::Markdown.parse(markdown)
     expect(parsed).to eq([
       "    \e[36;1mQuote\e[0m",
-      "    \e[33m#{bar}\e[0m Oh, you can \e[3mput\e[0m \e[1mMarkdown\e[0m into a blockquote.\n"
+      "    \e[33m#{bar}\e[0m Oh, you can \e[3mput\e[0m \e[33;1mMarkdown\e[0m into a blockquote.\n"
     ].join("\n"))
   end
 
@@ -37,7 +37,7 @@ RSpec.describe TTY::Markdown do
       "    \e[36;1mQuote\e[0m\n",
       "    \e[33m#{bar}\e[0m Blockquotes are very handy in email to emulate reply text.\n",
       "    \e[33m#{bar}\e[0m This line is part of the same quote.\n",
-      "    \e[33m#{bar}\e[0m \e[3mOh\e[0m, you can put \e[1mMarkdown\e[0m into a blockquote.\n"
+      "    \e[33m#{bar}\e[0m \e[3mOh\e[0m, you can put \e[33;1mMarkdown\e[0m into a blockquote.\n"
     ].join)
   end
 
