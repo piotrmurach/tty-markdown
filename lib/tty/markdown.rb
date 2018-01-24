@@ -54,7 +54,7 @@ module TTY
       quote: :yellow,
     }
 
-    # Parse markdown text
+    # Parse a markdown string
     #
     # @param [Hash] options
     # @option options [String] :colors
@@ -70,6 +70,14 @@ module TTY
       Parser.convert(doc.root, doc.options).join
     end
     module_function :parse
+
+    # Pase a markdown document
+    #
+    # @api public
+    def parse_file(path, **options)
+      parse(::File.read(path))
+    end
+    module_function :parse_file
 
     def symbols
       @symbols ||= windows? ? WIN_SYMBOLS : SYMBOLS
