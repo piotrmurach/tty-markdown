@@ -90,6 +90,31 @@ will be parsed into:
 | col 3 is | right-aligned |    $1 |
 ```
 
+## Options
+
+### `:theme`
+
+A hash of styles that allows to customize specific elements of the markdown text. By default the following styles are used:
+
+```ruby
+THEME = {
+  em: :italic,
+  header: [:cyan, :bold],
+  hr: :yellow,
+  link: [:blue, :underline],
+  list: :yellow,
+  strong: [:yellow, :bold],
+  table: :blue,
+  quote: :yellow,
+}
+```
+
+In order to provide new styles use `:theme` key:
+
+```ruby
+TTY::Markdown.parse(markdown_string, theme: { ... })
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
