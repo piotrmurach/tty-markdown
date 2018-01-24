@@ -46,6 +46,13 @@ puts parsed
 # => "\e[36;1mHello\e[0m\n"
 ```
 
+The `parse_file` allows you to transform a markdown document into a terminal formatted output:
+
+```ruby
+parsed = TTY::Markdown.parse('example.md')
+puts parsed
+```
+
 ### List
 
 ```markdown
