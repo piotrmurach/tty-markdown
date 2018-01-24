@@ -16,10 +16,8 @@ RSpec.describe TTY::Markdown do
     parsed = TTY::Markdown.parse(markdown)
     expect(parsed).to eq([
       "#{pastel.yellow(symbols[:bullet])} Item 1",
-      "",
       "  #{pastel.yellow(symbols[:bullet])} Item 2",
       "  #{pastel.yellow(symbols[:bullet])} Item 3",
-      "",
       "    #{pastel.yellow(symbols[:bullet])} Item 4",
       "    #{pastel.yellow(symbols[:bullet])} Item 5",
       "#{pastel.yellow(symbols[:bullet])} Item 6\n"
@@ -38,10 +36,8 @@ RSpec.describe TTY::Markdown do
     parsed = TTY::Markdown.parse(markdown)
     expect(parsed).to eq([
       "#{pastel.yellow('1.')} Item 1",
-      "",
       "  #{pastel.yellow('1.')} Item 2",
       "  #{pastel.yellow('2.')} Item 3",
-      "",
       "    #{pastel.yellow('1.')} Item 4",
       "    #{pastel.yellow('2.')} Item 5",
       "#{pastel.yellow('2.')} Item 6\n"

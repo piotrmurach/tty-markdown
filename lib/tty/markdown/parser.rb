@@ -79,7 +79,9 @@ module TTY
           format_blockquote(result_before, opts[:result])
         end
 
-        opts[:result] << "\n"
+        unless opts[:result].last.end_with?("\n")
+          opts[:result] << "\n"
+        end
       end
 
       def format_blockquote(result_before, result)
