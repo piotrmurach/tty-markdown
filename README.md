@@ -101,6 +101,10 @@ parsed = TTY::Markdown.parse(code_snippet)
 
 ### Table
 
+You can transform tables which understand the markdown alignment.
+
+For example, given the following table:
+
 ```markdown
 | Tables   |      Are      |  Cool |
 |----------|:-------------:|------:|
@@ -108,6 +112,16 @@ parsed = TTY::Markdown.parse(code_snippet)
 | col 2 is |    centered   |   $12 |
 | col 3 is | right-aligned |    $1 |
 ```
+
+and transforming it:
+
+```ruby
+parsed = TTY::Markdown.parse(markdown_string)
+```
+
+`puts parsed` will output:
+
+![Code highlight](https://cdn.rawgit.com/piotrmurach/tty-markdown/master/assets/table.png)
 
 ## Options
 
