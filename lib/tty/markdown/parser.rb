@@ -94,7 +94,7 @@ module TTY
         max_index   = result.size - 1
         bar_symbol  = TTY::Markdown.symbols[:bar]
         styles = Array(@theme[:quote])
-        prefix      = "#{indent}#{@pastel.decorate(bar_symbol, *styles)} "
+        prefix      = "#{indent}#{@pastel.decorate(bar_symbol, *styles)}  "
 
         result.map!.with_index do |str, i|
           if i == start_index
