@@ -3,6 +3,7 @@
 require 'kramdown/converter'
 require 'pastel'
 require 'strings'
+require 'tty-screen'
 
 require_relative 'syntax_highlighter'
 
@@ -18,6 +19,7 @@ module TTY
         @indent = options.fetch(:indent, 2)
         @pastel = Pastel.new
         @color_opts = {mode: options[:colors]}
+        @width = options.fetch(:width) { TTY::Screen.width }
       end
 
       # Invoke an element conversion
@@ -296,6 +298,18 @@ module TTY
           acc << max_width(table_data, col)
           acc
         end
+      end
+
+      def convert_hr(el, opts)
+        indent = ' ' * @current_indent
+        symbols = TTY::Markdown.symbols
+        width = @width - (indent.length+1) * 2
+
+        opts[:result] << indent
+        opts[:result] << @pastel.decorate(symbols[:diamond] +
+                                          symbols[:line] * width +
+                                          symbols[:diamond], :yellow)
+        opts[:result] << "\n"
       end
     end # Parser
   end # Markdown

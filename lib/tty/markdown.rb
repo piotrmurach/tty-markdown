@@ -10,6 +10,7 @@ module TTY
     SYMBOLS = {
       bullet: '●',
       bar: '┃',
+      diamond: '◈',
       pipe: '│',
       line: '─',
       top_left: '┌',
@@ -25,6 +26,7 @@ module TTY
 
     WIN_SYMBOLS = {
       bullet: '*',
+      diamond: '*',
       bar: '│',
       pipe: '|',
       line: '─',
@@ -44,6 +46,7 @@ module TTY
     # @param [Hash] options
     # @option options [String] :colors
     #   a number of colors supported
+    # @option options [String] :width
     #
     # @param [String] source
     #   the source with markdown
