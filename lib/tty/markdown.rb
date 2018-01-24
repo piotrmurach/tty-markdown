@@ -75,7 +75,7 @@ module TTY
     #
     # @api public
     def parse_file(path, **options)
-      parse(::File.read(path))
+      parse(::File.read(path), options)
     end
     module_function :parse_file
 
