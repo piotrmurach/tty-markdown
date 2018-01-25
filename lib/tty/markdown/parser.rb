@@ -351,6 +351,10 @@ module TTY
         opts[:result] << "\n"
       end
 
+      def convert_abbreviation(el, opts)
+        opts[:result] << el.value
+      end
+
       def convert_footnote(*)
         warning("Footnotes are not supported")
       end
