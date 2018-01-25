@@ -15,7 +15,7 @@
 [coverage]: https://coveralls.io/github/piotrmurach/tty-markdown
 [inchpages]: http://inch-ci.org/github/piotrmurach/tty-markdown
 
-> Convert a markdown documet or text into a terminal friendly output.
+> Convert a markdown document or text into a terminal friendly output.
 
 
 **TTY::Markdown** provides independent markdown processing component for [TTY](https://github.com/piotrmurach/tty) toolkit.
