@@ -342,6 +342,15 @@ module TTY
         end
       end
 
+      def convert_math(el, opts)
+        if opts[:prev] && opts[:prev].type == :blank
+          indent = ' ' * @current_indent
+          opts[:result] << indent
+        end
+        convert_codespan(el, opts)
+        opts[:result] << "\n"
+      end
+
       def convert_footnote(*)
         warning("Footnotes are not supported")
       end
