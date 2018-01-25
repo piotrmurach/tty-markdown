@@ -144,7 +144,7 @@ module TTY
 
       def convert_codespan(el, opts)
         raw_code = el.value
-        highlighted = SyntaxHighliter.highlight(raw_code, @color_opts)
+        highlighted = SyntaxHighliter.highlight(raw_code, @color_opts.merge(opts))
         code = highlighted.split("\n").map.with_index do |line, i|
                 if i == 0 # first line
                   line
@@ -153,6 +153,11 @@ module TTY
                 end
               end
         opts[:result] << code.join("\n")
+      end
+
+      def convert_codeblock(el, opts)
+        opts[:fenced] = false
+        convert_codespan(el, opts)
       end
 
       def convert_blockquote(el, opts)

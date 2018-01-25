@@ -47,7 +47,9 @@ module TTY
         lang = guess_lang(code)
         mode = options[:mode] || TTY::Color.mode
         lines = code.dup.lines
-        code = lines[1...-1].join + lines[-1].strip
+        if options[:fenced].nil?
+          code = lines[1...-1].join + lines[-1].strip
+        end
 
         lexer = Rouge::Lexer.find_fancy(lang, code) || Rouge::Lexers::PlainText
 
