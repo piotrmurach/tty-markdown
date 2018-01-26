@@ -23,7 +23,7 @@ module TTY
       bottom_right: '┘',
       bottom_left: '└',
       bottom_center: '┴'
-    }
+    }.freeze
 
     WIN_SYMBOLS = {
       arrow: '->',
@@ -41,7 +41,7 @@ module TTY
       bottom_right: '+',
       bottom_left: '+',
       bottom_center: '+'
-    }
+    }.freeze
 
     THEME = {
       em: :italic,
@@ -52,7 +52,7 @@ module TTY
       strong: [:yellow, :bold],
       table: :blue,
       quote: :yellow,
-    }
+    }.freeze
 
     # Parse a markdown string
     #
