@@ -109,7 +109,7 @@ parsed = TTY::Markdown.parse(markdown_string)
 
 ![Code highlight](https://cdn.rawgit.com/piotrmurach/tty-markdown/master/assets/headers.png)
 
-### Quote
+### 1.3 Quote
 
 Given a markdown quote:
 
@@ -129,7 +129,7 @@ parsed = TTY::Markdown.parse(markdown_string)
 
 ![Code highlight](https://cdn.rawgit.com/piotrmurach/tty-markdown/master/assets/quote.png)
 
-### Codeblock
+### 1.4 Codeblock
 
 The parser can highlight syntax of many programming languages. Given the markdown codeblock with language specification:
 
@@ -153,7 +153,7 @@ parsed = TTY::Markdown.parse(code_snippet)
 
 ![Code highlight](https://cdn.rawgit.com/piotrmurach/tty-markdown/master/assets/syntax_highlight.png)
 
-### Table
+### 1.5 Table
 
 You can transform tables which understand the markdown alignment.
 
