@@ -355,6 +355,10 @@ module TTY
         opts[:result] << el.value
       end
 
+      def convert_typographic_sym(el, opts)
+        opts[:result] << TTY::Markdown.symbols[el.value]
+      end
+
       def convert_footnote(*)
         warning("Footnotes are not supported")
       end
@@ -365,21 +369,6 @@ module TTY
 
       def convert_img(*)
         warning("Images are not supported")
-      end
-
-      def convert_typographic_sym(el, opts)
-        case el.value
-        when :hellip 
-          el.value = "..."
-        when :ndash 
-          el.value = "--"
-        when :laquo 
-          el.value = "<<"
-        when :laquo_space 
-          el.value = "<< "
-        end
-
-        convert_text(el, opts)
       end
     end # Parser
   end # Markdown

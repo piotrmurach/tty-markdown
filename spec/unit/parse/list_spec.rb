@@ -87,20 +87,4 @@ RSpec.describe TTY::Markdown do
       "#{pastel.yellow('2.')} Item 6\n"
     ].join("\n"))
   end
-
-  it "converts unordered bulleted lists containing typographic symbols" do
-    markdown =<<-TEXT
-- ...
-- --
-- <<
-- << Item 1
-    TEXT
-    parsed = TTY::Markdown.parse(markdown)
-    expect(parsed).to eq([
-      "#{pastel.yellow(symbols[:bullet])} ...",
-      "#{pastel.yellow(symbols[:bullet])} --",
-      "#{pastel.yellow(symbols[:bullet])} <<",
-      "#{pastel.yellow(symbols[:bullet])} << Item 1\n"
-    ].join("\n"))
-  end
 end

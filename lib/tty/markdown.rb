@@ -14,6 +14,13 @@ module TTY
       diamond: '◈',
       pipe: '│',
       line: '─',
+      hellip: '…',
+      laquo: '«',
+      laquo_space: '« ',
+      raquo: '»',
+      raquo_space: ' »',
+      ndash: '-',
+      mdash: "\u2014",
       top_left: '┌',
       top_right: '┐',
       top_center: '┬',
@@ -22,7 +29,7 @@ module TTY
       mid_center: '┼',
       bottom_right: '┘',
       bottom_left: '└',
-      bottom_center: '┴'
+      bottom_center: '┴',
     }.freeze
 
     WIN_SYMBOLS = {
@@ -32,6 +39,13 @@ module TTY
       bar: '│',
       pipe: '|',
       line: '─',
+      hellip: '...',
+      laquo: '<<',
+      laquo_space: '<< ',
+      raquo: '>>',
+      raquo_space: ' >>',
+      ndash: '-',
+      mdash: "--",
       top_left: '+',
       top_right: '+',
       top_center: '+',
