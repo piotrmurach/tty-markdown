@@ -359,6 +359,14 @@ module TTY
         opts[:result] << TTY::Markdown.symbols[el.value]
       end
 
+      def convert_entity(el, opts)
+        opts[:result] << unicode_char(el.value.code_point)
+      end
+
+      def unicode_char(codepoint)
+        [codepoint.to_s(16).rjust(4, '0').hex].pack("U")
+      end
+
       def convert_footnote(*)
         warning("Footnotes are not supported")
       end
