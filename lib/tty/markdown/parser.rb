@@ -378,6 +378,10 @@ module TTY
       def convert_img(*)
         warning("Images are not supported")
       end
+
+      def convert_html_element(*)
+        warning("HTML elements are not supported")
+      end
     end # Parser
   end # Markdown
 end # TTY
