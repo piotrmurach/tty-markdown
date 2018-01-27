@@ -27,7 +27,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "rouge",      '~> 3.1.0'
   spec.add_dependency "strings",    '~> 0.1.0'
   spec.add_dependency "tty-color",  '~> 0.4.2'
-  spec.add_dependency "tty-screen", '~> 0.6.2'
+  spec.add_dependency "tty-screen", '~> 0.6.4'
 
   spec.add_development_dependency "bundler", "~> 1.16"
   spec.add_development_dependency "rake", "~> 10.0"
