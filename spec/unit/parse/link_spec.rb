@@ -9,7 +9,7 @@ RSpec.describe TTY::Markdown do
     TEXT
     parsed = TTY::Markdown.parse(markdown)
     expect(parsed).to eq([
-      "Im an inline-style link #{symbols[:arrow]} \e[34;4mhttps://www.google.com\e[0m\n"
+      "I#{symbols[:rsquo]}m an inline-style link #{symbols[:arrow]} \e[34;4mhttps://www.google.com\e[0m\n"
     ].join)
   end
 

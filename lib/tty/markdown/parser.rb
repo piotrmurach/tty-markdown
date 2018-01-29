@@ -139,7 +139,7 @@ module TTY
       end
 
       def convert_smart_quote(el, opts)
-        inner(el, opts)
+        opts[:result] << TTY::Markdown.symbols[el.value]
       end
 
       def convert_codespan(el, opts)
