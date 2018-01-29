@@ -1,14 +1,19 @@
 # Change log
 
-## [v0.2.0] - 2018-x-x
+## [v0.2.0] - 2018-01-29
 
 ### Added
 * Add space indented codeblock markdown conversion
 * Add markdown math formula conversion
 * Add markdown typogrpahic symbols conversion by Tanaka Masaki(@T-a-n-a-k-a-M-a-s-a-k-i)
+* Add html entities conversion
+* Add warnings about unsupported conversions for completness
 
 ### Changed
 * Change gemspec to require Ruby >= 2.0.0
+
+### Fixed
+* Fix smart quotes to correctly encode entities
 
 ## [v0.1.0] - 2018-01-24
 
