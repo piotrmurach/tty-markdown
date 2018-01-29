@@ -363,8 +363,9 @@ module TTY
         opts[:result] << unicode_char(el.value.code_point)
       end
 
+      # Convert codepoint to UTF-8 representation
       def unicode_char(codepoint)
-        [codepoint.to_s(16).rjust(4, '0').hex].pack("U")
+        [codepoint].pack('U*')
       end
 
       def convert_footnote(*)
