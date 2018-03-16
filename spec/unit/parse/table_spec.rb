@@ -15,43 +15,43 @@ RSpec.describe TTY::Markdown do
     parsed = TTY::Markdown.parse(markdown)
 
     expect(parsed).to eq([
-      "\e[34m#{symbols[:top_left]}#{symbols[:line]*10}#{symbols[:top_center]}",
+      "\e[33m#{symbols[:top_left]}#{symbols[:line]*10}#{symbols[:top_center]}",
       "#{symbols[:line]*15}#{symbols[:top_center]}",
       "#{symbols[:line]*7}#{symbols[:top_right]}",
       "\e[0m\n",
 
-      "\e[34m#{symbols[:pipe]} \e[0mTables   ",
-      "\e[34m#{symbols[:pipe]}\e[0m      Are      ",
-      "\e[34m#{symbols[:pipe]}\e[0m  Cool \e[34m#{symbols[:pipe]}\e[0m \n",
+      "\e[33m#{symbols[:pipe]} \e[0mTables   ",
+      "\e[33m#{symbols[:pipe]}\e[0m      Are      ",
+      "\e[33m#{symbols[:pipe]}\e[0m  Cool \e[33m#{symbols[:pipe]}\e[0m \n",
 
-      "\e[34m#{symbols[:mid_left]}#{symbols[:line]*10}#{symbols[:mid_center]}",
+      "\e[33m#{symbols[:mid_left]}#{symbols[:line]*10}#{symbols[:mid_center]}",
       "#{symbols[:line]*15}#{symbols[:mid_center]}",
       "#{symbols[:line]*7}#{symbols[:mid_right]}",
       "\e[0m\n",
 
-      "\e[34m#{symbols[:pipe]} \e[0mcol 1 is ",
-      "\e[34m#{symbols[:pipe]}\e[0m left-aligned  ",
-      "\e[34m#{symbols[:pipe]}\e[0m $1600 \e[34m#{symbols[:pipe]}\e[0m \n",
+      "\e[33m#{symbols[:pipe]} \e[0mcol 1 is ",
+      "\e[33m#{symbols[:pipe]}\e[0m left-aligned  ",
+      "\e[33m#{symbols[:pipe]}\e[0m $1600 \e[33m#{symbols[:pipe]}\e[0m \n",
 
-      "\e[34m#{symbols[:mid_left]}#{symbols[:line]*10}#{symbols[:mid_center]}",
+      "\e[33m#{symbols[:mid_left]}#{symbols[:line]*10}#{symbols[:mid_center]}",
       "#{symbols[:line]*15}#{symbols[:mid_center]}",
       "#{symbols[:line]*7}#{symbols[:mid_right]}",
       "\e[0m\n",
 
-      "\e[34m#{symbols[:pipe]} \e[0mcol 2 is ",
-      "\e[34m#{symbols[:pipe]}\e[0m   centered    ",
-      "\e[34m#{symbols[:pipe]}\e[0m   $12 \e[34m#{symbols[:pipe]}\e[0m \n",
+      "\e[33m#{symbols[:pipe]} \e[0mcol 2 is ",
+      "\e[33m#{symbols[:pipe]}\e[0m   centered    ",
+      "\e[33m#{symbols[:pipe]}\e[0m   $12 \e[33m#{symbols[:pipe]}\e[0m \n",
 
-      "\e[34m#{symbols[:mid_left]}#{symbols[:line]*10}#{symbols[:mid_center]}",
+      "\e[33m#{symbols[:mid_left]}#{symbols[:line]*10}#{symbols[:mid_center]}",
       "#{symbols[:line]*15}#{symbols[:mid_center]}",
       "#{symbols[:line]*7}#{symbols[:mid_right]}",
       "\e[0m\n",
 
-      "\e[34m#{symbols[:pipe]} \e[0mcol 3 is ",
-      "\e[34m#{symbols[:pipe]}\e[0m right-aligned ",
-      "\e[34m#{symbols[:pipe]}\e[0m    $1 \e[34m#{symbols[:pipe]}\e[0m \n",
+      "\e[33m#{symbols[:pipe]} \e[0mcol 3 is ",
+      "\e[33m#{symbols[:pipe]}\e[0m right-aligned ",
+      "\e[33m#{symbols[:pipe]}\e[0m    $1 \e[33m#{symbols[:pipe]}\e[0m \n",
 
-      "\e[34m#{symbols[:bottom_left]}#{symbols[:line]*10}#{symbols[:bottom_center]}",
+      "\e[33m#{symbols[:bottom_left]}#{symbols[:line]*10}#{symbols[:bottom_center]}",
       "#{symbols[:line]*15}#{symbols[:bottom_center]}",
       "#{symbols[:line]*7}#{symbols[:bottom_right]}",
       "\e[0m\n"
@@ -68,34 +68,34 @@ RSpec.describe TTY::Markdown do
     parsed = TTY::Markdown.parse(markdown)
 
     expect(parsed).to eq([
-      "\e[34m#{symbols[:top_left]}#{symbols[:line]*10}#{symbols[:top_center]}",
+      "\e[33m#{symbols[:top_left]}#{symbols[:line]*10}#{symbols[:top_center]}",
       "#{symbols[:line]*15}#{symbols[:top_center]}",
       "#{symbols[:line]*7}#{symbols[:top_right]}",
       "\e[0m\n",
 
-      "\e[34m#{symbols[:pipe]} \e[0mcol 1 is ",
-      "\e[34m#{symbols[:pipe]}\e[0m left-aligned  ",
-      "\e[34m#{symbols[:pipe]}\e[0m $1600 \e[34m#{symbols[:pipe]}\e[0m \n",
+      "\e[33m#{symbols[:pipe]} \e[0mcol 1 is ",
+      "\e[33m#{symbols[:pipe]}\e[0m left-aligned  ",
+      "\e[33m#{symbols[:pipe]}\e[0m $1600 \e[33m#{symbols[:pipe]}\e[0m \n",
 
-      "\e[34m#{symbols[:mid_left]}#{symbols[:line]*10}#{symbols[:mid_center]}",
+      "\e[33m#{symbols[:mid_left]}#{symbols[:line]*10}#{symbols[:mid_center]}",
       "#{symbols[:line]*15}#{symbols[:mid_center]}",
       "#{symbols[:line]*7}#{symbols[:mid_right]}",
       "\e[0m\n",
 
-      "\e[34m#{symbols[:pipe]} \e[0mcol 2 is ",
-      "\e[34m#{symbols[:pipe]}\e[0m centered      ",
-      "\e[34m#{symbols[:pipe]}\e[0m $12   \e[34m#{symbols[:pipe]}\e[0m \n",
+      "\e[33m#{symbols[:pipe]} \e[0mcol 2 is ",
+      "\e[33m#{symbols[:pipe]}\e[0m centered      ",
+      "\e[33m#{symbols[:pipe]}\e[0m $12   \e[33m#{symbols[:pipe]}\e[0m \n",
 
-      "\e[34m#{symbols[:mid_left]}#{symbols[:line]*10}#{symbols[:mid_center]}",
+      "\e[33m#{symbols[:mid_left]}#{symbols[:line]*10}#{symbols[:mid_center]}",
       "#{symbols[:line]*15}#{symbols[:mid_center]}",
       "#{symbols[:line]*7}#{symbols[:mid_right]}",
       "\e[0m\n",
 
-      "\e[34m#{symbols[:pipe]} \e[0mcol 3 is ",
-      "\e[34m#{symbols[:pipe]}\e[0m right-aligned ",
-      "\e[34m#{symbols[:pipe]}\e[0m $1    \e[34m#{symbols[:pipe]}\e[0m \n",
+      "\e[33m#{symbols[:pipe]} \e[0mcol 3 is ",
+      "\e[33m#{symbols[:pipe]}\e[0m right-aligned ",
+      "\e[33m#{symbols[:pipe]}\e[0m $1    \e[33m#{symbols[:pipe]}\e[0m \n",
 
-      "\e[34m#{symbols[:bottom_left]}#{symbols[:line]*10}#{symbols[:bottom_center]}",
+      "\e[33m#{symbols[:bottom_left]}#{symbols[:line]*10}#{symbols[:bottom_center]}",
       "#{symbols[:line]*15}#{symbols[:bottom_center]}",
       "#{symbols[:line]*7}#{symbols[:bottom_right]}",
       "\e[0m\n"

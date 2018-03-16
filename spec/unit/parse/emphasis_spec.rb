@@ -13,7 +13,7 @@ RSpec.describe TTY::Markdown do
     it "converts asterisks to bold ansi codes" do
       parsed = TTY::Markdown.parse("Some text with *italic* content.")
 
-      expect(parsed).to eq("Some text with \e[3mitalic\e[0m content.\n")
+      expect(parsed).to eq("Some text with \e[33mitalic\e[0m content.\n")
     end
   end
 
