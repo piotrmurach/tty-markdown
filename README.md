@@ -185,13 +185,13 @@ A hash of styles that allows to customize specific elements of the markdown text
 
 ```ruby
 THEME = {
-  em: :italic,
+  em: :yellow,
   header: [:cyan, :bold],
   hr: :yellow,
-  link: [:blue, :underline],
+  link: [:yellow, :underline],
   list: :yellow,
   strong: [:yellow, :bold],
-  table: :blue,
+  table: :yellow,
   quote: :yellow,
 }
 ```
