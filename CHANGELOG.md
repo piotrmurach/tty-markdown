@@ -1,5 +1,13 @@
 # Change log
 
+## [v0.3.0] - 2018-03-17
+
+### Changed
+* Change color scheme to replace table and links blue with yellow
+
+## Fixed
+* Fix issue with multiline blockquote elements raising NoMethodError
+
 ## [v0.2.0] - 2018-01-29
 
 ### Added
@@ -19,5 +27,6 @@
 
 * Initial implementation and release
 
+[v0.3.0]: https://github.com/piotrmurach/tty-markdown/compare/v0.2.0...v0.3.0
 [v0.2.0]: https://github.com/piotrmurach/tty-markdown/compare/v0.1.0...v0.2.0
 [v0.1.0]: https://github.com/piotrmurach/tty-markdown/compare/v0.1.0
