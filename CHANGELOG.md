@@ -2,6 +2,11 @@
 
 ## [v0.3.0] - 2018-03-17
 
+### Added
+* Add :width option to allow setting maximum display width
+* Add :colors options for specifying rendering colors capabilities
+* Add ability to parse multiline table content
+
 ### Changed
 * Change color scheme to replace table and links blue with yellow
 
