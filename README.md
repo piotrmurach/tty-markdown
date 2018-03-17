@@ -39,11 +39,12 @@ Or install it yourself as:
 ## Contents
 
 * [1. Usage](#1-usage)
-  * [1.1 List](#11-list)
-  * [1.2 Header](#12-header)
-  * [1.3 Quote](#13-quote)
-  * [1.4 Codeblock](#14-codeblock)
-  * [1.5 Table](#15-table)
+  * [1.1 Header](#11-header)
+  * [1.2 List](#12-list)
+  * [1.3 Link](#13-link)
+  * [1.4 Blockrquote](#14-blockquote)
+  * [1.5 Code and Syntax Highlighting](#15-code-and-syntax-highlighting)
+  * [1.6 Table](#16-table)
 * [2. Options](#2-options)
   * [2.1 :theme](#21-theme)
 
@@ -64,29 +65,7 @@ parsed = TTY::Markdown.parse('example.md')
 puts parsed
 ```
 
-### 1.1 List
-
-Both numbered and unordered lists are supported. Given a markdown:
-
-```markdown
-- Item 1
-  - Item 2
-  - Item 3
-    - Item 4
-- Item 5
-```
-
-and transforming it:
-
-```ruby
-parsed = TTY::Markdown.parse(markdown_string)
-```
-
-`puts parsed` will produce:
-
-![Code highlight](https://cdn.rawgit.com/piotrmurach/tty-markdown/master/assets/list.png)
-
-### 1.2 Header
+### 1.1 Header
 
 ```markdown
 TTY::Markdown
@@ -109,7 +88,41 @@ parsed = TTY::Markdown.parse(markdown_string)
 
 ![Code highlight](https://cdn.rawgit.com/piotrmurach/tty-markdown/master/assets/headers.png)
 
-### 1.3 Quote
+### 1.2 List
+
+Both numbered and unordered lists are supported. Given a markdown:
+
+```markdown
+- Item 1
+  - Item 2
+  - Item 3
+    - Item 4
+- Item 5
+```
+
+and transforming it:
+
+```ruby
+parsed = TTY::Markdown.parse(markdown_string)
+```
+
+`puts parsed` will produce:
+
+![Code highlight](https://cdn.rawgit.com/piotrmurach/tty-markdown/master/assets/list.png)
+
+### 1.3 Link
+
+A mardown link:
+
+```markdown
+[I'm an inline-style link](https://www.google.com)
+```
+
+will be rendered with actual link content next to it:
+
+![Code highlight](https://cdn.rawgit.com/piotrmurach/tty-markdown/master/assets/link.png)
+
+### 1.4 Blockquote
 
 Given a markdown quote:
 
@@ -129,7 +142,7 @@ parsed = TTY::Markdown.parse(markdown_string)
 
 ![Code highlight](https://cdn.rawgit.com/piotrmurach/tty-markdown/master/assets/quote.png)
 
-### 1.4 Codeblock
+### 1.5 Code and Syntax Highlighting
 
 The parser can highlight syntax of many programming languages. Given the markdown codeblock with language specification:
 
@@ -153,7 +166,7 @@ parsed = TTY::Markdown.parse(code_snippet)
 
 ![Code highlight](https://cdn.rawgit.com/piotrmurach/tty-markdown/master/assets/syntax_highlight.png)
 
-### 1.5 Table
+### 1.6 Table
 
 You can transform tables which understand the markdown alignment.
 
