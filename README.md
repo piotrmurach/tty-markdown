@@ -42,9 +42,10 @@ Or install it yourself as:
   * [1.1 Header](#11-header)
   * [1.2 List](#12-list)
   * [1.3 Link](#13-link)
-  * [1.4 Blockrquote](#14-blockquote)
+  * [1.4 Blockquote](#14-blockquote)
   * [1.5 Code and Syntax Highlighting](#15-code-and-syntax-highlighting)
   * [1.6 Table](#16-table)
+  * [1.7 Horizontal Rule](#17-horizontal-rule)
 * [2. Options](#2-options)
   * [2.1 :theme](#21-theme)
 
@@ -189,6 +190,24 @@ parsed = TTY::Markdown.parse(markdown_string)
 `puts parsed` will output:
 
 ![Code highlight](https://cdn.rawgit.com/piotrmurach/tty-markdown/master/assets/table.png)
+
+### 1.7 Horizontal Rule
+
+You can specify a horizontal rule in markdown:
+
+```markdown
+***
+```
+
+and then transform it:
+
+```ruby
+parsed = TTY::Markdown.parse(markdown_string)
+```
+
+`puts parsed` will output:
+
+![Code highlight](https://cdn.rawgit.com/piotrmurach/tty-markdown/master/assets/hr.png)
 
 ## 2. Options
 
