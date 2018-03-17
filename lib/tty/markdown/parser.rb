@@ -238,7 +238,7 @@ module TTY
         symbols = TTY::Markdown.symbols
         result = []
         result << symbols[:"#{location}_left"]
-        max_widths(table_data).each.with_index do |width, i|
+        distribute_widths(max_widths(table_data)).each.with_index do |width, i|
           result << symbols[:"#{location}_center"] if i != 0
           result << (symbols[:line] * (width + 2))
         end
@@ -267,13 +267,11 @@ module TTY
       end
 
       def convert_tfoot(el, opts)
-        innert(el, opts)
+        inner(el, opts)
       end
 
       def convert_tr(el, opts)
         indent = ' ' * @current_indent
-        pipe = TTY::Markdown.symbols[:pipe]
-        styles = Array(@theme[:table])
         table_data = opts[:table_data]
 
         if opts[:prev] && opts[:prev].type == :tr
@@ -282,45 +280,115 @@ module TTY
           opts[:result] << "\n"
         end
 
-        opts[:result] << indent + @pastel.decorate("#{pipe} ", *styles)
+        opts[:cells] = []
+
         inner(el, opts)
-        opts[:result] << "\n"
+
+        columns = table_data.first.count
+
+        row = opts[:cells].each_with_index.reduce([]) do |acc, (cell, i)|
+          if cell.size > 1 # multiline
+            cell.each_with_index do |c, j| # zip columns
+              acc[j] = [] if acc[j].nil?
+              acc[j] << c.chomp
+              acc[j] << "\n" if i == (columns - 1)
+            end
+          else
+            acc << cell
+            acc << "\n" if i == (columns - 1)
+          end
+          acc
+        end.join
+
+        opts[:result] << row
       end
 
       def convert_td(el, opts)
-        pipe = TTY::Markdown.symbols[:pipe]
-        styles = Array(@theme[:table])
+        indent = ' ' * @current_indent
+        pipe       = TTY::Markdown.symbols[:pipe]
+        styles     = Array(@theme[:table])
         table_data = opts[:table_data]
-        result = opts[:result]
+        result     = opts[:cells]
+        suffix     = " #{@pastel.decorate(pipe, *styles)} "
         opts[:result] = []
 
         inner(el, opts)
 
-        column = find_column(table_data, opts[:result])
-        width = max_width(table_data, column)
-        alignment = opts[:alignment][column]
+        row, column = *find_row_column(table_data, opts[:result])
+        cell_widths = distribute_widths(max_widths(table_data))
+        cell_width = cell_widths[column]
+        cell_height = max_height(table_data, row, cell_widths)
+        alignment  = opts[:alignment][column]
         align_opts = alignment == :default ? {} : {direction: alignment}
 
-        result << Strings.align(opts[:result].join, width, align_opts) <<
-               " #{@pastel.decorate(pipe, *styles)} "
+        wrapped = Strings.wrap(opts[:result].join, cell_width)
+        aligned = Strings.align(wrapped, cell_width, align_opts)
+        padded = if aligned.lines.size < cell_height
+                   Strings.pad(aligned, [0, 0, cell_height - aligned.lines.size, 0])
+                  else
+                    aligned.dup
+                  end
+
+        result << padded.lines.map do |line|
+          # add pipe to first column
+          (column.zero? ? indent + @pastel.decorate("#{pipe} ", *styles) : '') +
+          (line.end_with?("\n") ? line.insert(-2, suffix) : line << suffix)
+        end
       end
 
-      def find_column(table_data, cell)
-        table_data.each do |row|
+      # Find row and column indexes
+      #
+      # @return [Array[Integer, Integer]]
+      #
+      # @api private
+      def find_row_column(table_data, cell)
+        table_data.each_with_index do |row, row_no|
           row.size.times do |col|
-            return col if row[col] == cell
+            return [row_no, col] if row[col] == cell
           end
         end
       end
 
+      # Calculate maximum cell width for a given column
+      #
+      # @return [Integer]
+      #
+      # @api private
       def max_width(table_data, col)
-        table_data.map { |row| Strings.sanitize(row[col].join).length }.max
+        table_data.map do |row|
+          Strings.sanitize(row[col].join).lines.map(&:length).max
+        end.max
+      end
+
+      # Calculate maximum cell height for a given row
+      #
+      # @return [Integer]
+      #
+      # @api private
+      def max_height(table_data, row, cell_widths)
+        table_data[row].map.with_index do |col, i|
+          Strings.wrap(col.join, cell_widths[i]).lines.size
+        end.max
       end
 
       def max_widths(table_data)
         table_data.first.each_with_index.reduce([]) do |acc, (*, col)|
           acc << max_width(table_data, col)
           acc
+        end
+      end
+
+      def distribute_widths(widths)
+        indent = ' ' * @current_indent
+        total_width = widths.reduce(&:+)
+        screen_width = @width - (indent.length + 1) * 2 - (widths.size + 1)
+        return widths if total_width <= screen_width
+
+        extra_width = total_width - screen_width
+
+        widths.map do |w|
+          ratio = w / total_width.to_f
+          w - (extra_width * ratio).floor
         end
       end
 
