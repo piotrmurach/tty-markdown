@@ -47,7 +47,9 @@ Or install it yourself as:
   * [1.6 Table](#16-table)
   * [1.7 Horizontal Rule](#17-horizontal-rule)
 * [2. Options](#2-options)
-  * [2.1 :theme](#21-theme)
+  * [2.1 :colors](#21-colors)
+  * [2.2 :theme](#22-theme)
+  * [2.3 :width](#23-width)
 
 ## 1. Usage
 
@@ -211,7 +213,17 @@ parsed = TTY::Markdown.parse(markdown_string)
 
 ## 2. Options
 
-### 2.1 `:theme`
+### 2.1 `:colors`
+
+By default the `256` colors scheme is used to render code block elements. You can change that by specifying desired number of colors:
+
+```ruby
+TTY::Markdown.pasre(markdown_string, colors: 16)
+```
+
+This feauture may be handy when working in terminals with limited color supported. By default, **TTY::Markdown** detect supported color mode and adjust colors automatically.
+
+### 2.2 `:theme`
 
 A hash of styles that allows to customize specific elements of the markdown text. By default the following styles are used:
 
@@ -233,6 +245,16 @@ In order to provide new styles use `:theme` key:
 ```ruby
 TTY::Markdown.parse(markdown_string, theme: { ... })
 ```
+
+### 2.3 `:width`
+
+You can easily control the width of the output by using the `:width` option
+
+```ruby
+TTY::Markdown.parse(markdown_string, width: 80)
+```
+
+By default the terminal screen with is used.
 
 ## Development
 
