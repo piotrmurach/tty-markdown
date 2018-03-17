@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Markdown do
+RSpec.describe TTY::Markdown, 'blockquote' do
   let(:bar) { TTY::Markdown.symbols[:bar] }
   let(:apos) { TTY::Markdown.symbols[:rsquo] }
 

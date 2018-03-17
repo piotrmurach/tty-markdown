@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Markdown do
+RSpec.describe TTY::Markdown, 'emphasis' do
   context 'when strong emphasis' do
     it "converts asterisks to bold ansi codes" do
       parsed = TTY::Markdown.parse("Some text with **bold** content.")

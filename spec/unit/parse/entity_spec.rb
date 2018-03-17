@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Markdown do
+RSpec.describe TTY::Markdown, 'entity' do
   it "converts html entities" do
     markdown =<<-TEXT
 &copy; 2018 by me and &#x3bb;

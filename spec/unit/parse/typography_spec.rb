@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Markdown do
+RSpec.describe TTY::Markdown, 'typography' do
   let(:symbols) { TTY::Markdown.symbols }
 
   it "converts header with typographic symbols" do

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Markdown do
+RSpec.describe TTY::Markdown, 'table' do
   let(:symbols) { TTY::Markdown.symbols }
 
   it "parses markdown table with header" do

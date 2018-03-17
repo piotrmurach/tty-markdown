@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Markdown do
+RSpec.describe TTY::Markdown, 'list' do
   let(:symbols) { TTY::Markdown.symbols }
   let(:pastel) { Pastel.new}
 

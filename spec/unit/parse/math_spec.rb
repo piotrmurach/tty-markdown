@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Markdown do
+RSpec.describe TTY::Markdown, 'math' do
   it "converts math formulae" do
     markdown =<<-TEXT
 $$5+5$$

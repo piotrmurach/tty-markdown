@@ -1,6 +1,6 @@
 # fronze_string_literal: true
 
-RSpec.describe TTY::Markdown do
+RSpec.describe TTY::Markdown, 'paragraph' do
   it "converts multiline paragraphs" do
     markdown =<<-TEXT
 This is a first paragraph

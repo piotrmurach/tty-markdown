@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Markdown do
+RSpec.describe TTY::Markdown, 'codeblock' do
   it "highlights a fenced code without language" do
     markdown =<<-TEXT
 ```
