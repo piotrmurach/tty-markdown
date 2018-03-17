@@ -154,7 +154,7 @@ module TTY
       end
 
       def convert_codespan(el, opts)
-        raw_code = el.value
+        raw_code = Strings.wrap(el.value, @width)
         highlighted = SyntaxHighliter.highlight(raw_code, @color_opts.merge(opts))
         code = highlighted.split("\n").map.with_index do |line, i|
                 if i == 0 # first line

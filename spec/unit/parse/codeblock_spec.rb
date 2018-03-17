@@ -94,4 +94,37 @@ end
      "    \e[33mend\e[0m\n"
     ].join("\n"))
   end
+
+  it "wraps code exceeding set width" do
+    markdown =<<-TEXT
+```
+lexer = Rouge::Lexer.find_fancy(lang, code) || Rouge::Lexers::PlainText
+```
+    TEXT
+    parsed = TTY::Markdown.parse(markdown, width: 50, colors: 16)
+
+    expected_output =
+      "\e[33mlexer = Rouge::Lexer.find_fancy(lang, code) || \e[0m\n" +
+      "\e[33mRouge::Lexers::PlainText\e[0m\n"
+
+    expect(parsed).to eq(expected_output)
+  end
+
+  it "wraps code exceeding set width preserving indentation" do
+    markdown =<<-TEXT
+### lexer
+
+```
+lexer = Rouge::Lexer.find_fancy(lang, code) || Rouge::Lexers::PlainText
+```
+    TEXT
+    parsed = TTY::Markdown.parse(markdown, width: 50, colors: 16)
+
+    expected_output =
+      "    \e[36;1mlexer\e[0m\n\n" +
+      "    \e[33mlexer = Rouge::Lexer.find_fancy(lang, code) || \e[0m\n" +
+      "    \e[33mRouge::Lexers::PlainText\e[0m\n"
+
+    expect(parsed).to eq(expected_output)
+  end
 end
