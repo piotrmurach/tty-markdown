@@ -18,7 +18,7 @@ module TTY
         @current_indent = 0
         @indent = options.fetch(:indent, 2)
         @pastel = Pastel.new
-        @color_opts = {mode: options[:colors]}
+        @color_opts = { mode: options[:colors] }
         @width = options.fetch(:width) { TTY::Screen.width }
         @theme = options.fetch(:theme) { TTY::Markdown::THEME }
       end
@@ -26,7 +26,7 @@ module TTY
       # Invoke an element conversion
       #
       # @api public
-      def convert(el, opts = {indent: 0, result: []})
+      def convert(el, opts = { indent: 0, result: [] })
         send("convert_#{el.type}", el, opts)
       end
 
@@ -103,7 +103,7 @@ module TTY
         start_index = result_before.size
         max_index   = result.size - 1
         bar_symbol  = TTY::Markdown.symbols[:bar]
-        styles = Array(@theme[:quote])
+        styles      = Array(@theme[:quote])
         prefix      = "#{indent}#{@pastel.decorate(bar_symbol, *styles)}  "
 
         result.map!.with_index do |str, i|
@@ -133,14 +133,14 @@ module TTY
 
       def convert_strong(el, opts)
         styles = Array(@theme[:strong])
-        opts[:result] <<  @pastel.lookup(*styles)
+        opts[:result] << @pastel.lookup(*styles)
         inner(el, opts)
         opts[:result] << @pastel.lookup(:reset)
       end
 
       def convert_em(el, opts)
         styles = Array(@theme[:em])
-        opts[:result] <<  @pastel.lookup(*styles)
+        opts[:result] << @pastel.lookup(*styles)
         inner(el, opts)
         opts[:result] << @pastel.lookup(:reset)
       end
@@ -157,7 +157,7 @@ module TTY
         raw_code = Strings.wrap(el.value, @width)
         highlighted = SyntaxHighliter.highlight(raw_code, @color_opts.merge(opts))
         code = highlighted.split("\n").map.with_index do |line, i|
-                if i == 0 # first line
+                if i.zero? # first line
                   line
                 else
                   line.insert(0, ' ' * @current_indent)
@@ -319,20 +319,20 @@ module TTY
         cell_width = cell_widths[column]
         cell_height = max_height(table_data, row, cell_widths)
         alignment  = opts[:alignment][column]
-        align_opts = alignment == :default ? {} : {direction: alignment}
+        align_opts = alignment == :default ? {} : { direction: alignment }
 
         wrapped = Strings.wrap(opts[:result].join, cell_width)
         aligned = Strings.align(wrapped, cell_width, align_opts)
         padded = if aligned.lines.size < cell_height
                    Strings.pad(aligned, [0, 0, cell_height - aligned.lines.size, 0])
-                  else
-                    aligned.dup
-                  end
+                 else
+                   aligned.dup
+                 end
 
         result << padded.lines.map do |line|
           # add pipe to first column
           (column.zero? ? indent + @pastel.decorate("#{pipe} ", *styles) : '') +
-          (line.end_with?("\n") ? line.insert(-2, suffix) : line << suffix)
+            (line.end_with?("\n") ? line.insert(-2, suffix) : line << suffix)
         end
       end
 
@@ -395,7 +395,7 @@ module TTY
       def convert_hr(el, opts)
         indent = ' ' * @current_indent
         symbols = TTY::Markdown.symbols
-        width = @width - (indent.length+1) * 2
+        width = @width - (indent.length + 1) * 2
         styles = Array(@theme[:hr])
         line = symbols[:diamond] + symbols[:line] * width + symbols[:diamond]
 
