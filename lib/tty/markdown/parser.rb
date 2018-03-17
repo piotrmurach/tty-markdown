@@ -112,7 +112,7 @@ module TTY
           end
 
           # only modify blockquote element
-          if i >= start_index && str.include?("\n") # multiline string found
+          if i >= start_index && str.to_s.include?("\n") # multiline string found
             str.lines.map! do |line|
               if (line != str.lines.last || i < max_index)
                 line.insert(-1, line.end_with?("\n") ? prefix : "\n" + prefix)
