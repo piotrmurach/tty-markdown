@@ -221,7 +221,7 @@ By default the `256` colors scheme is used to render code block elements. You ca
 TTY::Markdown.pasre(markdown_string, colors: 16)
 ```
 
-This feauture may be handy when working in terminals with limited color supported. By default, **TTY::Markdown** detect supported color mode and adjust colors automatically.
+This feauture may be handy when working in terminals with limited color supported. By default, **TTY::Markdown** detects supported color mode and adjusts output automatically.
 
 ### 2.2 `:theme`
 
@@ -254,7 +254,7 @@ You can easily control the width of the output by using the `:width` option
 TTY::Markdown.parse(markdown_string, width: 80)
 ```
 
-By default the terminal screen with is used.
+By default the terminal screen width is used.
 
 ## Development
 
