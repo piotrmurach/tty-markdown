@@ -64,6 +64,7 @@ module TTY
       def convert_p(el, opts)
         result_before = @stack.last[1][:result].dup
         indent = ' ' * @current_indent
+
         if opts[:parent].type != :blockquote
           opts[:result] << indent
         end
@@ -88,6 +89,15 @@ module TTY
         end
       end
 
+      # Format current element by inserting prefix for each
+      # quoted line within the allowed screen size.
+      #
+      # @param [Array[String]] result_before
+      # @param [Array[String]] result
+      #
+      # @return [nil]
+      #
+      # @api private
       def format_blockquote(result_before, result)
         indent      = ' ' * @current_indent
         start_index = result_before.size
@@ -101,14 +111,15 @@ module TTY
             str.insert(0, prefix)
           end
 
-          if i >= start_index && str.include?("\n")
+          # only modify blockquote element
+          if i >= start_index && str.include?("\n") # multiline string found
             str.lines.map! do |line|
               if line != str.lines.last || i < max_index
                 line.insert(-1, prefix)
               else
                 line
               end
-            end
+            end.join
           else
             str
           end

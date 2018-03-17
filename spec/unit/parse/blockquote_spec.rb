@@ -25,6 +25,21 @@ RSpec.describe TTY::Markdown do
     ].join("\n"))
   end
 
+  it "converts multiple blockquotes without header" do
+    markdown =<<-TEXT
+> one
+> two
+> three
+    TEXT
+    parsed = TTY::Markdown.parse(markdown)
+    expected_output =
+      "\e[33m#{bar}\e[0m  one\n" +
+      "\e[33m#{bar}\e[0m  two\n" +
+      "\e[33m#{bar}\e[0m  three\n"
+
+    expect(parsed).to eq(expected_output)
+  end
+
   it "converts multiple blockquote" do
     markdown =<<-TEXT
 ### Quote
