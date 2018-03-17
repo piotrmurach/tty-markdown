@@ -2,6 +2,7 @@
 
 RSpec.describe TTY::Markdown do
   let(:bar) { TTY::Markdown.symbols[:bar] }
+  let(:apos) { TTY::Markdown.symbols[:rsquo] }
 
   it "converts single blockquote" do
     markdown =<<-TEXT
@@ -57,12 +58,20 @@ RSpec.describe TTY::Markdown do
   end
 
   it "converts blockquote into lines" do
-    pending "impelement terminal wrapping for long quotes"
     markdown =<<-TEXT
 > This is a very long line that will still be quoted properly when it wraps. Oh boy let's keep writing to make sure this is long enough to actually wrap for everyone. Oh, you can *put* **Markdown** into a blockquote.
+> Last line to ensure all is fine.
     TEXT
-    parsed = TTY::Markdown.parse(markdown)
-    expect(parsed).to eq([
-    ].join)
+
+    parsed = TTY::Markdown.parse(markdown, width: 50)
+    expected_output =
+      "\e[33m#{bar}\e[0m  This is a very long line that will still be \n" +
+      "\e[33m#{bar}\e[0m  quoted properly when it wraps. Oh boy let\n" +
+      "\e[33m#{bar}\e[0m  #{apos}s keep writing to make sure this is long enough \n" +
+      "\e[33m#{bar}\e[0m  to actually wrap for everyone. Oh, you can \n" +
+      "\e[33m#{bar}\e[0m  \e[33mput\e[0m \e[33;1mMarkdown\e[0m into a blockquote.\n" +
+      "\e[33m#{bar}\e[0m  Last line to ensure all is fine.\n"
+
+    expect(parsed).to eq(expected_output)
   end
 end

@@ -114,8 +114,8 @@ module TTY
           # only modify blockquote element
           if i >= start_index && str.include?("\n") # multiline string found
             str.lines.map! do |line|
-              if line != str.lines.last || i < max_index
-                line.insert(-1, prefix)
+              if (line != str.lines.last || i < max_index)
+                line.insert(-1, line.end_with?("\n") ? prefix : "\n" + prefix)
               else
                 line
               end
@@ -128,7 +128,7 @@ module TTY
 
       def convert_text(el, opts)
         text = el.value
-        opts[:result] << text
+        opts[:result] << Strings.wrap(text, @width)
       end
 
       def convert_strong(el, opts)
