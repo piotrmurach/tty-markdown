@@ -64,7 +64,7 @@ puts parsed
 The `parse_file` allows you to transform a markdown document into a terminal formatted output:
 
 ```ruby
-parsed = TTY::Markdown.parse('example.md')
+parsed = TTY::Markdown.parse_file('example.md')
 puts parsed
 ```
 
