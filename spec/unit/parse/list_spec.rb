@@ -46,7 +46,7 @@ RSpec.describe TTY::Markdown, 'list' do
     ].join("\n"))
   end
 
-  xit "indents unordered list with multiline content" do
+  it "indents unordered list with multiline content" do
     markdown =<<-TEXT
 ### header
 - First multiline
