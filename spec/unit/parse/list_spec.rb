@@ -60,9 +60,9 @@ RSpec.describe TTY::Markdown, 'list' do
     expect(parsed).to eq([
       "    \e[36;1mheader\e[0m",
       "    #{pastel.yellow(symbols[:bullet])} First multiline",
-      "    Item 1",
+      "      Item 1",
       "      #{pastel.yellow(symbols[:bullet])} Second multiline",
-      "      Item 2",
+      "        Item 2",
       "      #{pastel.yellow(symbols[:bullet])} Item 3",
       "    #{pastel.yellow(symbols[:bullet])} Item 4\n",
     ].join("\n"))

@@ -79,6 +79,7 @@ module TTY
           symbol = opts[:ordered] ? "#{index}." : bullet
           styles = Array(@theme[:list])
           opts[:result] << @pastel.decorate(symbol, *styles) + ' '
+          opts[:indent] += @indent
           opts[:strip] = true
         when :blockquote
           opts[:indent] = 0
