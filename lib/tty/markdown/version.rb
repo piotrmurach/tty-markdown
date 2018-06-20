@@ -1,5 +1,5 @@
 module TTY
   module Markdown
-    VERSION = '0.3.0'.freeze
+    VERSION = '0.4.0'.freeze
   end # TTY
 end # Markdown
