@@ -1,5 +1,10 @@
 # Change log
 
+## [v0.4.0] - 2018-06-20
+
+## Fixed
+* Fix multiline paragraph indentation by Brett(@suwyn)
+
 ## [v0.3.0] - 2018-03-17
 
 ### Added
