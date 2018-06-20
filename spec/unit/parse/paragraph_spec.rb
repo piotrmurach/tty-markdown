@@ -17,7 +17,7 @@ And this is a next one.
     ].join("\n"))
   end
 
-  xit "converts multiline pragraphs within header section" do
+  it "converts multiline pragraphs within header section" do
 
     markdown =<<-TEXT
 ### header

@@ -69,6 +69,9 @@ module TTY
           opts[:result] << indent
         end
 
+        opts[:indent] = @current_indent
+        opts[:strip] = false
+
         case opts[:parent].type
         when :li
           bullet = TTY::Markdown.symbols[:bullet]
@@ -76,6 +79,10 @@ module TTY
           symbol = opts[:ordered] ? "#{index}." : bullet
           styles = Array(@theme[:list])
           opts[:result] << @pastel.decorate(symbol, *styles) + ' '
+          opts[:indent] += @indent
+          opts[:strip] = true
+        when :blockquote
+          opts[:indent] = 0
         end
 
         inner(el, opts)
@@ -127,8 +134,11 @@ module TTY
       end
 
       def convert_text(el, opts)
-        text = el.value
-        opts[:result] << Strings.wrap(text, @width)
+        text = Strings.wrap(el.value, @width)
+        text.strip! if opts[:strip]
+        indent = ' ' * opts[:indent]
+        text = text.gsub(/\n/, "\n#{indent}")
+        opts[:result] <<  text
       end
 
       def convert_strong(el, opts)
