@@ -1,4 +1,4 @@
-# fronze_string_literal: true
+# frozen_string_literal: true
 
 RSpec.describe TTY::Markdown, 'paragraph' do
   it "converts multiline paragraphs" do
