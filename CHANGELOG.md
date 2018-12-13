@@ -1,5 +1,12 @@
 # Change log
 
+## [v0.5.0] - 2018-12-13
+
+### Changed
+* Change gemspec to load files directly
+* Change to update rouge dependency
+* Change to relax constraings on tty-screen and tty-color
+
 ## [v0.4.0] - 2018-06-20
 
 ## Fixed
@@ -25,7 +32,7 @@
 * Add markdown math formula conversion
 * Add markdown typogrpahic symbols conversion by Tanaka Masaki(@T-a-n-a-k-a-M-a-s-a-k-i)
 * Add html entities conversion
-* Add warnings about unsupported conversions for completness
+* Add warnings about unsupported conversions for completeness
 
 ### Changed
 * Change gemspec to require Ruby >= 2.0.0
@@ -37,6 +44,7 @@
 
 * Initial implementation and release
 
+[v0.5.0]: https://github.com/piotrmurach/tty-markdown/compare/v0.4.0...v0.5.0
 [v0.4.0]: https://github.com/piotrmurach/tty-markdown/compare/v0.3.0...v0.4.0
 [v0.3.0]: https://github.com/piotrmurach/tty-markdown/compare/v0.2.0...v0.3.0
 [v0.2.0]: https://github.com/piotrmurach/tty-markdown/compare/v0.1.0...v0.2.0
