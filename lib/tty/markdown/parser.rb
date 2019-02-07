@@ -135,7 +135,7 @@ module TTY
 
       def convert_text(el, opts)
         text = Strings.wrap(el.value, @width)
-        text.strip! if opts[:strip]
+        text = text.chomp if opts[:strip]
         indent = ' ' * opts[:indent]
         text = text.gsub(/\n/, "\n#{indent}")
         opts[:result] <<  text
