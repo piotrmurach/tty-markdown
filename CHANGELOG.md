@@ -1,5 +1,13 @@
 # Change log
 
+## [v0.5.1] - 2019-02-07
+
+### Changed
+* Update kramdown dependency
+
+### Fixed
+* Fix spaces around inline code quotes collapses inside list items
+
 ## [v0.5.0] - 2018-12-13
 
 ### Changed
