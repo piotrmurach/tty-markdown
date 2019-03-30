@@ -472,6 +472,11 @@ module TTY
       def convert_html_element(*)
         warning("HTML elements are not supported")
       end
+
+      def convert_xml_comment(el, opts)
+        opts[:result] << el.value << "\n"
+      end
+      alias convert_comment convert_xml_comment
     end # Parser
   end # Markdown
 end # TTY
