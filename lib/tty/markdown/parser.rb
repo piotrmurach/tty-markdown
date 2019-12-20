@@ -402,6 +402,10 @@ module TTY
         end
       end
 
+      def convert_br(el, opts)
+        opts[:result] << "\n"
+      end
+
       def convert_hr(el, opts)
         indent = ' ' * @current_indent
         symbols = TTY::Markdown.symbols
