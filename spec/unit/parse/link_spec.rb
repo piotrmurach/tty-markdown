@@ -36,4 +36,16 @@ RSpec.describe TTY::Markdown, 'link' do
     parsed = TTY::Markdown.parse(markdown)
     expect(parsed).to eq("\n")
   end
+
+  it "displays link without displaying label when label matches link target" do
+    markdown = "[https://example.com](https://example.com)"
+    parsed = TTY::Markdown.parse(markdown)
+    expect(parsed).to eq("\e[33;4mhttps://example.com\e[0m\n")
+  end
+
+  it "displays typical autolinks without displaying label" do
+    markdown = "<https://example.com>"
+    parsed = TTY::Markdown.parse(markdown)
+    expect(parsed).to eq("\e[33;4mhttps://example.com\e[0m\n")
+  end
 end
