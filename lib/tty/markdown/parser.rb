@@ -417,17 +417,14 @@ module TTY
       def convert_a(el, opts)
         symbols = TTY::Markdown.symbols
         styles = Array(@theme[:link])
-        if el.children.size == 1 && el.children[0].type == :text
-          opts[:result] << @pastel.decorate(el.attr['href'], *styles)
-        else
+        if el.children.size > 1 || el.children.size == 1 && (el.children[0].type != :text || !el.children[0].value.strip.empty?)
+          inner(el, opts)
           if el.attr['title']
-           opts[:result] << el.attr['title']
+            opts[:result] << " #{symbols[:arrow]}(#{el.attr['title']}) "
           else
-            inner(el, opts)
+            opts[:result] << " #{symbols[:arrow]} "
           end
-          opts[:result] << " #{symbols[:arrow]} "
           opts[:result] << @pastel.decorate(el.attr['href'], *styles)
-          opts[:result] << "\n"
         end
       end
 
