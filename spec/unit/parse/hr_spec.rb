@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe TTY::Markdown, 'horizontal rule' do
-  let(:symbols) { TTY::Markdown.symbols }
+  let(:symbols) { TTY::Markdown::SYMBOLS }
 
   it "draws a horizontal rule" do
     markdown =<<-TEXT

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe TTY::Markdown, 'blockquote' do
-  let(:bar) { TTY::Markdown.symbols[:bar] }
-  let(:apos) { TTY::Markdown.symbols[:rsquo] }
+  let(:bar) { TTY::Markdown::SYMBOLS[:bar] }
+  let(:apos) { TTY::Markdown::SYMBOLS[:rsquo] }
 
   it "converts single blockquote" do
     markdown =<<-TEXT

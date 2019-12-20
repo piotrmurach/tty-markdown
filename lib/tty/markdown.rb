@@ -36,7 +36,7 @@ module TTY
       bottom_center: '┴',
     }.freeze
 
-    WIN_SYMBOLS = {
+    ASCII_SYMBOLS = {
       arrow: '->',
       bullet: '*',
       diamond: '*',
@@ -100,15 +100,5 @@ module TTY
       parse(::File.read(path), options)
     end
     module_function :parse_file
-
-    def symbols
-      @symbols ||= windows? ? WIN_SYMBOLS : SYMBOLS
-    end
-    module_function :symbols
-
-    def windows?
-      ::File::ALT_SEPARATOR == "\\"
-    end
-    module_function :windows?
   end # Markdown
 end # TTY
