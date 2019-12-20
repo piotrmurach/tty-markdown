@@ -19,6 +19,18 @@ RSpec.describe TTY::Markdown, 'link' do
     expect(parsed).to eq("I#{symbols[:rsquo]}m an inline-style link with title #{symbols[:arrow]}(Google's Homepage) \e[33;4mhttps://www.google.com\e[0m\n")
   end
 
+  it "displays email links with mailto: prefix removed" do
+    markdown = "[Email me](mailto:test@example.com)"
+    parsed = TTY::Markdown.parse(markdown)
+    expect(parsed).to eq("Email me #{symbols[:arrow]} \e[33;4mtest@example.com\e[0m\n")
+  end
+
+  it "displays email links without displaying label when label matches address" do
+    markdown = "[test@example.com](mailto:test@example.com)"
+    parsed = TTY::Markdown.parse(markdown)
+    expect(parsed).to eq("\e[33;4mtest@example.com\e[0m\n")
+  end
+
   it "displays nothing when label is empty" do
     markdown = "[](https://example.com)"
     parsed = TTY::Markdown.parse(markdown)
@@ -47,5 +59,11 @@ RSpec.describe TTY::Markdown, 'link' do
     markdown = "<https://example.com>"
     parsed = TTY::Markdown.parse(markdown)
     expect(parsed).to eq("\e[33;4mhttps://example.com\e[0m\n")
+  end
+
+  it "displays email autolinks without displaying label" do
+    markdown = "<mailto:test@example.com>"
+    parsed = TTY::Markdown.parse(markdown)
+    expect(parsed).to eq("\e[33;4mtest@example.com\e[0m\n")
   end
 end

@@ -417,6 +417,9 @@ module TTY
       def convert_a(el, opts)
         symbols = TTY::Markdown.symbols
         styles = Array(@theme[:link])
+        if URI.parse(el.attr['href']).class == URI::MailTo
+          el.attr['href'] = URI.parse(el.attr['href']).to
+        end
         if el.children.size == 1 && el.children[0].type == :text && el.children[0].value == el.attr['href']
           if !el.attr['title'].nil? && !el.attr['title'].strip.empty?
             opts[:result] << "(#{el.attr['title']}) "
