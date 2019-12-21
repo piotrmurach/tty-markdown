@@ -11,6 +11,7 @@ And this is a next one.
     parsed = TTY::Markdown.parse(markdown)
     expect(parsed).to eq([
       "This is a first paragraph",
+      "",
       "that spans two lines.",
       "",
       "And this is a next one.\n"
@@ -30,6 +31,7 @@ And this is a next one.
     expect(parsed).to eq([
       "    \e[36;1mheader\e[0m",
       "    This is a first paragraph",
+      "",
       "    that spans two lines.",
       "",
       "    And this is a next one.\n"

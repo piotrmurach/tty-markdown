@@ -31,6 +31,7 @@ $$5+5$$
     parsed = TTY::Markdown.parse(markdown, colors: 16)
     expect(parsed).to eq([
       "    \e[36;1mheader\e[0m",
+      "    ",
       "    \e[33m5+5\e[0m\n"
     ].join("\n"))
   end

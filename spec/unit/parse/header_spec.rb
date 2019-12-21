@@ -2,7 +2,7 @@
 
 RSpec.describe TTY::Markdown, 'header' do
   it "converts top level header" do
-    parsed = TTY::Markdown.parse("#Header1")
+    parsed = TTY::Markdown.parse("Header1\n======")
 
     expect(parsed).to eq("\e[36;1;4mHeader1\e[0m\n")
   end

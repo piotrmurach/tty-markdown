@@ -111,7 +111,7 @@ module TTY
           format_blockquote(result_before, opts[:result])
         end
 
-        unless opts[:result].last.end_with?("\n")
+        unless opts[:result].last.to_s.end_with?("\n")
           opts[:result] << "\n"
         end
       end
@@ -158,7 +158,7 @@ module TTY
         text = text.chomp if opts[:strip]
         indent = ' ' * opts[:indent]
         text = text.gsub(/\n/, "\n#{indent}")
-        opts[:result] <<  text
+        opts[:result] << text
       end
 
       def convert_strong(el, opts)
@@ -349,7 +349,7 @@ module TTY
         align_opts = alignment == :default ? {} : { direction: alignment }
 
         wrapped = Strings.wrap(opts[:result].join, cell_width)
-        aligned = Strings.align(wrapped, cell_width, align_opts)
+        aligned = Strings.align(wrapped, cell_width, **align_opts)
         padded = if aligned.lines.size < cell_height
                    Strings.pad(aligned, [0, 0, cell_height - aligned.lines.size, 0])
                  else
@@ -438,15 +438,22 @@ module TTY
       def convert_a(el, opts)
         symbols = @symbols
         styles = Array(@theme[:link])
+
         if URI.parse(el.attr['href']).class == URI::MailTo
           el.attr['href'] = URI.parse(el.attr['href']).to
         end
-        if el.children.size == 1 && el.children[0].type == :text && el.children[0].value == el.attr['href']
+
+        if el.children.size == 1 && el.children[0].type == :text &&
+           el.children[0].value == el.attr['href']
+
           if !el.attr['title'].nil? && !el.attr['title'].strip.empty?
             opts[:result] << "(#{el.attr['title']}) "
           end
           opts[:result] << @pastel.decorate(el.attr['href'], *styles)
-        elsif el.children.size > 1 || el.children.size == 1 && (el.children[0].type != :text || !el.children[0].value.strip.empty?)
+
+        elsif el.children.size > 0  &&
+             (el.children[0].type != :text || !el.children[0].value.strip.empty?)
+
           inner(el, opts)
           if el.attr['title']
             opts[:result] << " #{symbols[:arrow]}(#{el.attr['title']}) "
@@ -458,9 +465,9 @@ module TTY
       end
 
       def convert_math(el, opts)
-        if opts[:prev] && opts[:prev].type == :blank
-          indent = ' ' * @current_indent
-          opts[:result] << indent
+        last = opts[:result][-1].to_s
+        if !last.empty? && !last.end_with?("\n")
+          opts[:result] << "\n"
         end
         convert_codespan(el, opts)
         opts[:result] << "\n"
@@ -500,7 +507,7 @@ module TTY
       end
 
       def convert_xml_comment(el, opts)
-        opts[:result] << el.value << "\n"
+        opts[:result] << el.value
       end
       alias convert_comment convert_xml_comment
     end # Parser

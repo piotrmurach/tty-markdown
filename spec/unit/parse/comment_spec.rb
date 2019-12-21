@@ -11,7 +11,7 @@ text after
     parsed = TTY::Markdown.parse(markdown)
 
     expect(parsed).to eq([
-      "text before",
+      "text before\n",
       "<!-- TODO: this is a comment -->\n",
       "text after\n"
     ].join("\n"))
