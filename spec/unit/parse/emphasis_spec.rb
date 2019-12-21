@@ -21,7 +21,7 @@ RSpec.describe TTY::Markdown, 'emphasis' do
     it "converts two tildes to ansi codes" do
       parsed = TTY::Markdown.parse("Some text with ~~scratched~~ content.")
 
-      expect(parsed).to eq("Some text with ~~scratched~~ content.\n")
+      expect(parsed).to eq("Some text with \e[33;1mscratched\e[0m content.\n")
     end
   end
 

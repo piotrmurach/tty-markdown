@@ -502,8 +502,19 @@ module TTY
         warning("Images are not supported")
       end
 
-      def convert_html_element(*)
-        warning("HTML elements are not supported")
+      def convert_html_element(el, opts)
+        if el.value == "del"
+          styles = Array(@theme[:strong])
+          opts[:result] << @pastel.lookup(*styles)
+          inner(el, opts)
+          opts[:result] << @pastel.lookup(:reset)
+        elsif el.children.size > 0
+          inner(el, opts)
+        elsif el.value == "br"
+          opts[:result] << "\n"
+        else
+          warning("HTML element '#{el.value.inspect}' not supported")
+        end
       end
 
       def convert_xml_comment(el, opts)
