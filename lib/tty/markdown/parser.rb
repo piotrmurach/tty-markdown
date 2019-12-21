@@ -421,17 +421,22 @@ module TTY
       def convert_a(el, opts)
         symbols = TTY::Markdown.symbols
         styles = Array(@theme[:link])
-        if el.children.size == 1 && el.children[0].type == :text
-          opts[:result] << @pastel.decorate(el.attr['href'], *styles)
-        else
-          if el.attr['title']
-           opts[:result] << el.attr['title']
-          else
-            inner(el, opts)
+        if URI.parse(el.attr['href']).class == URI::MailTo
+          el.attr['href'] = URI.parse(el.attr['href']).to
+        end
+        if el.children.size == 1 && el.children[0].type == :text && el.children[0].value == el.attr['href']
+          if !el.attr['title'].nil? && !el.attr['title'].strip.empty?
+            opts[:result] << "(#{el.attr['title']}) "
           end
-          opts[:result] << " #{symbols[:arrow]} "
           opts[:result] << @pastel.decorate(el.attr['href'], *styles)
-          opts[:result] << "\n"
+        elsif el.children.size > 1 || el.children.size == 1 && (el.children[0].type != :text || !el.children[0].value.strip.empty?)
+          inner(el, opts)
+          if el.attr['title']
+            opts[:result] << " #{symbols[:arrow]}(#{el.attr['title']}) "
+          else
+            opts[:result] << " #{symbols[:arrow]} "
+          end
+          opts[:result] << @pastel.decorate(el.attr['href'], *styles)
         end
       end
 
