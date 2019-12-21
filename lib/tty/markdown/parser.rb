@@ -21,6 +21,7 @@ module TTY
         @color_opts = { mode: options[:colors] }
         @width = options.fetch(:width) { TTY::Screen.width }
         @theme = options.fetch(:theme) { TTY::Markdown::THEME }
+        @symbols = build_symbols(options[:symbols])
       end
 
       # Invoke an element conversion
@@ -31,6 +32,25 @@ module TTY
       end
 
       private
+
+      def build_symbols(options)
+        if options == :ascii
+          TTY::Markdown::ASCII_SYMBOLS
+        elsif options.is_a? Hash
+          base_symbols = if options[:base] == :ascii
+                           TTY::Markdown::ASCII_SYMBOLS
+                         else
+                           TTY::Markdown::SYMBOLS
+                         end
+          if options[:override].is_a? Hash
+            base_symbols.merge(options[:override])
+          else
+            base_symbols
+          end
+        else
+          TTY::Markdown::SYMBOLS
+        end
+      end
 
       # Process children of this element
       def inner(el, opts)
@@ -74,7 +94,7 @@ module TTY
 
         case opts[:parent].type
         when :li
-          bullet = TTY::Markdown.symbols[:bullet]
+          bullet = @symbols[:bullet]
           index = @stack.last[1][:index] + 1
           symbol = opts[:ordered] ? "#{index}." : bullet
           styles = Array(@theme[:list])
@@ -109,7 +129,7 @@ module TTY
         indent      = ' ' * @current_indent
         start_index = result_before.size
         max_index   = result.size - 1
-        bar_symbol  = TTY::Markdown.symbols[:bar]
+        bar_symbol  = @symbols[:bar]
         styles      = Array(@theme[:quote])
         prefix      = "#{indent}#{@pastel.decorate(bar_symbol, *styles)}  "
 
@@ -160,7 +180,7 @@ module TTY
       end
 
       def convert_smart_quote(el, opts)
-        opts[:result] << TTY::Markdown.symbols[el.value]
+        opts[:result] << @symbols[el.value]
       end
 
       def convert_codespan(el, opts)
@@ -245,7 +265,7 @@ module TTY
       #
       # @api private
       def border(table_data, location)
-        symbols = TTY::Markdown.symbols
+        symbols = @symbols
         result = []
         result << symbols[:"#{location}_left"]
         distribute_widths(max_widths(table_data)).each.with_index do |width, i|
@@ -315,7 +335,7 @@ module TTY
 
       def convert_td(el, opts)
         indent = ' ' * @current_indent
-        pipe       = TTY::Markdown.symbols[:pipe]
+        pipe       = @symbols[:pipe]
         styles     = Array(@theme[:table])
         table_data = opts[:table_data]
         result     = opts[:cells]
@@ -408,7 +428,7 @@ module TTY
 
       def convert_hr(el, opts)
         indent = ' ' * @current_indent
-        symbols = TTY::Markdown.symbols
+        symbols = @symbols
         width = @width - (indent.length + 1) * 2
         styles = Array(@theme[:hr])
         line = symbols[:diamond] + symbols[:line] * width + symbols[:diamond]
@@ -419,7 +439,7 @@ module TTY
       end
 
       def convert_a(el, opts)
-        symbols = TTY::Markdown.symbols
+        symbols = @symbols
         styles = Array(@theme[:link])
         if URI.parse(el.attr['href']).class == URI::MailTo
           el.attr['href'] = URI.parse(el.attr['href']).to
@@ -454,7 +474,7 @@ module TTY
       end
 
       def convert_typographic_sym(el, opts)
-        opts[:result] << TTY::Markdown.symbols[el.value]
+        opts[:result] << @symbols[el.value]
       end
 
       def convert_entity(el, opts)

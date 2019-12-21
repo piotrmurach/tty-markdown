@@ -54,6 +54,7 @@ Or install it yourself as:
   * [2.1 :colors](#21-colors)
   * [2.2 :theme](#22-theme)
   * [2.3 :width](#23-width)
+  * [2.4 :symbols](#24-symbols)
 
 ## 1. Usage
 
@@ -259,6 +260,16 @@ TTY::Markdown.parse(markdown_string, width: 80)
 ```
 
 By default the terminal screen width is used.
+
+### 2.4 `:symbols`
+
+By default formatting will include various Unicode symbols. You can switch to an included ASCII set and/or override individually with the `:symbols` key:
+
+```ruby
+TTY::Markdown.parse(markdown_string, symbols: :ascii)
+TTY::Markdown.parse(markdown_string, symbols: {base: :ascii})
+TTY::Markdown.parse(markdown_string, symbols: {override: {bullet: "x"}})
+```
 
 ## Development
 

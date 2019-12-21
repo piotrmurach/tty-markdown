@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe TTY::Markdown, 'list' do
-  let(:symbols) { TTY::Markdown.symbols }
+  let(:symbols) { TTY::Markdown::SYMBOLS }
   let(:pastel) { Pastel.new}
 
   it "converts unordered bulleted lists of nested items" do
