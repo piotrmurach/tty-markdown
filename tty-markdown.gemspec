@@ -6,11 +6,11 @@ Gem::Specification.new do |spec|
   spec.name          = "tty-markdown"
   spec.version       = TTY::Markdown::VERSION
   spec.authors       = ["Piotr Murach"]
-  spec.email         = []
+  spec.email         = ["me@piotrmurach.com"]
 
   spec.summary       = %q{Convert a markdown text or document into a terminal friendly output.}
   spec.description   = %q{Convert a markdown text or document into a terminal friendly output.}
-  spec.homepage      = "https://piotrmurach.github.io/tty"
+  spec.homepage      = "https://ttytoolkit.org"
   spec.license       = "MIT"
 
   spec.files         = Dir['{lib,spec,examples}/**/*.rb']
@@ -24,12 +24,12 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "kramdown",   '~> 1.16.2'
   spec.add_dependency "pastel",     '~> 0.7.2'
-  spec.add_dependency "rouge",      '~> 3.3'
+  spec.add_dependency "rouge",      '~> 3.14'
   spec.add_dependency "strings",    '~> 0.1.4'
   spec.add_dependency "tty-color",  '~> 0.4'
   spec.add_dependency "tty-screen", '~> 0.6'
 
   spec.add_development_dependency "bundler", ">= 1.16"
+  spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "rake"
-  spec.add_development_dependency "rspec", ">= 3.0"
 end
