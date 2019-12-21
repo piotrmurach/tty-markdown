@@ -12,7 +12,7 @@ module TTY
     # Converts a Kramdown::Document tree to a terminal friendly output
     class Parser < Kramdown::Converter::Base
 
-      def initialize(root, **options)
+      def initialize(root, options = {})
         super
         @stack = []
         @current_indent = 0
@@ -185,14 +185,11 @@ module TTY
 
       def convert_codespan(el, opts)
         raw_code = Strings.wrap(el.value, @width)
-        highlighted = SyntaxHighliter.highlight(raw_code, @color_opts.merge(opts))
+        options = @color_opts.merge(el.options.merge(fenced: opts[:fenced]))
+        highlighted = SyntaxHighliter.highlight(raw_code, **options)
         code = highlighted.split("\n").map.with_index do |line, i|
-                if i.zero? # first line
-                  line
-                else
-                  line.insert(0, ' ' * @current_indent)
-                end
-              end
+                 line.insert(0, ' ' * @current_indent)
+               end
         opts[:result] << code.join("\n")
       end
 

@@ -88,7 +88,8 @@ module TTY
     #
     # @api public
     def parse(source, **options)
-      doc = Kramdown::Document.new(source, options)
+      opts = {input: "GFM"}.merge(options)
+      doc = Kramdown::Document.new(source, opts)
       Parser.convert(doc.root, doc.options).join
     end
     module_function :parse
@@ -97,7 +98,7 @@ module TTY
     #
     # @api public
     def parse_file(path, **options)
-      parse(::File.read(path), options)
+      parse(::File.read(path), **options)
     end
     module_function :parse_file
   end # Markdown

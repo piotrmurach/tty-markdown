@@ -32,19 +32,20 @@ module TTY
       #
       # @api private
       def guess_lang(code)
-        lang = nil
         start_line = code.lines[0]
         if available_lexers.include?(start_line.strip.downcase)
-          lang = start_line.strip.downcase
+          start_line.strip.downcase
         end
       end
       module_function :guess_lang
 
       # Highlight code snippet
       #
+      # @param [String] code
+      #
       # @api public
       def highlight(code, **options)
-        lang = guess_lang(code)
+        lang = options.fetch(:lang, guess_lang(code))
         mode = options[:mode] || TTY::Color.mode
         lines = code.dup.lines
         if options[:fenced].nil?
