@@ -16,9 +16,7 @@ TTY::Markdown
 
 ### Quote
 
-> Blockquotes are very handy in email to emulate reply text.
-> This line is part of the same quote.
-> *Oh*, you can put **Markdown** into a blockquote.
+> Blockquotes are very handy in email to emulate reply text.  This line is part of the same quote. *Oh*, you can put **Markdown** into a blockquote.
 
 ### Codeblock
 
@@ -38,12 +36,16 @@ end
 | col 2 is |    centered   |   $12 |
 | col 3 is | right-aligned |    $1 |
 
+### Maths
+
+$$5+5$$
+
 ### Horizontal line
 
 ***
 
 ### Link
 
-[I'm an inline-style link](https://www.google.com)
+Some text with an [inline-style link](https://www.google.com)
 
-[I'm an inline-style link with title](https://www.google.com "Google's Homepage")
+Another [inline-style link with title](https://www.google.com "Google's Homepage")
