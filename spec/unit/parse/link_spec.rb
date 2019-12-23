@@ -16,7 +16,7 @@ RSpec.describe TTY::Markdown, 'link' do
 [I'm an inline-style link with title](https://www.google.com "Google's Homepage")
     TEXT
     parsed = TTY::Markdown.parse(markdown)
-    expect(parsed).to eq("I#{symbols[:rsquo]}m an inline-style link with title #{symbols[:arrow]}(Google's Homepage) \e[33;4mhttps://www.google.com\e[0m\n")
+    expect(parsed).to eq("I#{symbols[:rsquo]}m an inline-style link with title #{symbols[:arrow]} (Google's Homepage) \e[33;4mhttps://www.google.com\e[0m\n")
   end
 
   it "displays email links with mailto: prefix removed" do

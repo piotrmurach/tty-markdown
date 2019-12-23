@@ -455,10 +455,9 @@ module TTY
              (el.children[0].type != :text || !el.children[0].value.strip.empty?)
 
           inner(el, opts)
+          opts[:result] << " #{symbols[:arrow]} "
           if el.attr['title']
-            opts[:result] << " #{symbols[:arrow]}(#{el.attr['title']}) "
-          else
-            opts[:result] << " #{symbols[:arrow]} "
+            opts[:result] << "(#{el.attr['title']}) "
           end
           opts[:result] << @pastel.decorate(el.attr['href'], *styles)
         end
