@@ -1,5 +1,15 @@
 # Change log
 
+## [v0.7.0] - 2019-12-xx
+
+### Changed
+* Change to allow configuration of symbols by @krage
+* Change to use GFM kramdown parser to handle fenced codeblocks
+
+### Fixed
+* Fix break line handling by @krage
+* Fix links handling by @krage
+
 ## [v0.6.0] - 2019-03-30
 
 ### Added
@@ -54,6 +64,7 @@
 
 * Initial implementation and release
 
+[v0.7.0]: https://github.com/piotrmurach/tty-markdown/compare/v0.6.0...v0.7.0
 [v0.6.0]: https://github.com/piotrmurach/tty-markdown/compare/v0.5.0...v0.6.0
 [v0.5.0]: https://github.com/piotrmurach/tty-markdown/compare/v0.4.0...v0.5.0
 [v0.4.0]: https://github.com/piotrmurach/tty-markdown/compare/v0.3.0...v0.4.0
