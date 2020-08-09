@@ -22,12 +22,13 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = '>= 2.0.0'
 
-  spec.add_dependency "kramdown",   "~> 1.16.2"
-  spec.add_dependency "pastel",     "~> 0.8"
-  spec.add_dependency "rouge",      "~> 3.14"
-  spec.add_dependency "strings",    "~> 0.1.8"
-  spec.add_dependency "tty-color",  "~> 0.5"
-  spec.add_dependency "tty-screen", "~> 0.8"
+  spec.add_dependency "kramdown",            "~> 2.3"
+  spec.add_dependency "kramdown-parser-gfm", "~> 1.1"
+  spec.add_dependency "pastel",              "~> 0.8"
+  spec.add_dependency "rouge",               "~> 3.14"
+  spec.add_dependency "strings",             "~> 0.1.8"
+  spec.add_dependency "tty-color",           "~> 0.5"
+  spec.add_dependency "tty-screen",          "~> 0.8"
 
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rspec", ">= 3.0"
