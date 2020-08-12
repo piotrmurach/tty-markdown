@@ -13,11 +13,8 @@ Gem::Specification.new do |spec|
   spec.homepage      = "https://ttytoolkit.org"
   spec.license       = "MIT"
 
-  spec.files         = Dir['{lib,spec,examples}/**/*.rb']
-  spec.files        += Dir['{bin,assets,tasks}/*', 'tty-spinner.gemspec']
-  spec.files        += Dir['README.md', 'CHANGELOG.md', 'LICENSE.txt', 'Rakefile']
-  spec.bindir        = "exe"
-  spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
+  spec.files         = Dir["lib/**/*"]
+  spec.extra_rdoc_files = ["README.md", "CHANGELOG.md", "LICENSE.txt"]
   spec.require_paths = ["lib"]
 
   spec.required_ruby_version = '>= 2.0.0'
