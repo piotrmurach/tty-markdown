@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Markdown, 'symbols' do
+RSpec.describe TTY::Markdown, "symbols" do
   let(:pastel) { Pastel.new }
 
   it "defaults to unicode symbols" do

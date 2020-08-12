@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Markdown, 'header' do
+RSpec.describe TTY::Markdown, "header" do
   it "converts top level header" do
     parsed = TTY::Markdown.parse("Header1\n======")
 

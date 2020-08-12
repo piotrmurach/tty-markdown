@@ -88,7 +88,7 @@ module TTY
     #
     # @api public
     def parse(source, **options)
-      opts = {input: "GFM"}.merge(options)
+      opts = {input: "kramdown"}.merge(options)
       doc = Kramdown::Document.new(source, opts)
       Parser.convert(doc.root, doc.options).join
     end

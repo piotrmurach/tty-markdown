@@ -188,7 +188,7 @@ module TTY
         options = @color_opts.merge(el.options.merge(fenced: opts[:fenced]))
         highlighted = SyntaxHighliter.highlight(raw_code, **options)
         code = highlighted.split("\n").map.with_index do |line, i|
-                 line.insert(0, ' ' * @current_indent)
+                 i.zero? ? line : line.insert(0, ' ' * @current_indent)
                end
         opts[:result] << code.join("\n")
       end
@@ -464,9 +464,8 @@ module TTY
       end
 
       def convert_math(el, opts)
-        last = opts[:result][-1].to_s
-        if !last.empty? && !last.end_with?("\n")
-          opts[:result] << "\n"
+        if opts[:prev] && opts[:prev].type == :blank
+          opts[:result] << " " * @current_indent
         end
         convert_codespan(el, opts)
         opts[:result] << "\n"

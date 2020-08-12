@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Markdown, 'abbrev' do
+RSpec.describe TTY::Markdown, "abbrev" do
   it "abbreviates markdown" do
     markdown =<<-TEXT
 *[HTML]: Hyper Text Markup Language

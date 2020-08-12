@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Markdown, 'list' do
+RSpec.describe TTY::Markdown, "list" do
   let(:symbols) { TTY::Markdown::SYMBOLS }
   let(:pastel) { Pastel.new}
 
@@ -59,9 +59,9 @@ RSpec.describe TTY::Markdown, 'list' do
     parsed = TTY::Markdown.parse(markdown)
     expect(parsed).to eq([
       "    \e[36;1mheader\e[0m",
-      "    #{pastel.yellow(symbols[:bullet])} First multiline\n",
+      "    #{pastel.yellow(symbols[:bullet])} First multiline",
       "      Item 1",
-      "      #{pastel.yellow(symbols[:bullet])} Second multiline\n",
+      "      #{pastel.yellow(symbols[:bullet])} Second multiline",
       "        Item 2",
       "      #{pastel.yellow(symbols[:bullet])} Item 3",
       "    #{pastel.yellow(symbols[:bullet])} Item 4\n",

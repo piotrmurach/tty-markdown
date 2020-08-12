@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Markdown, 'emphasis' do
-  context 'when strong emphasis' do
+RSpec.describe TTY::Markdown, "emphasis" do
+  context "when strong emphasis" do
     it "converts asterisks to bold ansi codes" do
       parsed = TTY::Markdown.parse("Some text with **bold** content.")
 
@@ -9,7 +9,7 @@ RSpec.describe TTY::Markdown, 'emphasis' do
     end
   end
 
-  context 'when italics emphasis' do
+  context "when italics emphasis" do
     it "converts asterisks to bold ansi codes" do
       parsed = TTY::Markdown.parse("Some text with *italic* content.")
 
@@ -17,11 +17,11 @@ RSpec.describe TTY::Markdown, 'emphasis' do
     end
   end
 
-  context 'when strikethrough emphasis' do
+  context "when strikethrough emphasis" do
     it "converts two tildes to ansi codes" do
       parsed = TTY::Markdown.parse("Some text with ~~scratched~~ content.")
 
-      expect(parsed).to eq("Some text with \e[33;1mscratched\e[0m content.\n")
+      expect(parsed).to eq("Some text with ~~scratched~~ content.\n")
     end
   end
 
