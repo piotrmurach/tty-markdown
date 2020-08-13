@@ -20,7 +20,7 @@ module TTY
         @color_opts = { mode: options[:colors] }
         @width = options[:width]
         @theme = options[:theme]
-        @symbols = build_symbols(options[:symbols])
+        @symbols = options[:symbols]
       end
 
       # Invoke an element conversion
@@ -31,25 +31,6 @@ module TTY
       end
 
       private
-
-      def build_symbols(options)
-        if options == :ascii
-          TTY::Markdown::ASCII_SYMBOLS
-        elsif options.is_a? Hash
-          base_symbols = if options[:base] == :ascii
-                           TTY::Markdown::ASCII_SYMBOLS
-                         else
-                           TTY::Markdown::SYMBOLS
-                         end
-          if options[:override].is_a? Hash
-            base_symbols.merge(options[:override])
-          else
-            base_symbols
-          end
-        else
-          TTY::Markdown::SYMBOLS
-        end
-      end
 
       # Process children of this element
       def inner(el, opts)

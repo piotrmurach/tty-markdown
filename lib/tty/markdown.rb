@@ -99,7 +99,7 @@ module TTY
     def parse(source, width: TTY::Screen.width, theme: THEME, indent: 2,
                       colors: TTY::Color.mode, symbols: {}, **doc_opts)
       convert_options = { width: width, indent: indent, theme: theme,
-                          colors: colors, symbols: symbols }
+                          colors: colors, symbols: build_symbols(symbols) }
       doc = Kramdown::Document.new(source, convert_options.merge(doc_opts))
       Parser.convert(doc.root, doc.options).join
     end
@@ -112,5 +112,25 @@ module TTY
       parse(::File.read(path), **options)
     end
     module_function :parse_file
+
+    # Extract and build symbols
+    #
+    # @api private
+    def build_symbols(options)
+      if options == :ascii
+        ASCII_SYMBOLS
+      elsif options.is_a? Hash
+        base_symbols = options[:base] == :ascii ?  ASCII_SYMBOLS : SYMBOLS
+        if options[:override].is_a?(Hash)
+          base_symbols.merge(options[:override])
+        else
+          base_symbols
+        end
+      else
+        SYMBOLS
+      end
+    end
+    module_function :build_symbols
+    private_class_method :build_symbols
   end # Markdown
 end # TTY
