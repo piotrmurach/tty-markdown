@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
-require 'pastel'
-require 'rouge'
-require 'tty-color'
+require "pastel"
+require "rouge"
 
 module TTY
   module Markdown
@@ -46,7 +45,7 @@ module TTY
       # @api public
       def highlight(code, **options)
         lang = options.fetch(:lang, guess_lang(code))
-        mode = options[:mode] || TTY::Color.mode
+        mode = options[:mode]
         lines = code.dup.lines
         if options[:fenced].nil?
           code = lines[1...-1].join + lines[-1].strip

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'kramdown'
+require "tty-color"
+require "tty-screen"
 
 require_relative 'markdown/parser'
 require_relative 'markdown/version'
@@ -78,18 +80,27 @@ module TTY
 
     # Parse a markdown string
     #
-    # @param [Hash] options
-    # @option options [String] :colors
-    #   a number of colors supported
-    # @option options [String] :width
-    #
     # @param [String] source
     #   the source with markdown
+    # @param [Integer] :colors
+    #   a number of colors supported
+    # @param [Integer] :indent
+    #   the indent of the converted output
+    # @param [Hash<Symbol, String>] :symbols
+    #   the symbols to use when generating output
+    # @param [Hash<Symbol, Symbol>] :theme
+    #   the color names for markdown elements
+    # @param [Integer] :width
+    #   the width at which to wrap content
+    # @param [Hash] :doc_opts
+    #   the markdown document parser options
     #
     # @api public
-    def parse(source, **options)
-      opts = {input: "kramdown"}.merge(options)
-      doc = Kramdown::Document.new(source, opts)
+    def parse(source, width: TTY::Screen.width, theme: THEME, indent: 2,
+                      colors: TTY::Color.mode, symbols: {}, **doc_opts)
+      convert_options = { width: width, indent: indent, theme: theme,
+                          colors: colors, symbols: symbols }
+      doc = Kramdown::Document.new(source, convert_options.merge(doc_opts))
       Parser.convert(doc.root, doc.options).join
     end
     module_function :parse

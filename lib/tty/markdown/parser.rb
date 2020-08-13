@@ -3,24 +3,23 @@
 require 'kramdown/converter'
 require 'pastel'
 require 'strings'
-require 'tty-screen'
 
 require_relative 'syntax_highlighter'
 
 module TTY
   module Markdown
     # Converts a Kramdown::Document tree to a terminal friendly output
-    class Parser < Kramdown::Converter::Base
+    class Parser < ::Kramdown::Converter::Base
 
       def initialize(root, options = {})
         super
         @stack = []
         @current_indent = 0
-        @indent = options.fetch(:indent, 2)
+        @indent = options[:indent]
         @pastel = Pastel.new
         @color_opts = { mode: options[:colors] }
-        @width = options.fetch(:width) { TTY::Screen.width }
-        @theme = options.fetch(:theme) { TTY::Markdown::THEME }
+        @width = options[:width]
+        @theme = options[:theme]
         @symbols = build_symbols(options[:symbols])
       end
 
