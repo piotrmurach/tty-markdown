@@ -19,6 +19,10 @@ require "bundler/setup"
 require "tty/markdown"
 
 RSpec.configure do |config|
+  config.expect_with :rspec do |expectations|
+    expectations.max_formatted_output_length = nil
+  end
+
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = ".rspec_status"
 
