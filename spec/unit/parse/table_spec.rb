@@ -20,7 +20,7 @@ RSpec.describe TTY::Markdown, "table" do
       "#{symbols[:line]*7}#{symbols[:top_right]}",
       "\e[0m\n",
 
-      "\e[33m#{symbols[:pipe]} \e[0mTables   ",
+      "\e[33m#{symbols[:pipe]}\e[0m Tables   ",
       "\e[33m#{symbols[:pipe]}\e[0m      Are      ",
       "\e[33m#{symbols[:pipe]}\e[0m  Cool \e[33m#{symbols[:pipe]}\e[0m \n",
 
@@ -29,7 +29,7 @@ RSpec.describe TTY::Markdown, "table" do
       "#{symbols[:line]*7}#{symbols[:mid_right]}",
       "\e[0m\n",
 
-      "\e[33m#{symbols[:pipe]} \e[0mcol 1 is ",
+      "\e[33m#{symbols[:pipe]}\e[0m col 1 is ",
       "\e[33m#{symbols[:pipe]}\e[0m left-aligned  ",
       "\e[33m#{symbols[:pipe]}\e[0m $1600 \e[33m#{symbols[:pipe]}\e[0m \n",
 
@@ -38,7 +38,7 @@ RSpec.describe TTY::Markdown, "table" do
       "#{symbols[:line]*7}#{symbols[:mid_right]}",
       "\e[0m\n",
 
-      "\e[33m#{symbols[:pipe]} \e[0mcol 2 is ",
+      "\e[33m#{symbols[:pipe]}\e[0m col 2 is ",
       "\e[33m#{symbols[:pipe]}\e[0m   centered    ",
       "\e[33m#{symbols[:pipe]}\e[0m   $12 \e[33m#{symbols[:pipe]}\e[0m \n",
 
@@ -47,7 +47,7 @@ RSpec.describe TTY::Markdown, "table" do
       "#{symbols[:line]*7}#{symbols[:mid_right]}",
       "\e[0m\n",
 
-      "\e[33m#{symbols[:pipe]} \e[0mcol 3 is ",
+      "\e[33m#{symbols[:pipe]}\e[0m col 3 is ",
       "\e[33m#{symbols[:pipe]}\e[0m right-aligned ",
       "\e[33m#{symbols[:pipe]}\e[0m    $1 \e[33m#{symbols[:pipe]}\e[0m \n",
 
@@ -73,7 +73,7 @@ RSpec.describe TTY::Markdown, "table" do
       "#{symbols[:line]*7}#{symbols[:top_right]}",
       "\e[0m\n",
 
-      "\e[33m#{symbols[:pipe]} \e[0mcol 1 is ",
+      "\e[33m#{symbols[:pipe]}\e[0m col 1 is ",
       "\e[33m#{symbols[:pipe]}\e[0m left-aligned  ",
       "\e[33m#{symbols[:pipe]}\e[0m $1600 \e[33m#{symbols[:pipe]}\e[0m \n",
 
@@ -82,7 +82,7 @@ RSpec.describe TTY::Markdown, "table" do
       "#{symbols[:line]*7}#{symbols[:mid_right]}",
       "\e[0m\n",
 
-      "\e[33m#{symbols[:pipe]} \e[0mcol 2 is ",
+      "\e[33m#{symbols[:pipe]}\e[0m col 2 is ",
       "\e[33m#{symbols[:pipe]}\e[0m centered      ",
       "\e[33m#{symbols[:pipe]}\e[0m $12   \e[33m#{symbols[:pipe]}\e[0m \n",
 
@@ -91,7 +91,7 @@ RSpec.describe TTY::Markdown, "table" do
       "#{symbols[:line]*7}#{symbols[:mid_right]}",
       "\e[0m\n",
 
-      "\e[33m#{symbols[:pipe]} \e[0mcol 3 is ",
+      "\e[33m#{symbols[:pipe]}\e[0m col 3 is ",
       "\e[33m#{symbols[:pipe]}\e[0m right-aligned ",
       "\e[33m#{symbols[:pipe]}\e[0m $1    \e[33m#{symbols[:pipe]}\e[0m \n",
 
@@ -119,7 +119,7 @@ RSpec.describe TTY::Markdown, "table" do
       "#{symbols[:line]*7}#{symbols[:top_right]}" +
       "\e[0m\n" +
 
-      "\e[33m#{symbols[:pipe]} \e[0mTables                 " +
+      "\e[33m#{symbols[:pipe]}\e[0m Tables                 " +
       "\e[33m#{symbols[:pipe]}\e[0m                        Are                        " +
       "\e[33m#{symbols[:pipe]}\e[0m  Cool \e[33m#{symbols[:pipe]}\e[0m \n" +
 
@@ -128,7 +128,7 @@ RSpec.describe TTY::Markdown, "table" do
       "#{symbols[:line]*7}#{symbols[:mid_right]}" +
       "\e[0m\n" +
 
-      "\e[33m#{symbols[:pipe]} \e[0mcol 1 is               " +
+      "\e[33m#{symbols[:pipe]}\e[0m col 1 is               " +
       "\e[33m#{symbols[:pipe]}\e[0m                   left-aligned                    " +
       "\e[33m#{symbols[:pipe]}\e[0m $1600 \e[33m#{symbols[:pipe]}\e[0m \n" +
 
@@ -137,7 +137,7 @@ RSpec.describe TTY::Markdown, "table" do
       "#{symbols[:line]*7}#{symbols[:mid_right]}" +
       "\e[0m\n" +
 
-      "\e[33m#{symbols[:pipe]} \e[0mcol 2 is               " +
+      "\e[33m#{symbols[:pipe]}\e[0m col 2 is               " +
       "\e[33m#{symbols[:pipe]}\e[0m                     centered                      " +
       "\e[33m#{symbols[:pipe]}\e[0m   $12 \e[33m#{symbols[:pipe]}\e[0m \n" +
 
@@ -146,11 +146,11 @@ RSpec.describe TTY::Markdown, "table" do
       "#{symbols[:line]*7}#{symbols[:mid_right]}" +
       "\e[0m\n" +
 
-      "\e[33m#{symbols[:pipe]} \e[0mcol 3 is a multiline   " +
+      "\e[33m#{symbols[:pipe]}\e[0m col 3 is a multiline   " +
       "\e[33m#{symbols[:pipe]}\e[0m right-aligned has also a very long content that   " +
       "\e[33m#{symbols[:pipe]}\e[0m    $1 \e[33m#{symbols[:pipe]}\e[0m \n" +
 
-      "\e[33m#{symbols[:pipe]} \e[0mcolumn                 " +
+      "\e[33m#{symbols[:pipe]}\e[0m column                 " +
       "\e[33m#{symbols[:pipe]}\e[0m                   wraps around                    " +
       "\e[33m#{symbols[:pipe]}\e[0m       \e[33m#{symbols[:pipe]}\e[0m \n" +
 
@@ -174,11 +174,11 @@ RSpec.describe TTY::Markdown, "table" do
 
     expect(parsed).to eq([
       "\e[33m#{symbols[:top_left]}#{symbols[:line]*3}#{symbols[:top_right]}\e[0m",
-      "\e[33m#{symbols[:pipe]} \e[0ma \e[33m#{symbols[:pipe]}\e[0m ",
+      "\e[33m#{symbols[:pipe]}\e[0m a \e[33m#{symbols[:pipe]}\e[0m ",
       "\e[33m#{symbols[:mid_left]}#{symbols[:line]*3}#{symbols[:mid_right]}\e[0m",
-      "\e[33m#{symbols[:pipe]} \e[0m  \e[33m#{symbols[:pipe]}\e[0m ",
+      "\e[33m#{symbols[:pipe]}\e[0m   \e[33m#{symbols[:pipe]}\e[0m ",
       "\e[33m#{symbols[:mid_left]}#{symbols[:line]*3}#{symbols[:mid_right]}\e[0m",
-      "\e[33m#{symbols[:pipe]} \e[0m  \e[33m#{symbols[:pipe]}\e[0m ",
+      "\e[33m#{symbols[:pipe]}\e[0m   \e[33m#{symbols[:pipe]}\e[0m ",
       "\e[33m#{symbols[:bottom_left]}#{symbols[:line]*3}#{symbols[:bottom_right]}\e[0m\n",
     ].join("\n"))
   end

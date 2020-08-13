@@ -357,7 +357,7 @@ module TTY
 
         result << padded.lines.map do |line|
           # add pipe to first column
-          (column.zero? ? indent + @pastel.decorate("#{pipe} ", *styles) : '') +
+          (column.zero? ? "#{indent}#{@pastel.decorate(pipe, *styles)} " : "") +
             (line.end_with?("\n") ? line.insert(-2, suffix) : line << suffix)
         end
       end
