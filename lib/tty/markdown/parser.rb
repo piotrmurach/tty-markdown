@@ -382,7 +382,7 @@ module TTY
       # @api private
       def max_width(table_data, col)
         table_data.map do |row|
-          Strings.sanitize(row[col].join).lines.map(&:length).max
+          Strings.sanitize(row[col].join).lines.map(&:length).max || 0
         end.max
       end
 

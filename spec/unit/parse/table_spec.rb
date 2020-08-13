@@ -161,4 +161,25 @@ RSpec.describe TTY::Markdown, "table" do
 
     expect(parsed).to eq(expected_output)
   end
+
+  it "formats empty cells correctly" do
+    markdown =<<-TEXT
+| a |
+|---|
+|   |
+|   |
+    TEXT
+
+    parsed = TTY::Markdown.parse(markdown)
+
+    expect(parsed).to eq([
+      "\e[33m#{symbols[:top_left]}#{symbols[:line]*3}#{symbols[:top_right]}\e[0m",
+      "\e[33m#{symbols[:pipe]} \e[0ma \e[33m#{symbols[:pipe]}\e[0m ",
+      "\e[33m#{symbols[:mid_left]}#{symbols[:line]*3}#{symbols[:mid_right]}\e[0m",
+      "\e[33m#{symbols[:pipe]} \e[0m  \e[33m#{symbols[:pipe]}\e[0m ",
+      "\e[33m#{symbols[:mid_left]}#{symbols[:line]*3}#{symbols[:mid_right]}\e[0m",
+      "\e[33m#{symbols[:pipe]} \e[0m  \e[33m#{symbols[:pipe]}\e[0m ",
+      "\e[33m#{symbols[:bottom_left]}#{symbols[:line]*3}#{symbols[:bottom_right]}\e[0m\n",
+    ].join("\n"))
+  end
 end
