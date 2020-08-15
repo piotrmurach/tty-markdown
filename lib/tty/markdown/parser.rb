@@ -39,6 +39,7 @@ module TTY
           options = opts.dup
           options[:parent] = el
           options[:prev] = (i == 0 ? nil : el.children[i - 1])
+          options[:next] = (i == el.children.length - 1 ? nil : el.children[i + 1])
           options[:index] = i
           convert(inner_el, options)
         end
