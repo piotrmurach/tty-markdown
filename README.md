@@ -75,6 +75,8 @@ puts parsed
 
 ### 1.1 Header
 
+Parsing the following markdown headers:
+
 ```markdown
 TTY::Markdown
 =============
@@ -86,13 +88,7 @@ TTY::Markdown
 ### Nested list items
 ```
 
-and transforming it:
-
-```ruby
-parsed = TTY::Markdown.parse(markdown_string)
-```
-
-`puts parsed` will output:
+The terminal output looks like this:
 
 ![Code highlight](assets/headers.png)
 
@@ -108,13 +104,7 @@ Both numbered and unordered lists are supported. Given a markdown:
 - Item 5
 ```
 
-and transforming it:
-
-```ruby
-parsed = TTY::Markdown.parse(markdown_string)
-```
-
-`puts parsed` will produce:
+The parsed output looks like this:
 
 ![Code highlight](assets/list.png)
 
@@ -140,10 +130,12 @@ The parsed output looks like this:
 A markdown link:
 
 ```markdown
-[I'm an inline-style link](https://www.google.com)
+[An inline-style link](https://ttytoolkit.org)
+
+[An inline-style link with title](https://ttytoolkit.org "TTY Toolkit Homepage")
 ```
 
-will be rendered with actual link content next to it:
+The link text will be rendered with the link next to it:
 
 ![Code highlight](assets/link.png)
 
@@ -157,19 +149,15 @@ Given a markdown quote:
 > *Oh*, you can put **Markdown** into a blockquote.
 ```
 
-and transforming it:
-
-```ruby
-parsed = TTY::Markdown.parse(markdown_string)
-```
-
-`puts parsed` will output:
+The rendered output looks like this:
 
 ![Code highlight](assets/quote.png)
 
 ### 1.6 Code and Syntax Highlighting
 
-The parser can highlight syntax of many programming languages. Given the markdown codeblock with language specification:
+The parser can highlight syntax of many programming languages.
+
+Given a markdown codeblock with a language specification:
 
 ````markdown
 ```ruby
@@ -181,15 +169,9 @@ end
 ```
 ````
 
-and converting this snippet:
+The terminal output will look like this:
 
-```ruby
-parsed = TTY::Markdown.parse(code_snippet)
-```
-
-`puts parsed` will produce:
-
-![Code highlight](assets/syntax_highlight.png)
+![Code highlight](assets/codeblock.png)
 
 ### 1.7 Table
 
@@ -205,13 +187,7 @@ For example, given the following table:
 | col 3 is | right-aligned |    $1 |
 ```
 
-and transforming it:
-
-```ruby
-parsed = TTY::Markdown.parse(markdown_string)
-```
-
-`puts parsed` will output:
+Then the terminal output will look like this:
 
 ![Code highlight](assets/table.png)
 
