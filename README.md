@@ -1,5 +1,5 @@
 <div align="center">
-  <a href="https://piotrmurach.github.io/tty" target="_blank"><img width="130" src="https://cdn.rawgit.com/piotrmurach/tty/master/images/tty.png" alt="tty logo" /></a>
+  <a href="https://piotrmurach.github.io/tty" target="_blank"><img width="130" src="https://github.com/piotrmurach/tty/raw/master/images/tty.png" alt="tty logo" /></a>
 </div>
 
 # TTY::Markdown [![Gitter](https://badges.gitter.im/Join%20Chat.svg)][gitter]
@@ -20,7 +20,6 @@
 [inchpages]: http://inch-ci.org/github/piotrmurach/tty-markdown
 
 > Convert a markdown document or text into a terminal friendly output.
-
 
 **TTY::Markdown** provides independent markdown processing component for [TTY](https://github.com/piotrmurach/tty) toolkit.
 
@@ -95,7 +94,7 @@ parsed = TTY::Markdown.parse(markdown_string)
 
 `puts parsed` will output:
 
-![Code highlight](https://cdn.rawgit.com/piotrmurach/tty-markdown/master/assets/headers.png)
+![Code highlight](assets/headers.png)
 
 ### 1.2 List
 
@@ -117,7 +116,7 @@ parsed = TTY::Markdown.parse(markdown_string)
 
 `puts parsed` will produce:
 
-![Code highlight](https://cdn.rawgit.com/piotrmurach/tty-markdown/master/assets/list.png)
+![Code highlight](assets/list.png)
 
 ### 1.3 Definition List
 
@@ -146,7 +145,7 @@ A markdown link:
 
 will be rendered with actual link content next to it:
 
-![Code highlight](https://cdn.rawgit.com/piotrmurach/tty-markdown/master/assets/link.png)
+![Code highlight](assets/link.png)
 
 ### 1.5 Blockquote
 
@@ -166,7 +165,7 @@ parsed = TTY::Markdown.parse(markdown_string)
 
 `puts parsed` will output:
 
-![Code highlight](https://cdn.rawgit.com/piotrmurach/tty-markdown/master/assets/quote.png)
+![Code highlight](assets/quote.png)
 
 ### 1.6 Code and Syntax Highlighting
 
@@ -190,7 +189,7 @@ parsed = TTY::Markdown.parse(code_snippet)
 
 `puts parsed` will produce:
 
-![Code highlight](https://cdn.rawgit.com/piotrmurach/tty-markdown/master/assets/syntax_highlight.png)
+![Code highlight](assets/syntax_highlight.png)
 
 ### 1.7 Table
 
@@ -214,7 +213,7 @@ parsed = TTY::Markdown.parse(markdown_string)
 
 `puts parsed` will output:
 
-![Code highlight](https://cdn.rawgit.com/piotrmurach/tty-markdown/master/assets/table.png)
+![Code highlight](assets/table.png)
 
 ### 1.8 Horizontal Rule
 
@@ -232,7 +231,7 @@ parsed = TTY::Markdown.parse(markdown_string)
 
 `puts parsed` will output:
 
-![Code highlight](https://cdn.rawgit.com/piotrmurach/tty-markdown/master/assets/hr.png)
+![Code highlight](assets/hr.png)
 
 ## 2. Options
 
