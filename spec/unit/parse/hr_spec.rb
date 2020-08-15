@@ -19,7 +19,7 @@ RSpec.describe TTY::Markdown, "horizontal rule" do
     parsed = TTY::Markdown.parse(markdown, width: 20)
     expect(parsed).to eq([
       "    \e[36;1mheader\e[0m\n",
-      "    \e[33m#{symbols[:diamond]}#{symbols[:line]*10}#{symbols[:diamond]}\e[0m\n"
+      "\e[33m#{symbols[:diamond]}#{symbols[:line]*18}#{symbols[:diamond]}\e[0m\n"
     ].join)
   end
 end

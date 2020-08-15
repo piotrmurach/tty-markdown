@@ -404,13 +404,11 @@ module TTY
       end
 
       def convert_hr(el, opts)
-        indent = ' ' * @current_indent
         symbols = @symbols
-        width = @width - (indent.length + 1) * 2
+        width = @width - symbols[:diamond].length * 2
         styles = Array(@theme[:hr])
         line = symbols[:diamond] + symbols[:line] * width + symbols[:diamond]
 
-        opts[:result] << indent
         opts[:result] << @pastel.decorate(line, *styles)
         opts[:result] << "\n"
       end
