@@ -14,9 +14,18 @@ TTY::Markdown
     - Item 4
 - Item 5
 
+### Definition lists
+
+**Item 1**
+: This is the description for Item 1
+
+**Item 2**
+: This is the description for Item 2
+: This is another description for Item 2
+
 ### Quote
 
-> Blockquotes are very handy in email to emulate reply text.  This line is part of the same quote. *Oh*, you can put **Markdown** into a blockquote.
+> Blockquotes are very handy in email to emulate reply text. This line is part of the same quote. *Oh*, you can put **Markdown** into a blockquote.
 
 ### Codeblock
 
@@ -44,8 +53,9 @@ $$5+5$$
 
 ***
 
-### Link
+### Links
 
-Some text with an [inline-style link](https://www.google.com)
+An [inline-style link](https://ttytoolkit.org)
 
-Another [inline-style link with title](https://www.google.com "Google's Homepage")
+An [inline-style link with title](https://ttytoolkit.org "TTY Toolkit Homepage")
+
