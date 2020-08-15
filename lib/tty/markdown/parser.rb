@@ -53,8 +53,13 @@ module TTY
 
       def convert_header(el, opts)
         level = el.options[:level]
-        @current_indent = (level - 1) * @indent # Header determines indentation
-        indent = ' ' * (level - 1) * @indent
+        if opts[:parent] && opts[:parent].type == :root
+          # Header determines indentation only at top level
+          @current_indent = (level - 1) * @indent
+          indent = " " * (level - 1) * @indent
+        else
+          indent = " " * @current_indent
+        end
         styles = Array(@theme[:header]).dup
         styles << :underline if level == 1
         opts[:result] << indent + @pastel.lookup(*styles)

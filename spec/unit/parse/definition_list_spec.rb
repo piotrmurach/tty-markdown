@@ -53,4 +53,18 @@ After para
       "    After para\n"
     ].join("\n"))
   end
+
+  it "allows headers in description" do
+    markdown =<<-TEXT
+List + header
+: # Header 1
+    TEXT
+
+    parsed = described_class.parse(markdown)
+
+    expect(parsed).to eq([
+      "List + header",
+      "  \e[36;1;4mHeader 1\e[0m\n"
+    ].join("\n"))
+  end
 end
