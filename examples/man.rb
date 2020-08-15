@@ -1,6 +1,6 @@
-require_relative '../lib/tty-markdown'
+# frozen_string_literal: true
 
-path = File.join(__dir__, 'man.md')
-out = TTY::Markdown.parse_file(path, colors: 256)
+require_relative "../lib/tty-markdown"
 
-puts out
+path = File.join(__dir__, "man.md")
+print TTY::Markdown.parse_file(path, colors: 256)
