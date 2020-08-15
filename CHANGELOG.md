@@ -1,14 +1,26 @@
 # Change log
 
-## [v0.7.0] - 2019-12-xx
+## [v0.7.0] - unreleased
+
+### Added
+* Add converter for br element by @krage
+* Add configuration of symbols by @krage
+* Add definition list support
 
 ### Changed
-* Change to allow configuration of symbols by @krage
-* Change to use GFM kramdown parser to handle fenced codeblocks
+* Change #new to accept configuration options as keywords
+* Display links with both label and optional title by @krage
+* Display link without the label when label content is same as link target @krage
+* Change hr formatting to be always full width
+* Change to remove mailto: from email links for brevity @krage
+* Change to update kramdown to support versions >= 1.16 and < 3.0
+* Change to update pastel, tty-color & tty-screen dependencies
 
 ### Fixed
 * Fix break line handling by @krage
 * Fix links handling by @krage
+* Fix table formatting of empty cells
+* Fix content wrapping to account for the current indentation
 
 ## [v0.6.0] - 2019-03-30
 
