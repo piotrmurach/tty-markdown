@@ -31,5 +31,18 @@ header3 content
       "    header3 content\n"
     ].join("\n"))
   end
+
+  it "indents within the specified width" do
+    twenty21 = "x" * 21
+    parsed = TTY::Markdown.parse("### Header3\n" + twenty21, width: 20)
+
+    expected_output = [
+      "    \e[36;1mHeader3\e[0m",
+      "    xxxxxxxxxxxxxxxx",
+      "    xxxxx\n"
+    ].join("\n")
+
+    expect(parsed).to eq(expected_output)
+  end
 end
 

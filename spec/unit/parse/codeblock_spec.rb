@@ -142,8 +142,8 @@ lexer = Rouge::Lexer.find_fancy(lang, code) || Rouge::Lexers::PlainText
 
     expected_output =
       "    \e[36;1mlexer\e[0m\n\n" +
-      "    \e[33mlexer = Rouge::Lexer.find_fancy(lang, code) || \e[0m\n" +
-      "    \e[33mRouge::Lexers::PlainText\e[0m\n"
+      "    \e[33mlexer = Rouge::Lexer.find_fancy(lang, code) \e[0m\n" +
+      "    \e[33m|| Rouge::Lexers::PlainText\e[0m\n"
 
     expect(parsed).to eq(expected_output)
   end

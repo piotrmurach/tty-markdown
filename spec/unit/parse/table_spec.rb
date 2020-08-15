@@ -182,4 +182,37 @@ RSpec.describe TTY::Markdown, "table" do
       "\e[33m#{symbols[:bottom_left]}#{symbols[:line]*3}#{symbols[:bottom_right]}\e[0m\n",
     ].join("\n"))
   end
+
+  it "indents within the specified width" do
+    markdown =<<-TEXT
+### Header3
+
+| foo | bar | baz |
+    TEXT
+
+    parsed = TTY::Markdown.parse(markdown, width: 20)
+
+    expected_output = [
+      "    \e[36;1mHeader3\e[0m\n\n",
+      "    \e[33m#{symbols[:top_left]}#{symbols[:line]*4}#{symbols[:top_center]}",
+      "#{symbols[:line]*4}#{symbols[:top_center]}",
+      "#{symbols[:line]*4}#{symbols[:top_right]}",
+      "\e[0m\n",
+
+      "    \e[33m#{symbols[:pipe]}\e[0m fo ",
+      "\e[33m#{symbols[:pipe]}\e[0m ba ",
+      "\e[33m#{symbols[:pipe]}\e[0m ba \e[33m#{symbols[:pipe]}\e[0m \n",
+
+      "    \e[33m#{symbols[:pipe]}\e[0m o  ",
+      "\e[33m#{symbols[:pipe]}\e[0m r  ",
+      "\e[33m#{symbols[:pipe]}\e[0m z  \e[33m#{symbols[:pipe]}\e[0m \n",
+
+      "    \e[33m#{symbols[:bottom_left]}#{symbols[:line]*4}#{symbols[:bottom_center]}",
+      "#{symbols[:line]*4}#{symbols[:bottom_center]}",
+      "#{symbols[:line]*4}#{symbols[:bottom_right]}",
+      "\e[0m\n"
+    ].join
+
+    expect(parsed).to eq(expected_output)
+  end
 end

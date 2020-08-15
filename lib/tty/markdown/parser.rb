@@ -134,7 +134,7 @@ module TTY
       end
 
       def convert_text(el, opts)
-        text = Strings.wrap(el.value, @width)
+        text = Strings.wrap(el.value, @width - @current_indent)
         text = text.chomp if opts[:strip]
         indent = ' ' * opts[:indent]
         text = text.gsub(/\n/, "\n#{indent}")
@@ -164,7 +164,7 @@ module TTY
       end
 
       def convert_codespan(el, opts)
-        raw_code = Strings.wrap(el.value, @width)
+        raw_code = Strings.wrap(el.value, @width - @current_indent)
         options = @color_opts.merge(el.options.merge(fenced: opts[:fenced]))
         highlighted = SyntaxHighliter.highlight(raw_code, **options)
         code = highlighted.split("\n").map.with_index do |line, i|
