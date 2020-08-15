@@ -189,12 +189,42 @@ module TTY
         @current_indent -= @indent unless opts[:parent].type == :root
       end
       alias convert_ol convert_ul
+      alias convert_dl convert_ul
 
       def convert_li(el, opts)
         if opts[:parent].type == :ol
           opts[:ordered] = true
         end
         inner(el, opts)
+      end
+
+      # Convert dt element
+      #
+      # @param [Kramdown::Element] el
+      #   the `kd:dt` element
+      # @param [Hash] opts
+      #   the element options
+      #
+      # @api private
+      def convert_dt(el, opts)
+        opts[:result] << " " * @current_indent
+        inner(el, opts)
+        opts[:result] << "\n"
+      end
+
+      # Convert dd element
+      #
+      # @param [Kramdown::Element] el
+      #   the `kd:dd` element
+      # @param [Hash] opts
+      #   the element options
+      #
+      # @api private
+      def convert_dd(el, opts)
+        @current_indent += @indent unless opts[:parent].type == :root
+        inner(el, opts)
+        @current_indent -= @indent unless opts[:parent].type == :root
+        opts[:result] << "\n" if opts[:next] && opts[:next].type == :dt
       end
 
       def convert_table(el, opts)
