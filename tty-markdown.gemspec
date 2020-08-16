@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = ">= 2.0.0"
 
-  spec.add_dependency "kramdown",   ">= 1.17", "< 3.0"
+  spec.add_dependency "kramdown",   ">= 1.16.2", "< 3.0"
   spec.add_dependency "pastel",     "~> 0.8"
   spec.add_dependency "rouge",      "~> 3.14"
   spec.add_dependency "strings",    "~> 0.2.0"
