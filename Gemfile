@@ -4,10 +4,6 @@ git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
 
 gemspec
 
-if RUBY_VERSION.start_with?("2.0")
-  gem "kramdown", "1.16.2"
-end
-
 group :test do
   gem 'benchmark-ips', '~> 2.7.2'
   gem 'simplecov', '~> 0.16.1'
