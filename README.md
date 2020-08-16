@@ -55,6 +55,7 @@ Or install it yourself as:
   * [2.2 :theme](#22-theme)
   * [2.3 :width](#23-width)
   * [2.4 :symbols](#24-symbols)
+* [3. Command line tool](#3-command-line-tool)
 
 ## 1. Usage
 
@@ -262,6 +263,14 @@ By default formatting will include various Unicode symbols. You can switch to an
 TTY::Markdown.parse(markdown_string, symbols: :ascii)
 TTY::Markdown.parse(markdown_string, symbols: {base: :ascii})
 TTY::Markdown.parse(markdown_string, symbols: {override: {bullet: "x"}})
+```
+
+### 3. Command line tool
+
+You can install [tty-markdown-cli](https://github.com/piotrmurach/tty-markdown-cli) to use `tty-markdown` executable in terminal:
+
+```bash
+$ tty-markdown README.md
 ```
 
 ## Development
