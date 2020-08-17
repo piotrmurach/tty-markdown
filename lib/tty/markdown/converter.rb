@@ -9,7 +9,7 @@ require_relative "syntax_highlighter"
 module TTY
   module Markdown
     # Converts a Kramdown::Document tree to a terminal friendly output
-    class Parser < ::Kramdown::Converter::Base
+    class Converter < ::Kramdown::Converter::Base
       NEWLINE = "\n"
       SPACE = " "
 

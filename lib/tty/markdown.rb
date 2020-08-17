@@ -4,7 +4,7 @@ require "kramdown/document"
 require "tty-color"
 require "tty-screen"
 
-require_relative "markdown/parser"
+require_relative "markdown/converter"
 require_relative "markdown/version"
 
 module TTY
@@ -101,7 +101,7 @@ module TTY
       convert_options = { width: width, indent: indent, theme: theme,
                           colors: colors, symbols: build_symbols(symbols) }
       doc = Kramdown::Document.new(source, convert_options.merge(doc_opts))
-      Parser.convert(doc.root, doc.options).join
+      Converter.convert(doc.root, doc.options).join
     end
     module_function :parse
 
