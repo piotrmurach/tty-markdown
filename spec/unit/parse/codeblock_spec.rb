@@ -15,7 +15,7 @@ end
      "\e[33mclass Greeter\e[0m",
      "\e[33m  def say\e[0m",
      "\e[33m  end\e[0m",
-     "\e[33mend\e[0m\n"
+     "\e[33mend\e[0m"
     ].join("\n"))
   end
 
@@ -49,11 +49,11 @@ end
      "\e[33mclass Greeter\e[0m",
      "\e[33m  def say\e[0m",
      "\e[33m  end\e[0m",
-     "\e[33mend\e[0m\n"
+     "\e[33mend\e[0m"
     ].join("\n"))
   end
 
-  xit "highlights fenced code with newlines inside" do
+  it "highlights fenced code with newlines inside" do
     markdown =<<-TEXT
 ```ruby
 def say
@@ -89,7 +89,7 @@ end
      "    \e[33mclass Greeter\e[0m",
      "    \e[33m  def say\e[0m",
      "    \e[33m  end\e[0m",
-     "    \e[33mend\e[0m\n"
+     "    \e[33mend\e[0m"
     ].join("\n"))
   end
 
@@ -111,7 +111,7 @@ end
      "    \e[33mclass Greeter\e[0m",
      "    \e[33m  def say\e[0m",
      "    \e[33m  end\e[0m",
-     "    \e[33mend\e[0m\n"
+     "    \e[33mend\e[0m"
     ].join("\n"))
   end
 
@@ -125,7 +125,7 @@ lexer = Rouge::Lexer.find_fancy(lang, code) || Rouge::Lexers::PlainText
 
     expected_output =
       "\e[33mlexer = Rouge::Lexer.find_fancy(lang, code) || \e[0m\n" +
-      "\e[33mRouge::Lexers::PlainText\e[0m\n"
+      "\e[33mRouge::Lexers::PlainText\e[0m"
 
     expect(parsed).to eq(expected_output)
   end
@@ -143,7 +143,7 @@ lexer = Rouge::Lexer.find_fancy(lang, code) || Rouge::Lexers::PlainText
     expected_output =
       "    \e[36;1mlexer\e[0m\n\n" +
       "    \e[33mlexer = Rouge::Lexer.find_fancy(lang, code) \e[0m\n" +
-      "    \e[33m|| Rouge::Lexers::PlainText\e[0m\n"
+      "    \e[33m|| Rouge::Lexers::PlainText\e[0m"
 
     expect(parsed).to eq(expected_output)
   end

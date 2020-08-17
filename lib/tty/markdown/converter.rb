@@ -178,10 +178,11 @@ module TTY
         code = highlighted.split(NEWLINE).map.with_index do |line, i|
                  i.zero? ? line : line.insert(0, SPACE * @current_indent)
                end
-        opts[:result] << code.join("\n")
+        opts[:result] << code.join(NEWLINE)
       end
 
       def convert_codeblock(el, opts)
+        opts[:result] << " " * @current_indent
         opts[:fenced] = false
         convert_codespan(el, opts)
       end
