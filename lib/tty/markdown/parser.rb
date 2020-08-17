@@ -1,15 +1,17 @@
 # frozen_string_literal: true
 
-require 'kramdown/converter'
-require 'pastel'
-require 'strings'
+require "kramdown/converter"
+require "pastel"
+require "strings"
 
-require_relative 'syntax_highlighter'
+require_relative "syntax_highlighter"
 
 module TTY
   module Markdown
     # Converts a Kramdown::Document tree to a terminal friendly output
     class Parser < ::Kramdown::Converter::Base
+      NEWLINE = "\n"
+      SPACE = " "
 
       def initialize(root, options = {})
         super
@@ -56,20 +58,20 @@ module TTY
         if opts[:parent] && opts[:parent].type == :root
           # Header determines indentation only at top level
           @current_indent = (level - 1) * @indent
-          indent = " " * (level - 1) * @indent
+          indent = SPACE * (level - 1) * @indent
         else
-          indent = " " * @current_indent
+          indent = SPACE * @current_indent
         end
         styles = Array(@theme[:header]).dup
         styles << :underline if level == 1
         opts[:result] << indent + @pastel.lookup(*styles)
         inner(el, opts)
-        opts[:result] << @pastel.lookup(:reset) + "\n"
+        opts[:result] << @pastel.lookup(:reset) + NEWLINE
       end
 
       def convert_p(el, opts)
         result_before = @stack.last[1][:result].dup
-        indent = ' ' * @current_indent
+        indent = SPACE * @current_indent
 
         if opts[:parent].type != :blockquote
           opts[:result] << indent
@@ -84,7 +86,7 @@ module TTY
           index = @stack.last[1][:index] + 1
           symbol = opts[:ordered] ? "#{index}." : bullet
           styles = Array(@theme[:list])
-          opts[:result] << @pastel.decorate(symbol, *styles) + ' '
+          opts[:result] << @pastel.decorate(symbol, *styles) + SPACE
           opts[:indent] += @indent
           opts[:strip] = true
         when :blockquote
@@ -97,8 +99,8 @@ module TTY
           format_blockquote(result_before, opts[:result])
         end
 
-        unless opts[:result].last.to_s.end_with?("\n")
-          opts[:result] << "\n"
+        unless opts[:result].last.to_s.end_with?(NEWLINE)
+          opts[:result] << NEWLINE
         end
       end
 
@@ -112,7 +114,7 @@ module TTY
       #
       # @api private
       def format_blockquote(result_before, result)
-        indent      = ' ' * @current_indent
+        indent      = SPACE * @current_indent
         start_index = result_before.size
         max_index   = result.size - 1
         bar_symbol  = @symbols[:bar]
@@ -125,10 +127,10 @@ module TTY
           end
 
           # only modify blockquote element
-          if i >= start_index && str.to_s.include?("\n") # multiline string found
+          if i >= start_index && str.to_s.include?(NEWLINE) # multiline string found
             str.lines.map! do |line|
               if (line != str.lines.last || i < max_index)
-                line.insert(-1, line.end_with?("\n") ? prefix : "\n" + prefix)
+                line.insert(-1, line.end_with?(NEWLINE) ? prefix : NEWLINE + prefix)
               else
                 line
               end
@@ -142,8 +144,8 @@ module TTY
       def convert_text(el, opts)
         text = Strings.wrap(el.value, @width - @current_indent)
         text = text.chomp if opts[:strip]
-        indent = ' ' * opts[:indent]
-        text = text.gsub(/\n/, "\n#{indent}")
+        indent = SPACE * opts[:indent]
+        text = text.gsub(/\n/, "#{NEWLINE}#{indent}")
         opts[:result] << text
       end
 
@@ -162,7 +164,7 @@ module TTY
       end
 
       def convert_blank(el, opts)
-        opts[:result] << "\n"
+        opts[:result] << NEWLINE
       end
 
       def convert_smart_quote(el, opts)
@@ -173,8 +175,8 @@ module TTY
         raw_code = Strings.wrap(el.value, @width - @current_indent)
         options = @color_opts.merge(el.options.merge(fenced: opts[:fenced]))
         highlighted = SyntaxHighliter.highlight(raw_code, **options)
-        code = highlighted.split("\n").map.with_index do |line, i|
-                 i.zero? ? line : line.insert(0, ' ' * @current_indent)
+        code = highlighted.split(NEWLINE).map.with_index do |line, i|
+                 i.zero? ? line : line.insert(0, SPACE * @current_indent)
                end
         opts[:result] << code.join("\n")
       end
@@ -258,7 +260,7 @@ module TTY
       end
 
       def convert_thead(el, opts)
-        indent = ' ' * @current_indent
+        indent = SPACE * @current_indent
         table_data = opts[:table_data]
 
         opts[:result] << indent
@@ -291,7 +293,7 @@ module TTY
       end
 
       def convert_tbody(el, opts)
-        indent = ' ' * @current_indent
+        indent = SPACE * @current_indent
         table_data = opts[:table_data]
 
         opts[:result] << indent
@@ -314,7 +316,7 @@ module TTY
       end
 
       def convert_tr(el, opts)
-        indent = ' ' * @current_indent
+        indent = SPACE * @current_indent
         table_data = opts[:table_data]
 
         if opts[:prev] && opts[:prev].type == :tr
@@ -347,7 +349,7 @@ module TTY
       end
 
       def convert_td(el, opts)
-        indent = ' ' * @current_indent
+        indent = SPACE * @current_indent
         pipe       = @symbols[:pipe]
         styles     = Array(@theme[:table])
         table_data = opts[:table_data]
@@ -422,7 +424,7 @@ module TTY
       end
 
       def distribute_widths(widths)
-        indent = ' ' * @current_indent
+        indent = SPACE * @current_indent
         total_width = widths.reduce(&:+)
         screen_width = @width - (indent.length + 1) * 2 - (widths.size + 1)
         return widths if total_width <= screen_width
@@ -453,27 +455,27 @@ module TTY
         symbols = @symbols
         styles = Array(@theme[:link])
 
-        if URI.parse(el.attr['href']).class == URI::MailTo
-          el.attr['href'] = URI.parse(el.attr['href']).to
+        if URI.parse(el.attr["href"]).class == URI::MailTo
+          el.attr["href"] = URI.parse(el.attr["href"]).to
         end
 
         if el.children.size == 1 && el.children[0].type == :text &&
-           el.children[0].value == el.attr['href']
+           el.children[0].value == el.attr["href"]
 
-          if !el.attr['title'].nil? && !el.attr['title'].strip.empty?
-            opts[:result] << "(#{el.attr['title']}) "
+          if !el.attr["title"].nil? && !el.attr["title"].strip.empty?
+            opts[:result] << "(#{el.attr["title"]}) "
           end
-          opts[:result] << @pastel.decorate(el.attr['href'], *styles)
+          opts[:result] << @pastel.decorate(el.attr["href"], *styles)
 
         elsif el.children.size > 0  &&
              (el.children[0].type != :text || !el.children[0].value.strip.empty?)
 
           inner(el, opts)
           opts[:result] << " #{symbols[:arrow]} "
-          if el.attr['title']
-            opts[:result] << "(#{el.attr['title']}) "
+          if el.attr["title"]
+            opts[:result] << "(#{el.attr["title"]}) "
           end
-          opts[:result] << @pastel.decorate(el.attr['href'], *styles)
+          opts[:result] << @pastel.decorate(el.attr["href"], *styles)
         end
       end
 
@@ -499,7 +501,7 @@ module TTY
 
       # Convert codepoint to UTF-8 representation
       def unicode_char(codepoint)
-        [codepoint].pack('U*')
+        [codepoint].pack("U*")
       end
 
       def convert_footnote(*)
