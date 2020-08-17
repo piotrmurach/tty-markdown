@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'kramdown'
+require "kramdown/document"
 require "tty-color"
 require "tty-screen"
 
-require_relative 'markdown/parser'
-require_relative 'markdown/version'
+require_relative "markdown/parser"
+require_relative "markdown/version"
 
 module TTY
   module Markdown
