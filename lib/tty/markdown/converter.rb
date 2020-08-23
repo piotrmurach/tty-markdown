@@ -235,14 +235,33 @@ module TTY
         opts[:result] << "\n" if opts[:next] && opts[:next].type == :dt
       end
 
+      # Convert table element
+      #
+      # @param [Kramdown::Element] el
+      #   the `kd:table` element
+      # @param [Hash] opts
+      #   the element options
+      #
+      # @api private
       def convert_table(el, opts)
         opts[:alignment] = el.options[:alignment]
 
         result = opts[:result]
         opts[:result] = []
-        data = []
+        opts[:table_data] = extract_table_data(el, opts)
+        opts[:result] = result
 
-        el.children.each do |container|
+        inner(el, opts)
+      end
+
+      # Extract table data
+      #
+      # @param [Kramdown::Element] el
+      #   the `kd:table` element
+      #
+      # @api private
+      def extract_table_data(el, opts)
+        el.children.each_with_object([]) do |container, data|
           container.children.each do |row|
             data_row = []
             data << data_row
@@ -253,11 +272,6 @@ module TTY
             end
           end
         end
-
-        opts[:result] = result
-        opts[:table_data] = data
-
-        inner(el, opts)
       end
 
       def convert_thead(el, opts)
