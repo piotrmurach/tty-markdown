@@ -480,12 +480,21 @@ module TTY
         end
       end
 
+      # Convert math element
+      #
+      # @param [Kramdown::Element] el
+      #   the `kd:math` element
+      # @param [Hash] opts
+      #   the element options
+      #
+      # @api private
       def convert_math(el, opts)
-        if opts[:prev] && opts[:prev].type == :blank
-          opts[:result] << " " * @current_indent
+        if el.options[:category] == :block
+          convert_codeblock(el, opts)
+          opts[:result] << NEWLINE
+        else
+          convert_codespan(el, opts)
         end
-        convert_codespan(el, opts)
-        opts[:result] << "\n"
       end
 
       def convert_abbreviation(el, opts)
