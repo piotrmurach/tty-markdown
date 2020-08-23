@@ -345,6 +345,7 @@ module TTY
         result = opts[:result]
         opts[:result] = []
         opts[:table_data] = extract_table_data(el, opts)
+        opts[:column_widths] = distribute_widths(max_widths(opts[:table_data]))
         opts[:result] = result
 
         inner(el, opts)
@@ -370,6 +371,48 @@ module TTY
         end
       end
 
+      # Distribute column widths inside total width
+      #
+      # @return [Array<Integer>]
+      #
+      # @api private
+      def distribute_widths(widths)
+        indent = SPACE * @current_indent
+        total_width = widths.reduce(&:+)
+        screen_width = @width - (indent.length + 1) * 2 - (widths.size + 1)
+        return widths if total_width <= screen_width
+
+        extra_width = total_width - screen_width
+
+        widths.map do |w|
+          ratio = w / total_width.to_f
+          w - (extra_width * ratio).floor
+        end
+      end
+
+      # Calculate maximum widths for each column
+      #
+      # @return [Array<Integer>]
+      #
+      # @api private
+      def max_widths(table_data)
+        table_data.first.each_with_index.reduce([]) do |acc, (*, col)|
+          acc << max_width(table_data, col)
+          acc
+        end
+      end
+
+      # Calculate maximum cell width for a given column
+      #
+      # @return [Integer]
+      #
+      # @api private
+      def max_width(table_data, col)
+        table_data.map do |row|
+          Strings.sanitize(row[col].join).lines.map(&:length).max || 0
+        end.max
+      end
+
       # Convert thead element
       #
       # @param [Kramdown::Element] el
@@ -380,29 +423,28 @@ module TTY
       # @api private
       def convert_thead(el, opts)
         indent = SPACE * @current_indent
-        table_data = opts[:table_data]
 
         opts[:result] << indent
-        opts[:result] << border(table_data, :top)
+        opts[:result] << border(opts[:column_widths], :top)
         opts[:result] << "\n"
         inner(el, opts)
       end
 
       # Render horizontal border line
       #
-      # @param [Array[Array[String]]] table_data
-      #   table rows and cells
+      # @param [Array<Integer>] column_widths
+      #   the table column widths
       # @param [Symbol] location
       #   location out of :top, :mid, :bottom
       #
       # @return [String]
       #
       # @api private
-      def border(table_data, location)
+      def border(column_widths, location)
         symbols = @symbols
         result = []
         result << symbols[:"#{location}_left"]
-        distribute_widths(max_widths(table_data)).each.with_index do |width, i|
+        column_widths.each.with_index do |width, i|
           result << symbols[:"#{location}_center"] if i != 0
           result << (symbols[:line] * (width + 2))
         end
@@ -421,13 +463,12 @@ module TTY
       # @api private
       def convert_tbody(el, opts)
         indent = SPACE * @current_indent
-        table_data = opts[:table_data]
 
         opts[:result] << indent
         if opts[:prev] && opts[:prev].type == :thead
-          opts[:result] << border(table_data, :mid)
+          opts[:result] << border(opts[:column_widths], :mid)
         else
-          opts[:result] << border(table_data, :top)
+          opts[:result] << border(opts[:column_widths], :top)
         end
         opts[:result] << "\n"
 
@@ -435,9 +476,9 @@ module TTY
 
         opts[:result] << indent
         if opts[:next] && opts[:next].type == :tfoot
-          opts[:result] << border(table_data, :mid)
+          opts[:result] << border(opts[:column_widths], :mid)
         else
-          opts[:result] << border(table_data, :bottom)
+          opts[:result] << border(opts[:column_widths], :bottom)
         end
         opts[:result] << "\n"
       end
@@ -452,32 +493,38 @@ module TTY
       # @api private
       def convert_tfoot(el, opts)
         indent = SPACE * @current_indent
-        table_data = opts[:table_data]
 
         inner(el, opts)
 
         opts[:result] << indent
-        opts[:result] << border(table_data, :bottom)
+        opts[:result] << border(opts[:column_widths], :bottom)
         opts[:result] << "\n"
       end
 
+      # Convert td element
+      #
+      # @param [Kramdown::Element] el
+      #   the `kd:td` element
+      # @param [Hash] opts
+      #   the element options
+      #
+      # @api private
       def convert_tr(el, opts)
         indent = SPACE * @current_indent
-        table_data = opts[:table_data]
 
         if opts[:prev] && opts[:prev].type == :tr
           opts[:result] << indent
-          opts[:result] << border(table_data, :mid)
+          opts[:result] << border(opts[:column_widths], :mid)
           opts[:result] << "\n"
         end
 
-        opts[:cells] = []
+        opts[:row_cells] = []
 
         inner(el, opts)
 
-        columns = table_data.first.count
+        columns = opts[:row_cells].count
 
-        row = opts[:cells].each_with_index.reduce([]) do |acc, (cell, i)|
+        row = opts[:row_cells].each_with_index.reduce([]) do |acc, (cell, i)|
           if cell.size > 1 # multiline
             cell.each_with_index do |c, j| # zip columns
               acc[j] = [] if acc[j].nil?
@@ -494,21 +541,29 @@ module TTY
         opts[:result] << row
       end
 
+      # Convert td element
+      #
+      # @param [Kramdown::Element] el
+      #   the `kd:td` element
+      # @param [Hash] opts
+      #   the element options
+      #
+      # @api private
       def convert_td(el, opts)
         indent = SPACE * @current_indent
         pipe       = @symbols[:pipe]
         styles     = Array(@theme[:table])
         table_data = opts[:table_data]
-        result     = opts[:cells]
+        row_cells  = opts[:row_cells]
         suffix     = " #{@pastel.decorate(pipe, *styles)} "
         opts[:result] = []
 
         inner(el, opts)
 
-        row, column = *find_row_column(table_data, opts[:result])
-        cell_widths = distribute_widths(max_widths(table_data))
-        cell_width = cell_widths[column]
-        cell_height = max_height(table_data, row, cell_widths)
+        cell_content = opts[:result]
+        row, column = *find_row_column(table_data, cell_content)
+        cell_width = opts[:column_widths][column]
+        cell_height = max_height(table_data, row, opts[:column_widths])
         alignment  = opts[:alignment][column]
         align_opts = alignment == :default ? {} : { direction: alignment }
 
@@ -520,7 +575,7 @@ module TTY
                    aligned.dup
                  end
 
-        result << padded.lines.map do |line|
+        row_cells << padded.lines.map do |line|
           # add pipe to first column
           (column.zero? ? "#{indent}#{@pastel.decorate(pipe, *styles)} " : "") +
             (line.end_with?("\n") ? line.insert(-2, suffix) : line << suffix)
@@ -540,17 +595,6 @@ module TTY
         end
       end
 
-      # Calculate maximum cell width for a given column
-      #
-      # @return [Integer]
-      #
-      # @api private
-      def max_width(table_data, col)
-        table_data.map do |row|
-          Strings.sanitize(row[col].join).lines.map(&:length).max || 0
-        end.max
-      end
-
       # Calculate maximum cell height for a given row
       #
       # @return [Integer]
@@ -560,27 +604,6 @@ module TTY
         table_data[row].map.with_index do |col, i|
           Strings.wrap(col.join, cell_widths[i]).lines.size
         end.max
-      end
-
-      def max_widths(table_data)
-        table_data.first.each_with_index.reduce([]) do |acc, (*, col)|
-          acc << max_width(table_data, col)
-          acc
-        end
-      end
-
-      def distribute_widths(widths)
-        indent = SPACE * @current_indent
-        total_width = widths.reduce(&:+)
-        screen_width = @width - (indent.length + 1) * 2 - (widths.size + 1)
-        return widths if total_width <= screen_width
-
-        extra_width = total_width - screen_width
-
-        widths.map do |w|
-          ratio = w / total_width.to_f
-          w - (extra_width * ratio).floor
-        end
       end
 
       def convert_br(el, opts)
