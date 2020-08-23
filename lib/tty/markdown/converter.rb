@@ -53,6 +53,14 @@ module TTY
         opts[:result]
       end
 
+      # Convert header element
+      #
+      # @param [Kramdown::Element] el
+      #   the `kd:header` element
+      # @param [Hash] opts
+      #   the element options
+      #
+      # @api private
       def convert_header(el, opts)
         level = el.options[:level]
         if opts[:parent] && opts[:parent].type == :root
@@ -69,6 +77,14 @@ module TTY
         opts[:result] << @pastel.lookup(:reset) + NEWLINE
       end
 
+      # Convert paragraph element
+      #
+      # @param [Kramdown::Element] el
+      #   the `kd:p` element
+      # @param [Hash] opts
+      #   the element options
+      #
+      # @api private
       def convert_p(el, opts)
         result_before = @stack.last[1][:result].dup
         indent = SPACE * @current_indent
@@ -141,6 +157,14 @@ module TTY
         end
       end
 
+      # Convert text element
+      #
+      # @param [Kramdown::Element] element
+      #   the `kd:text` element
+      # @param [Hash] opts
+      #   the element options
+      #
+      # @api private
       def convert_text(el, opts)
         text = Strings.wrap(el.value, @width - @current_indent)
         text = text.chomp if opts[:strip]
@@ -149,6 +173,14 @@ module TTY
         opts[:result] << text
       end
 
+      # Convert strong element
+      #
+      # @param [Kramdown::Element] element
+      #   the `kd:strong` element
+      # @param [Hash] opts
+      #   the element options
+      #
+      # @api private
       def convert_strong(el, opts)
         styles = Array(@theme[:strong])
         opts[:result] << @pastel.lookup(*styles)
@@ -156,6 +188,14 @@ module TTY
         opts[:result] << @pastel.lookup(:reset)
       end
 
+      # Convert em element
+      #
+      # @param [Kramdown::Element] el
+      #   the `kd:em` element
+      # @param [Hash] opts
+      #   the element options
+      #
+      # @api private
       def convert_em(el, opts)
         styles = Array(@theme[:em])
         opts[:result] << @pastel.lookup(*styles)
@@ -163,14 +203,38 @@ module TTY
         opts[:result] << @pastel.lookup(:reset)
       end
 
+      # Convert new line element
+      #
+      # @param [Kramdown::Element] el
+      #   the `kd:blank` element
+      # @param [Hash] opts
+      #   the element options
+      #
+      # @api private
       def convert_blank(el, opts)
         opts[:result] << NEWLINE
       end
 
+      # Convert smart quote element
+      #
+      # @param [Kramdown::Element] el
+      #   the `kd:smart_quote` element
+      # @param [Hash] opts
+      #   the element options
+      #
+      # @api private
       def convert_smart_quote(el, opts)
         opts[:result] << @symbols[el.value]
       end
 
+      # Convert codespan element
+      #
+      # @param [Kramdown::Element] el
+      #   the `kd:codespan` element
+      # @param [Hash] opts
+      #   the element options
+      #
+      # @api private
       def convert_codespan(el, opts)
         raw_code = Strings.wrap(el.value, @width - @current_indent)
         options = @color_opts.merge(el.options.merge(fenced: opts[:fenced]))
@@ -181,16 +245,40 @@ module TTY
         opts[:result] << code.join(NEWLINE)
       end
 
+      # Convert codeblock element
+      #
+      # @param [Kramdown::Element] el
+      #   the `kd:codeblock` element
+      # @param [Hash] opts
+      #   the element options
+      #
+      # @api private
       def convert_codeblock(el, opts)
         opts[:result] << " " * @current_indent
         opts[:fenced] = false
         convert_codespan(el, opts)
       end
 
+      # Convert blockquote element
+      #
+      # @param [Kramdown::Element] el
+      #   the `kd:blockquote` element
+      # @param [Hash] opts
+      #   the element options
+      #
+      # @api private
       def convert_blockquote(el, opts)
         inner(el, opts)
       end
 
+      # Convert ordered and unordered list element
+      #
+      # @param [Kramdown::Element] el
+      #   the `kd:ul` or `kd:ol` element
+      # @param [Hash] opts
+      #   the element options
+      #
+      # @api private
       def convert_ul(el, opts)
         @current_indent += @indent unless opts[:parent].type == :root
         inner(el, opts)
@@ -199,6 +287,14 @@ module TTY
       alias convert_ol convert_ul
       alias convert_dl convert_ul
 
+      # Convert list element
+      #
+      # @param [Kramdown::Element] el
+      #   the `kd:li` element
+      # @param [Hash] opts
+      #   the element options
+      #
+      # @api private
       def convert_li(el, opts)
         if opts[:parent].type == :ol
           opts[:ordered] = true
@@ -491,6 +587,14 @@ module TTY
         opts[:result] << "\n"
       end
 
+      # Convert hr element
+      #
+      # @param [Kramdown::Element] el
+      #   the `kd:hr` element
+      # @param [Hash] opts
+      #   the element options
+      #
+      # @api private
       def convert_hr(el, opts)
         symbols = @symbols
         width = @width - symbols[:diamond].length * 2
@@ -501,6 +605,14 @@ module TTY
         opts[:result] << "\n"
       end
 
+      # Convert a element
+      #
+      # @param [Kramdown::Element] el
+      #   the `kd:a` element
+      # @param [Hash] opts
+      #   the element options
+      #
+      # @api private
       def convert_a(el, opts)
         symbols = @symbols
         styles = Array(@theme[:link])
