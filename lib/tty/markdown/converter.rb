@@ -497,8 +497,20 @@ module TTY
         end
       end
 
+      # Convert abbreviation element
+      #
+      # @param [Kramdown::Element] el
+      #   the `kd:abbreviation` element
+      # @param [Hash] opts
+      #   the element options
+      #
+      # @api private
       def convert_abbreviation(el, opts)
+        title = @root.options[:abbrev_defs][el.value]
         opts[:result] << el.value
+        unless title.to_s.empty?
+          opts[:result] << "(#{title})"
+        end
       end
 
       def convert_typographic_sym(el, opts)
