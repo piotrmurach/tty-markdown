@@ -274,6 +274,14 @@ module TTY
         end
       end
 
+      # Convert thead element
+      #
+      # @param [Kramdown::Element] el
+      #   the `kd:thead` element
+      # @param [Hash] opts
+      #   the element options
+      #
+      # @api private
       def convert_thead(el, opts)
         indent = SPACE * @current_indent
         table_data = opts[:table_data]
@@ -307,6 +315,14 @@ module TTY
         @pastel.decorate(result.join, *styles)
       end
 
+      # Convert tbody element
+      #
+      # @param [Kramdown::Element] el
+      #   the `kd:tbody` element
+      # @param [Hash] opts
+      #   the element options
+      #
+      # @api private
       def convert_tbody(el, opts)
         indent = SPACE * @current_indent
         table_data = opts[:table_data]
@@ -322,12 +338,31 @@ module TTY
         inner(el, opts)
 
         opts[:result] << indent
-        opts[:result] << border(table_data, :bottom)
+        if opts[:next] && opts[:next].type == :tfoot
+          opts[:result] << border(table_data, :mid)
+        else
+          opts[:result] << border(table_data, :bottom)
+        end
         opts[:result] << "\n"
       end
 
+      # Convert tfoot element
+      #
+      # @param [Kramdown::Element] el
+      #   the `kd:tfoot` element
+      # @param [Hash] opts
+      #   the element options
+      #
+      # @api private
       def convert_tfoot(el, opts)
+        indent = SPACE * @current_indent
+        table_data = opts[:table_data]
+
         inner(el, opts)
+
+        opts[:result] << indent
+        opts[:result] << border(table_data, :bottom)
+        opts[:result] << "\n"
       end
 
       def convert_tr(el, opts)

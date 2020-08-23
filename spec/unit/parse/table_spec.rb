@@ -10,6 +10,8 @@ RSpec.describe TTY::Markdown, "table" do
 | col 1 is |  left-aligned | $1600 |
 | col 2 is |    centered   |   $12 |
 | col 3 is | right-aligned |    $1 |
+|==========|===============|=======|
+| Footers  |  are cool     | too   |
     TEXT
 
     parsed = TTY::Markdown.parse(markdown)
@@ -50,6 +52,15 @@ RSpec.describe TTY::Markdown, "table" do
       "\e[33m#{symbols[:pipe]}\e[0m col 3 is ",
       "\e[33m#{symbols[:pipe]}\e[0m right-aligned ",
       "\e[33m#{symbols[:pipe]}\e[0m    $1 \e[33m#{symbols[:pipe]}\e[0m \n",
+
+      "\e[33m#{symbols[:mid_left]}#{symbols[:line]*10}#{symbols[:mid_center]}",
+      "#{symbols[:line]*15}#{symbols[:mid_center]}",
+      "#{symbols[:line]*7}#{symbols[:mid_right]}",
+      "\e[0m\n",
+
+      "\e[33m#{symbols[:pipe]}\e[0m Footers  ",
+      "\e[33m#{symbols[:pipe]}\e[0m   are cool    ",
+      "\e[33m#{symbols[:pipe]}\e[0m   too \e[33m#{symbols[:pipe]}\e[0m \n",
 
       "\e[33m#{symbols[:bottom_left]}#{symbols[:line]*10}#{symbols[:bottom_center]}",
       "#{symbols[:line]*15}#{symbols[:bottom_center]}",
