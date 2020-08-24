@@ -6,12 +6,16 @@
 * Add converter for br element by @krage
 * Add configuration of symbols by @krage
 * Add definition list support
+* Add table footer formatting
 
 ### Changed
 * Change #new to accept configuration options as keywords
 * Display links with both label and optional title by @krage
 * Display link without the label when label content is same as link target @krage
 * Change hr formatting to be always full width
+* Differentiate between span and block math elements
+* Display abbreviation with its definition
+* Improve performance by calculating table column widths and row heights only once
 * Change to remove mailto: from email links for brevity @krage
 * Change to update kramdown to support versions >= 1.16 and < 3.0
 * Change to update pastel, tty-color & tty-screen dependencies
