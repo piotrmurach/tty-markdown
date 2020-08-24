@@ -346,6 +346,7 @@ module TTY
         opts[:result] = []
         opts[:table_data] = extract_table_data(el, opts)
         opts[:column_widths] = distribute_widths(max_widths(opts[:table_data]))
+        opts[:row_heights] = max_row_heights(opts[:table_data], opts[:column_widths])
         opts[:result] = result
 
         inner(el, opts)
@@ -410,6 +411,28 @@ module TTY
       def max_width(table_data, col)
         table_data.map do |row|
           Strings.sanitize(row[col].join).lines.map(&:length).max || 0
+        end.max
+      end
+
+      # Calculate maximum heights for each row
+      #
+      # @return [Array<Integer>]
+      #
+      # @api private
+      def max_row_heights(table_data, column_widths)
+        table_data.reduce([]) do |acc, row|
+          acc << max_row_height(row, column_widths)
+        end
+      end
+
+      # Calculate maximum cell height for a given row
+      #
+      # @return [Integer]
+      #
+      # @api private
+      def max_row_height(row, column_widths)
+        row.map.with_index do |column, col_index|
+          Strings.wrap(column.join, column_widths[col_index]).lines.size
         end.max
       end
 
@@ -563,11 +586,11 @@ module TTY
         cell_content = opts[:result]
         row, column = *find_row_column(table_data, cell_content)
         cell_width = opts[:column_widths][column]
-        cell_height = max_height(table_data, row, opts[:column_widths])
+        cell_height = opts[:row_heights][row]
         alignment  = opts[:alignment][column]
         align_opts = alignment == :default ? {} : { direction: alignment }
 
-        wrapped = Strings.wrap(opts[:result].join, cell_width)
+        wrapped = Strings.wrap(cell_content.join, cell_width)
         aligned = Strings.align(wrapped, cell_width, **align_opts)
         padded = if aligned.lines.size < cell_height
                    Strings.pad(aligned, [0, 0, cell_height - aligned.lines.size, 0])
@@ -593,17 +616,6 @@ module TTY
             return [row_no, col] if row[col] == cell
           end
         end
-      end
-
-      # Calculate maximum cell height for a given row
-      #
-      # @return [Integer]
-      #
-      # @api private
-      def max_height(table_data, row, cell_widths)
-        table_data[row].map.with_index do |col, i|
-          Strings.wrap(col.join, cell_widths[i]).lines.size
-        end.max
       end
 
       def convert_br(el, opts)
