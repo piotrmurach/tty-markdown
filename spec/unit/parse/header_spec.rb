@@ -44,5 +44,19 @@ header3 content
 
     expect(parsed).to eq(expected_output)
   end
+
+  it "indents long header within the specified width" do
+    header = "### It is not down on any map; true places never are."
+    parsed = TTY::Markdown.parse(header, width: 20)
+
+    expected_output = [
+      "    \e[36;1mIt is not down \e[0m",
+      "    \e[36;1mon any map; \e[0m",
+      "    \e[36;1mtrue places \e[0m",
+      "    \e[36;1mnever are.\e[0m\n"
+    ].join("\n")
+
+    expect(parsed).to eq(expected_output)
+  end
 end
 

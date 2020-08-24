@@ -72,9 +72,15 @@ module TTY
         end
         styles = Array(@theme[:header]).dup
         styles << :underline if level == 1
-        opts[:result] << indent + @pastel.lookup(*styles)
+        result = opts[:result]
+        content = []
+        opts[:result] = content
+
         inner(el, opts)
-        opts[:result] << @pastel.lookup(:reset) + NEWLINE
+
+        result << content.join.lines.map! do |line|
+          indent + @pastel.decorate(line.chomp, *styles) + NEWLINE
+        end
       end
 
       # Convert paragraph element
