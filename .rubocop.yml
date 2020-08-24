@@ -26,6 +26,9 @@ Metrics/MethodLength:
 Naming/BinaryOperatorParameterName:
   Enabled: false
 
+Naming/MethodParameterName:
+ MinNameLength: 2
+
 Style/AsciiComments:
   Enabled: false
 
