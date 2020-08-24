@@ -226,4 +226,30 @@ RSpec.describe TTY::Markdown, "table" do
 
     expect(parsed).to eq(expected_output)
   end
+
+  it "formats identical content within the specified width" do
+    markdown =<<-TEXT
+| foo | foo | foo |
+    TEXT
+
+    parsed = TTY::Markdown.parse(markdown, width: 20)
+
+    expected_output = [
+      "\e[33m#{symbols[:top_left]}#{symbols[:line]*5}#{symbols[:top_center]}",
+      "#{symbols[:line]*5}#{symbols[:top_center]}",
+      "#{symbols[:line]*5}#{symbols[:top_right]}",
+      "\e[0m\n",
+
+      "\e[33m#{symbols[:pipe]}\e[0m foo ",
+      "\e[33m#{symbols[:pipe]}\e[0m foo ",
+      "\e[33m#{symbols[:pipe]}\e[0m foo \e[33m#{symbols[:pipe]}\e[0m \n",
+
+      "\e[33m#{symbols[:bottom_left]}#{symbols[:line]*5}#{symbols[:bottom_center]}",
+      "#{symbols[:line]*5}#{symbols[:bottom_center]}",
+      "#{symbols[:line]*5}#{symbols[:bottom_right]}",
+      "\e[0m\n"
+    ].join
+
+    expect(parsed).to eq(expected_output)
+  end
 end

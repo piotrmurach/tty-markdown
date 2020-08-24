@@ -340,14 +340,15 @@ module TTY
       #
       # @api private
       def convert_table(el, opts)
+        @row = 0
+        @column = 0
         opts[:alignment] = el.options[:alignment]
-
         result = opts[:result]
         opts[:result] = []
         opts[:table_data] = extract_table_data(el, opts)
+        opts[:result] = result
         opts[:column_widths] = distribute_widths(max_widths(opts[:table_data]))
         opts[:row_heights] = max_row_heights(opts[:table_data], opts[:column_widths])
-        opts[:result] = result
 
         inner(el, opts)
       end
@@ -562,6 +563,7 @@ module TTY
         end.join
 
         opts[:result] << row
+        @row += 1
       end
 
       # Convert td element
@@ -576,7 +578,6 @@ module TTY
         indent = SPACE * @current_indent
         pipe       = @symbols[:pipe]
         styles     = Array(@theme[:table])
-        table_data = opts[:table_data]
         row_cells  = opts[:row_cells]
         suffix     = " #{@pastel.decorate(pipe, *styles)} "
         opts[:result] = []
@@ -584,10 +585,9 @@ module TTY
         inner(el, opts)
 
         cell_content = opts[:result]
-        row, column = *find_row_column(table_data, cell_content)
-        cell_width = opts[:column_widths][column]
-        cell_height = opts[:row_heights][row]
-        alignment  = opts[:alignment][column]
+        cell_width = opts[:column_widths][@column]
+        cell_height = opts[:row_heights][@row]
+        alignment  = opts[:alignment][@column]
         align_opts = alignment == :default ? {} : { direction: alignment }
 
         wrapped = Strings.wrap(cell_content.join, cell_width)
@@ -600,22 +600,10 @@ module TTY
 
         row_cells << padded.lines.map do |line|
           # add pipe to first column
-          (column.zero? ? "#{indent}#{@pastel.decorate(pipe, *styles)} " : "") +
+          (@column.zero? ? "#{indent}#{@pastel.decorate(pipe, *styles)} " : "") +
             (line.end_with?("\n") ? line.insert(-2, suffix) : line << suffix)
         end
-      end
-
-      # Find row and column indexes
-      #
-      # @return [Array[Integer, Integer]]
-      #
-      # @api private
-      def find_row_column(table_data, cell)
-        table_data.each_with_index do |row, row_no|
-          row.size.times do |col|
-            return [row_no, col] if row[col] == cell
-          end
-        end
+        @column = (@column + 1) % opts[:column_widths].size
       end
 
       def convert_br(el, opts)
