@@ -43,6 +43,30 @@ RSpec.describe TTY::Markdown, "blockquote" do
     expect(parsed).to eq(expected_output)
   end
 
+  it "converts quote with an apostrophe" do
+    markdown =<<-TEXT
+> I try it this way.\nBut it#{apos}s not good.
+    TEXT
+    parsed = TTY::Markdown.parse(markdown)
+    expect(parsed).to eq([
+      "\e[33m#{bar}\e[0m  I try it this way.",
+      "\e[33m#{bar}\e[0m  But it#{apos}s not good.\n"
+    ].join("\n"))
+  end
+
+  it "converts quote with multiline strong style" do
+    markdown =<<-TEXT
+> **Human madness is oftentimes a cunning and most feline thing. When you think it fled, it may have but become transfigured into some still subtler form.**
+    TEXT
+    parsed = TTY::Markdown.parse(markdown, width: 50)
+    expect(parsed).to eq([
+      "\e[33m#{bar}\e[0m  \e[33;1mHuman madness is oftentimes a cunning and most \e[0m",
+      "\e[33m#{bar}\e[0m  \e[33;1mfeline thing. When you think it fled, it may have \e[0m",
+      "\e[33m#{bar}\e[0m  \e[33;1mbut become transfigured into some still subtler \e[0m",
+      "\e[33m#{bar}\e[0m  \e[33;1mform.\e[0m\n",
+    ].join("\n"))
+  end
+
   it "converts multiple blockquote" do
     markdown =<<-TEXT
 ### Quote
@@ -68,10 +92,8 @@ RSpec.describe TTY::Markdown, "blockquote" do
     parsed = TTY::Markdown.parse(markdown, width: 50)
     expected_output =
       "\e[33m#{bar}\e[0m  This is a very long line that will still be \n" +
-      "\e[33m#{bar}\e[0m  quoted properly when it wraps. Oh boy let\n" +
-      "\e[33m#{bar}\e[0m  #{apos}s keep writing to make sure this is long enough \n" +
-      "\e[33m#{bar}\e[0m  to actually wrap for everyone. Oh, you can \n" +
-      "\e[33m#{bar}\e[0m  \e[33mput\e[0m \e[33;1mMarkdown\e[0m into a blockquote.\n" +
+      "\e[33m#{bar}\e[0m  quoted properly when it wraps. Oh boy let#{apos}s keep writing to make sure this is long enough \n" +
+      "\e[33m#{bar}\e[0m  to actually wrap for everyone. Oh, you can \e[33mput\e[0m \e[33;1mMarkdown\e[0m into a blockquote.\n" +
       "\e[33m#{bar}\e[0m  Last line to ensure all is fine.\n"
 
     expect(parsed).to eq(expected_output)

@@ -78,7 +78,7 @@ module TTY
 
         inner(el, opts)
 
-        result << content.join.lines.map! do |line|
+        result << content.join.lines.map do |line|
           indent + @pastel.decorate(line.chomp, *styles) + NEWLINE
         end
       end
@@ -92,7 +92,6 @@ module TTY
       #
       # @api private
       def convert_p(el, opts)
-        result_before = @stack.last[1][:result].dup
         indent = SPACE * @current_indent
 
         if opts[:parent].type != :blockquote
@@ -117,49 +116,8 @@ module TTY
 
         inner(el, opts)
 
-        if opts[:parent].type == :blockquote
-          format_blockquote(result_before, opts[:result])
-        end
-
         unless opts[:result].last.to_s.end_with?(NEWLINE)
           opts[:result] << NEWLINE
-        end
-      end
-
-      # Format current element by inserting prefix for each
-      # quoted line within the allowed screen size.
-      #
-      # @param [Array[String]] result_before
-      # @param [Array[String]] result
-      #
-      # @return [nil]
-      #
-      # @api private
-      def format_blockquote(result_before, result)
-        indent      = SPACE * @current_indent
-        start_index = result_before.size
-        max_index   = result.size - 1
-        bar_symbol  = @symbols[:bar]
-        styles      = Array(@theme[:quote])
-        prefix      = "#{indent}#{@pastel.decorate(bar_symbol, *styles)}  "
-
-        result.map!.with_index do |str, i|
-          if i == start_index
-            str.insert(0, prefix)
-          end
-
-          # only modify blockquote element
-          if i >= start_index && str.to_s.include?(NEWLINE) # multiline string found
-            str.lines.map! do |line|
-              if (line != str.lines.last || i < max_index)
-                line.insert(-1, line.end_with?(NEWLINE) ? prefix : NEWLINE + prefix)
-              else
-                line
-              end
-            end.join
-          else
-            str
-          end
         end
       end
 
@@ -189,9 +147,15 @@ module TTY
       # @api private
       def convert_strong(el, opts)
         styles = Array(@theme[:strong])
-        opts[:result] << @pastel.lookup(*styles)
+        result = opts[:result]
+        content = []
+        opts[:result] = content
+
         inner(el, opts)
-        opts[:result] << @pastel.lookup(:reset)
+
+        result << content.join.lines.map do |line|
+                    @pastel.decorate(line.chomp, *styles)
+                  end.join(NEWLINE)
       end
 
       # Convert em element
@@ -204,9 +168,15 @@ module TTY
       # @api private
       def convert_em(el, opts)
         styles = Array(@theme[:em])
-        opts[:result] << @pastel.lookup(*styles)
+        result = opts[:result]
+        content = []
+        opts[:result] = content
+
         inner(el, opts)
-        opts[:result] << @pastel.lookup(:reset)
+
+        result << content.join.lines.map do |line|
+                    @pastel.decorate(line.chomp, *styles)
+                  end.join(NEWLINE)
       end
 
       # Convert new line element
@@ -274,7 +244,20 @@ module TTY
       #
       # @api private
       def convert_blockquote(el, opts)
+        indent = SPACE * @current_indent
+        bar_symbol = @symbols[:bar]
+        styles = Array(@theme[:quote])
+        prefix = "#{indent}#{@pastel.decorate(bar_symbol, *styles)}  "
+
+        result = opts[:result]
+        content = []
+        opts[:result] = content
+
         inner(el, opts)
+
+        result << content.join.lines.map do |line|
+                    prefix + line
+                  end
       end
 
       # Convert ordered and unordered list element
