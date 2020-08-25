@@ -707,8 +707,25 @@ module TTY
         warning("Raw content is not supported")
       end
 
-      def convert_img(*)
-        warning("Images are not supported")
+      # Convert image element
+      #
+      # @param [Kramdown::Element] element
+      #   the `kd:img` element
+      # @param [Hash] opts
+      #   the element options
+      #
+      # @api private
+      def convert_img(el, opts)
+        symbols = @symbols
+        styles = Array(@theme[:image])
+        src = el.attr["src"]
+        alt = el.attr["alt"]
+        link = [symbols[:paren_left]]
+        unless alt.to_s.empty?
+          link << "#{alt} #{symbols[:ndash]} "
+        end
+        link << "#{src}#{symbols[:paren_right]}"
+        opts[:result] << @pastel.decorate(link.join, *styles)
       end
 
       def convert_html_element(el, opts)
