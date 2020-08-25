@@ -93,24 +93,11 @@ module TTY
       # @api private
       def convert_p(el, opts)
         indent = SPACE * @current_indent
-
-        if opts[:parent].type != :blockquote
+        if ![:blockquote, :li].include?(opts[:parent].type)
           opts[:result] << indent
         end
-
         opts[:indent] = @current_indent
-        opts[:strip] = false
-
-        case opts[:parent].type
-        when :li
-          bullet = @symbols[:bullet]
-          index = @stack.last[1][:index] + 1
-          symbol = opts[:ordered] ? "#{index}." : bullet
-          styles = Array(@theme[:list])
-          opts[:result] << @pastel.decorate(symbol, *styles) + SPACE
-          opts[:indent] += @indent
-          opts[:strip] = true
-        when :blockquote
+        if opts[:parent].type == :blockquote
           opts[:indent] = 0
         end
 
@@ -285,10 +272,21 @@ module TTY
       #
       # @api private
       def convert_li(el, opts)
-        if opts[:parent].type == :ol
-          opts[:ordered] = true
-        end
+        index = opts[:index] + 1
+        styles = Array(@theme[:list])
+        prefix_type = opts[:parent].type == :ol ? "#{index}." : @symbols[:bullet]
+        prefix = @pastel.decorate(prefix_type, *styles) + SPACE
+        opts[:strip] = true
+
+        result = opts[:result]
+        content = []
+        opts[:result] = content
+
         inner(el, opts)
+
+        result << SPACE * @current_indent
+        result << prefix
+        result << content.join
       end
 
       # Convert dt element
