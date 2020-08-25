@@ -563,10 +563,11 @@ module TTY
       # @api private
       def convert_td(el, opts)
         indent = SPACE * @current_indent
-        pipe       = @symbols[:pipe]
-        styles     = Array(@theme[:table])
-        row_cells  = opts[:row_cells]
-        suffix     = " #{@pastel.decorate(pipe, *styles)} "
+        pipe_char = @symbols[:pipe]
+        styles = Array(@theme[:table])
+        row_cells = opts[:row_cells]
+        pipe = @pastel.decorate(pipe_char, *styles)
+        suffix = " #{pipe} "
         opts[:result] = []
 
         inner(el, opts)
@@ -587,7 +588,7 @@ module TTY
 
         row_cells << padded.lines.map do |line|
           # add pipe to first column
-          (@column.zero? ? "#{indent}#{@pastel.decorate(pipe, *styles)} " : "") +
+          (@column.zero? ? "#{indent}#{pipe} " : "") +
             (line.end_with?("\n") ? line.insert(-2, suffix) : line << suffix)
         end
         @column = (@column + 1) % opts[:column_widths].size
