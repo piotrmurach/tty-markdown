@@ -16,7 +16,6 @@ module TTY
 
       def initialize(root, options = {})
         super
-        @stack = []
         @current_indent = 0
         @indent = options[:indent]
         @pastel = Pastel.new
@@ -29,29 +28,41 @@ module TTY
       # Invoke an element conversion
       #
       # @api public
-      def convert(el, opts = { indent: 0, result: [] })
+      def convert(el, opts = { indent: 0 })
         send("convert_#{el.type}", el, opts)
       end
 
       private
 
       # Process children of this element
+      #
+      # @param [Kramdown::Element] el
+      #   the element with child elements
+      #
+      # @api private
       def inner(el, opts)
-        @stack << [el, opts]
+        result = []
         el.children.each_with_index do |inner_el, i|
           options = opts.dup
           options[:parent] = el
-          options[:prev] = (i == 0 ? nil : el.children[i - 1])
+          options[:prev] = (i.zero? ? nil : el.children[i - 1])
           options[:next] = (i == el.children.length - 1 ? nil : el.children[i + 1])
           options[:index] = i
-          convert(inner_el, options)
+          result << convert(inner_el, options)
         end
-        @stack.pop
+        result
       end
 
+      # Convert root element
+      #
+      # @param [Kramdown::Element] el
+      #   the `kd:root` element
+      # @param [Hash] opts
+      #   the element options
+      #
+      # @api private
       def convert_root(el, opts)
         inner(el, opts)
-        opts[:result]
       end
 
       # Convert header element
@@ -73,13 +84,10 @@ module TTY
         end
         styles = Array(@theme[:header]).dup
         styles << :underline if level == 1
-        result = opts[:result]
-        content = []
-        opts[:result] = content
 
-        inner(el, opts)
+        content = inner(el, opts)
 
-        result << content.join.lines.map do |line|
+        content.join.lines.map do |line|
           indent + @pastel.decorate(line.chomp, *styles) + NEWLINE
         end
       end
@@ -94,19 +102,24 @@ module TTY
       # @api private
       def convert_p(el, opts)
         indent = SPACE * @current_indent
+        result = []
+
         if ![:blockquote, :li].include?(opts[:parent].type)
-          opts[:result] << indent
+          result << indent
         end
+
         opts[:indent] = @current_indent
         if opts[:parent].type == :blockquote
           opts[:indent] = 0
         end
 
-        inner(el, opts)
+        content = inner(el, opts)
 
-        unless opts[:result].last.to_s.end_with?(NEWLINE)
-          opts[:result] << NEWLINE
+        result << content.join
+        unless result.last.to_s.end_with?(NEWLINE)
+          result << NEWLINE
         end
+        result
       end
 
       # Convert text element
@@ -121,8 +134,7 @@ module TTY
         text = Strings.wrap(el.value, @width - @current_indent)
         text = text.chomp if opts[:strip]
         indent = SPACE * opts[:indent]
-        text = text.gsub(/\n/, "#{NEWLINE}#{indent}")
-        opts[:result] << text
+        text.gsub(/\n/, "#{NEWLINE}#{indent}")
       end
 
       # Convert strong element
@@ -135,15 +147,12 @@ module TTY
       # @api private
       def convert_strong(el, opts)
         styles = Array(@theme[:strong])
-        result = opts[:result]
-        content = []
-        opts[:result] = content
 
-        inner(el, opts)
+        content = inner(el, opts)
 
-        result << content.join.lines.map do |line|
-                    @pastel.decorate(line.chomp, *styles)
-                  end.join(NEWLINE)
+        content.join.lines.map do |line|
+          @pastel.decorate(line.chomp, *styles)
+        end.join(NEWLINE)
       end
 
       # Convert em element
@@ -156,15 +165,12 @@ module TTY
       # @api private
       def convert_em(el, opts)
         styles = Array(@theme[:em])
-        result = opts[:result]
-        content = []
-        opts[:result] = content
 
-        inner(el, opts)
+        content = inner(el, opts)
 
-        result << content.join.lines.map do |line|
-                    @pastel.decorate(line.chomp, *styles)
-                  end.join(NEWLINE)
+        content.join.lines.map do |line|
+          @pastel.decorate(line.chomp, *styles)
+        end.join(NEWLINE)
       end
 
       # Convert new line element
@@ -175,8 +181,8 @@ module TTY
       #   the element options
       #
       # @api private
-      def convert_blank(el, opts)
-        opts[:result] << NEWLINE
+      def convert_blank(*)
+        NEWLINE
       end
 
       # Convert smart quote element
@@ -188,7 +194,7 @@ module TTY
       #
       # @api private
       def convert_smart_quote(el, opts)
-        opts[:result] << @symbols[el.value]
+        @symbols[el.value]
       end
 
       # Convert codespan element
@@ -200,13 +206,14 @@ module TTY
       #
       # @api private
       def convert_codespan(el, opts)
-        raw_code = Strings.wrap(el.value, @width - @current_indent)
+        indent = SPACE * @current_indent
         options = @color_opts.merge(el.options.merge(fenced: opts[:fenced]))
+        raw_code = Strings.wrap(el.value, @width - @current_indent)
         highlighted = SyntaxHighliter.highlight(raw_code, **options)
-        code = highlighted.split(NEWLINE).map.with_index do |line, i|
-                 i.zero? ? line : line.insert(0, SPACE * @current_indent)
-               end
-        opts[:result] << code.join(NEWLINE)
+
+        highlighted.lines.map.with_index do |line, i|
+          i.zero? ? line.chomp : indent + line.chomp
+        end.join(NEWLINE)
       end
 
       # Convert codeblock element
@@ -218,9 +225,9 @@ module TTY
       #
       # @api private
       def convert_codeblock(el, opts)
-        opts[:result] << " " * @current_indent
         opts[:fenced] = false
-        convert_codespan(el, opts)
+        indent = SPACE * @current_indent
+        indent + convert_codespan(el, opts)
       end
 
       # Convert blockquote element
@@ -237,15 +244,11 @@ module TTY
         styles = Array(@theme[:quote])
         prefix = "#{indent}#{@pastel.decorate(bar_symbol, *styles)}  "
 
-        result = opts[:result]
-        content = []
-        opts[:result] = content
+        content = inner(el, opts)
 
-        inner(el, opts)
-
-        result << content.join.lines.map do |line|
-                    prefix + line
-                  end
+        content.join.lines.map do |line|
+          prefix + line
+        end
       end
 
       # Convert ordered and unordered list element
@@ -258,8 +261,9 @@ module TTY
       # @api private
       def convert_ul(el, opts)
         @current_indent += @indent unless opts[:parent].type == :root
-        inner(el, opts)
+        content = inner(el, opts)
         @current_indent -= @indent unless opts[:parent].type == :root
+        content.join
       end
       alias convert_ol convert_ul
       alias convert_dl convert_ul
@@ -274,20 +278,15 @@ module TTY
       # @api private
       def convert_li(el, opts)
         index = opts[:index] + 1
+        indent = SPACE * @current_indent
         styles = Array(@theme[:list])
         prefix_type = opts[:parent].type == :ol ? "#{index}." : @symbols[:bullet]
         prefix = @pastel.decorate(prefix_type, *styles) + SPACE
         opts[:strip] = true
 
-        result = opts[:result]
-        content = []
-        opts[:result] = content
+        content = inner(el, opts)
 
-        inner(el, opts)
-
-        result << SPACE * @current_indent
-        result << prefix
-        result << content.join
+        indent + prefix + content.join
       end
 
       # Convert dt element
@@ -299,9 +298,9 @@ module TTY
       #
       # @api private
       def convert_dt(el, opts)
-        opts[:result] << " " * @current_indent
-        inner(el, opts)
-        opts[:result] << "\n"
+        indent = SPACE * @current_indent
+        content = inner(el, opts)
+        indent + content.join + NEWLINE
       end
 
       # Convert dd element
@@ -313,10 +312,13 @@ module TTY
       #
       # @api private
       def convert_dd(el, opts)
+        result = []
         @current_indent += @indent unless opts[:parent].type == :root
-        inner(el, opts)
+        content = inner(el, opts)
         @current_indent -= @indent unless opts[:parent].type == :root
-        opts[:result] << "\n" if opts[:next] && opts[:next].type == :dt
+        result << content.join
+        result << NEWLINE if opts[:next] && opts[:next].type == :dt
+        result
       end
 
       # Convert table element
@@ -331,14 +333,11 @@ module TTY
         @row = 0
         @column = 0
         opts[:alignment] = el.options[:alignment]
-        result = opts[:result]
-        opts[:result] = []
         opts[:table_data] = extract_table_data(el, opts)
-        opts[:result] = result
         opts[:column_widths] = distribute_widths(max_widths(opts[:table_data]))
         opts[:row_heights] = max_row_heights(opts[:table_data], opts[:column_widths])
 
-        inner(el, opts)
+        inner(el, opts).join
       end
 
       # Extract table data
@@ -351,12 +350,10 @@ module TTY
         el.children.each_with_object([]) do |container, data|
           container.children.each do |row|
             data_row = []
-            data << data_row
             row.children.each do |cell|
-              opts[:result] = []
-              cell_data = inner(cell, opts)
-              data_row << cell_data[1][:result]
+              data_row << inner(cell, opts)
             end
+            data << data_row
           end
         end
       end
@@ -388,7 +385,6 @@ module TTY
       def max_widths(table_data)
         table_data.first.each_with_index.reduce([]) do |acc, (*, col)|
           acc << max_width(table_data, col)
-          acc
         end
       end
 
@@ -435,11 +431,16 @@ module TTY
       # @api private
       def convert_thead(el, opts)
         indent = SPACE * @current_indent
+        result = []
 
-        opts[:result] << indent
-        opts[:result] << border(opts[:column_widths], :top)
-        opts[:result] << "\n"
-        inner(el, opts)
+        result << indent
+        result << border(opts[:column_widths], :top)
+        result << NEWLINE
+
+        content = inner(el, opts)
+
+        result << content.join
+        result.join
       end
 
       # Render horizontal border line
@@ -475,24 +476,27 @@ module TTY
       # @api private
       def convert_tbody(el, opts)
         indent = SPACE * @current_indent
+        result = []
 
-        opts[:result] << indent
+        result << indent
         if opts[:prev] && opts[:prev].type == :thead
-          opts[:result] << border(opts[:column_widths], :mid)
+          result << border(opts[:column_widths], :mid)
         else
-          opts[:result] << border(opts[:column_widths], :top)
+          result << border(opts[:column_widths], :top)
         end
-        opts[:result] << "\n"
+        result << "\n"
 
-        inner(el, opts)
+        content = inner(el, opts)
 
-        opts[:result] << indent
+        result << content.join
+        result << indent
         if opts[:next] && opts[:next].type == :tfoot
-          opts[:result] << border(opts[:column_widths], :mid)
+          result << border(opts[:column_widths], :mid)
         else
-          opts[:result] << border(opts[:column_widths], :bottom)
+          result << border(opts[:column_widths], :bottom)
         end
-        opts[:result] << "\n"
+        result << NEWLINE
+        result.join
       end
 
       # Convert tfoot element
@@ -506,11 +510,9 @@ module TTY
       def convert_tfoot(el, opts)
         indent = SPACE * @current_indent
 
-        inner(el, opts)
-
-        opts[:result] << indent
-        opts[:result] << border(opts[:column_widths], :bottom)
-        opts[:result] << "\n"
+        inner(el, opts).join + indent +
+          border(opts[:column_widths], :bottom) +
+          NEWLINE
       end
 
       # Convert td element
@@ -523,20 +525,19 @@ module TTY
       # @api private
       def convert_tr(el, opts)
         indent = SPACE * @current_indent
+        result = []
 
         if opts[:prev] && opts[:prev].type == :tr
-          opts[:result] << indent
-          opts[:result] << border(opts[:column_widths], :mid)
-          opts[:result] << "\n"
+          result << indent
+          result << border(opts[:column_widths], :mid)
+          result << NEWLINE
         end
 
-        opts[:row_cells] = []
+        content = inner(el, opts)
 
-        inner(el, opts)
+        columns = content.count
 
-        columns = opts[:row_cells].count
-
-        row = opts[:row_cells].each_with_index.reduce([]) do |acc, (cell, i)|
+        row = content.each_with_index.reduce([]) do |acc, (cell, i)|
           if cell.size > 1 # multiline
             cell.each_with_index do |c, j| # zip columns
               acc[j] = [] if acc[j].nil?
@@ -550,8 +551,9 @@ module TTY
           acc
         end.join
 
-        opts[:result] << row
+        result << row
         @row += 1
+        result.join
       end
 
       # Convert td element
@@ -566,17 +568,13 @@ module TTY
         indent = SPACE * @current_indent
         pipe_char = @symbols[:pipe]
         styles = Array(@theme[:table])
-        row_cells = opts[:row_cells]
         pipe = @pastel.decorate(pipe_char, *styles)
         suffix = " #{pipe} "
-        opts[:result] = []
 
-        inner(el, opts)
-
-        cell_content = opts[:result]
+        cell_content = inner(el, opts)
         cell_width = opts[:column_widths][@column]
         cell_height = opts[:row_heights][@row]
-        alignment  = opts[:alignment][@column]
+        alignment = opts[:alignment][@column]
         align_opts = alignment == :default ? {} : { direction: alignment }
 
         wrapped = Strings.wrap(cell_content.join, cell_width)
@@ -587,16 +585,17 @@ module TTY
                    aligned.dup
                  end
 
-        row_cells << padded.lines.map do |line|
+        content =  padded.lines.map do |line|
           # add pipe to first column
           (@column.zero? ? "#{indent}#{pipe} " : "") +
             (line.end_with?("\n") ? line.insert(-2, suffix) : line << suffix)
         end
         @column = (@column + 1) % opts[:column_widths].size
+        content
       end
 
       def convert_br(el, opts)
-        opts[:result] << "\n"
+        NEWLINE
       end
 
       # Convert hr element
@@ -612,9 +611,7 @@ module TTY
         width = @width - symbols[:diamond].length * 2
         styles = Array(@theme[:hr])
         line = symbols[:diamond] + symbols[:line] * width + symbols[:diamond]
-
-        opts[:result] << @pastel.decorate(line, *styles)
-        opts[:result] << "\n"
+        @pastel.decorate(line, *styles) + NEWLINE
       end
 
       # Convert a element
@@ -628,6 +625,7 @@ module TTY
       def convert_a(el, opts)
         symbols = @symbols
         styles = Array(@theme[:link])
+        result = []
 
         if URI.parse(el.attr["href"]).class == URI::MailTo
           el.attr["href"] = URI.parse(el.attr["href"]).to
@@ -637,20 +635,23 @@ module TTY
            el.children[0].value == el.attr["href"]
 
           if !el.attr["title"].nil? && !el.attr["title"].strip.empty?
-            opts[:result] << "(#{el.attr["title"]}) "
+            result << "(#{el.attr["title"]}) "
           end
-          opts[:result] << @pastel.decorate(el.attr["href"], *styles)
+          result << @pastel.decorate(el.attr["href"], *styles)
 
         elsif el.children.size > 0  &&
              (el.children[0].type != :text || !el.children[0].value.strip.empty?)
 
-          inner(el, opts)
-          opts[:result] << " #{symbols[:arrow]} "
+          content = inner(el, opts)
+
+          result << content.join
+          result << " #{symbols[:arrow]} "
           if el.attr["title"]
-            opts[:result] << "(#{el.attr["title"]}) "
+            result << "(#{el.attr["title"]}) "
           end
-          opts[:result] << @pastel.decorate(el.attr["href"], *styles)
+          result << @pastel.decorate(el.attr["href"], *styles)
         end
+        result
       end
 
       # Convert math element
@@ -663,8 +664,7 @@ module TTY
       # @api private
       def convert_math(el, opts)
         if el.options[:category] == :block
-          convert_codeblock(el, opts)
-          opts[:result] << NEWLINE
+          convert_codeblock(el, opts) + NEWLINE
         else
           convert_codespan(el, opts)
         end
@@ -680,18 +680,19 @@ module TTY
       # @api private
       def convert_abbreviation(el, opts)
         title = @root.options[:abbrev_defs][el.value]
-        opts[:result] << el.value
-        unless title.to_s.empty?
-          opts[:result] << "(#{title})"
+        if title.to_s.empty?
+          el.value
+        else
+          "#{el.value}(#{title})"
         end
       end
 
       def convert_typographic_sym(el, opts)
-        opts[:result] << @symbols[el.value]
+        @symbols[el.value]
       end
 
       def convert_entity(el, opts)
-        opts[:result] << unicode_char(el.value.code_point)
+        unicode_char(el.value.code_point)
       end
 
       # Convert codepoint to UTF-8 representation
@@ -725,26 +726,32 @@ module TTY
           link << "#{alt} #{symbols[:ndash]} "
         end
         link << "#{src}#{symbols[:paren_right]}"
-        opts[:result] << @pastel.decorate(link.join, *styles)
+        @pastel.decorate(link.join, *styles)
       end
 
+      # Convert html element
+      #
+      # @param [Kramdown::Element] element
+      #   the `kd:html_element` element
+      # @param [Hash] opts
+      #   the element options
+      #
+      # @api private
       def convert_html_element(el, opts)
         if el.value == "del"
           styles = Array(@theme[:strong])
-          opts[:result] << @pastel.lookup(*styles)
-          inner(el, opts)
-          opts[:result] << @pastel.lookup(:reset)
+          @pastel.decorate(inner(el, opts).join, *styles)
         elsif el.children.size > 0
           inner(el, opts)
         elsif el.value == "br"
-          opts[:result] << "\n"
+          NEWLINE
         else
           warning("HTML element '#{el.value.inspect}' not supported")
         end
       end
 
       def convert_xml_comment(el, opts)
-        opts[:result] << el.value
+        el.value
       end
       alias convert_comment convert_xml_comment
     end # Parser
