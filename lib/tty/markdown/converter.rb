@@ -3,6 +3,7 @@
 require "kramdown/converter"
 require "pastel"
 require "strings"
+require "uri"
 
 require_relative "syntax_highlighter"
 
