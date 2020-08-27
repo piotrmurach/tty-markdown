@@ -4,15 +4,17 @@ require_relative "../lib/tty-markdown"
 
 markdown =<<-TEXT
 
-## Table With Headers
+## Table with Header and Footer
 
 | First Header | Second Header | Third Header |
 |--------------|:-------------:|-------------:|
 | Text         | Text          | Text         |
 | Text         | Text          | Text         |
 | Text         | Text          | Text         |
+|==============|===============|==============|
+| First Footer | Second Footer | Third Footer |
 
-## Table Without Headers
+## Table with Body only
 
 | Text | Text | Text |
 | Text | Text | Text |
@@ -20,4 +22,4 @@ markdown =<<-TEXT
 
 TEXT
 
-print TTY::Markdown.parse(markdown)
+print TTY::Markdown.parse(markdown, width: 36)
