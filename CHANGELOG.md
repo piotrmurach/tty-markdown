@@ -7,6 +7,7 @@
 * Add configuration of symbols by @krage
 * Add definition list support
 * Add table footer formatting
+* Add formatting of image source location
 
 ### Changed
 * Change #new to accept configuration options as keywords
@@ -25,6 +26,8 @@
 * Fix links handling by @krage
 * Fix table formatting of empty cells
 * Fix content wrapping to account for the current indentation
+* Fix header wrapping
+* Fix blockquote formatting of content with emphasised style or apostrophe
 
 ## [v0.6.0] - 2019-03-30
 
