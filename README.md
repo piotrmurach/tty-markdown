@@ -50,6 +50,7 @@ Or install it yourself as:
   * [1.6 Code and Syntax Highlighting](#16-code-and-syntax-highlighting)
   * [1.7 Table](#17-table)
   * [1.8 Horizontal Rule](#18-horizontal-rule)
+  * [1.9 Footnotes](#19-footnotes)
 * [2. Options](#2-options)
   * [2.1 :colors](#21-colors)
   * [2.2 :theme](#22-theme)
@@ -91,7 +92,7 @@ TTY::Markdown
 
 The terminal output looks like this:
 
-![Code highlight](assets/headers.png)
+![Headers example](assets/headers.png)
 
 ### 1.2 List
 
@@ -107,7 +108,7 @@ Both numbered and unordered lists are supported. Given a markdown:
 
 The parsed output looks like this:
 
-![Code highlight](assets/list.png)
+![Unordered list example](assets/list.png)
 
 ### 1.3 Definition List
 
@@ -124,7 +125,7 @@ Item 2
 
 The parsed output looks like this:
 
-![Code highlight](assets/definition-list.png)
+![Definition list example](assets/definition-list.png)
 
 ### 1.4 Link
 
@@ -138,7 +139,7 @@ A markdown link:
 
 The link text will be rendered with the link next to it:
 
-![Code highlight](assets/link.png)
+![Link example](assets/link.png)
 
 ### 1.5 Blockquote
 
@@ -152,7 +153,7 @@ Given a markdown quote:
 
 The rendered output looks like this:
 
-![Code highlight](assets/quote.png)
+![Blockquote example](assets/quote.png)
 
 ### 1.6 Code and Syntax Highlighting
 
@@ -172,7 +173,7 @@ end
 
 The terminal output will look like this:
 
-![Code highlight](assets/codeblock.png)
+![Code highlighting example](assets/codeblock.png)
 
 ### 1.7 Table
 
@@ -190,7 +191,7 @@ For example, given the following table:
 
 Then the terminal output will look like this:
 
-![Code highlight](assets/table.png)
+![Table example](assets/table.png)
 
 ### 1.8 Horizontal Rule
 
@@ -208,7 +209,22 @@ parsed = TTY::Markdown.parse(markdown_string)
 
 `puts parsed` will output:
 
-![Code highlight](assets/hr.png)
+![Horizontal rule example](assets/hr.png)
+
+### 1.9 Footnotes
+
+You can create footnote references:
+
+```markdown
+It is not down on any map[^foo]; true places[^bar] never are.
+
+[^foo]: A diagrammatic representation of an area of land or sea.
+[^bar]: A particular position, point, or area in space; a location.
+```
+
+All footnotes will be displayed with a sequential number and rendered in the terminal like this:
+
+![Footnotes example](assets/footnotes.png)
 
 ## 2. Options
 
@@ -236,6 +252,8 @@ THEME = {
   strong: [:yellow, :bold],
   table: :yellow,
   quote: :yellow,
+  image: :bright_black,
+  note: :yellow
 }
 ```
 
