@@ -783,11 +783,13 @@ module TTY
       #
       # @api private
       def convert_html_element(el, opts)
-        if el.value == "del"
+        if el.children.size > 0
+          inner(el, opts)
+        elsif el.value == "img"
+          convert_img(el, opts)
+        elsif el.value == "del"
           styles = Array(@theme[:strong])
           @pastel.decorate(inner(el, opts).join, *styles)
-        elsif el.children.size > 0
-          inner(el, opts)
         elsif el.value == "br"
           NEWLINE
         else
