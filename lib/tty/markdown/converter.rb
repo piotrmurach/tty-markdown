@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "kramdown/converter"
+require "kramdown/element"
 require "pastel"
 require "strings"
 require "uri"
@@ -23,6 +24,8 @@ module TTY
         @width = options[:width]
         @theme = options[:theme]
         @symbols = options[:symbols]
+        @footnote_no = 1
+        @footnotes = {}
       end
 
       # Invoke an element conversion
@@ -62,7 +65,30 @@ module TTY
       #
       # @api private
       def convert_root(el, opts)
-        inner(el, opts)
+        content = inner(el, opts)
+        return content.join if @footnotes.empty?
+
+        content.join + footnotes_list(root, opts)
+      end
+
+      # Create an ordered list of footnotes
+      #
+      # @param [Kramdown::Element] root
+      #   the `kd:root` element
+      # @param [Hash] opts
+      #   the root element options
+      #
+      # @api private
+      def footnotes_list(root, opts)
+        ol = Kramdown::Element.new(:ol)
+        @footnotes.values.each do |footnote|
+          value, index = *footnote
+          options = { index: index, parent: ol }
+          li = Kramdown::Element.new(:li, nil, {}, options.merge(opts))
+          li.children = Marshal.load(Marshal.dump(value.children))
+          ol.children << li
+        end
+        convert_ol(ol, { parent: root }.merge(opts))
       end
 
       # Convert header element
@@ -700,8 +726,27 @@ module TTY
         [codepoint].pack("U*")
       end
 
-      def convert_footnote(*)
-        warning("Footnotes are not supported")
+      # Convert image element
+      #
+      # @param [Kramdown::Element] element
+      #   the `kd:footnote` element
+      # @param [Hash] opts
+      #   the element options
+      #
+      # @api private
+      def convert_footnote(el, opts)
+        styles = Array[@theme[:note]]
+        name = el.options[:name]
+        if footnote = @footnotes[name]
+          number = footnote.last
+        else
+          number = @footnote_no
+          @footnote_no += 1
+          @footnotes[name] = [el.value, number]
+        end
+
+        content = "#{@symbols[:bracket_left]}#{number}#{@symbols[:bracket_right]}"
+        @pastel.decorate(content, *styles)
       end
 
       def convert_raw(*)
