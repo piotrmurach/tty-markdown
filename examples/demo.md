@@ -25,7 +25,9 @@ TTY::Markdown
 
 ### Quote
 
-> Blockquotes are very handy in email to emulate reply text. This line is part of the same quote. *Oh*, you can put **Markdown** into a blockquote.
+> Blockquotes are very handy in email to emulate reply text.
+> This line is part of the same quote.
+> *Oh*, you can put **Markdown** into a blockquote.
 
 ### Codeblock
 
