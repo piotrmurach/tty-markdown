@@ -8,6 +8,8 @@
 * Add definition list support
 * Add table footer formatting
 * Add formatting of image source location
+* Add footnotes support
+* Add XML comments support
 
 ### Changed
 * Change #new to accept configuration options as keywords
@@ -44,7 +46,7 @@
 ### Changed
 * Change gemspec to load files directly
 * Change to update rouge dependency
-* Change to relax constraings on tty-screen and tty-color
+* Change to relax constraints on tty-screen and tty-color
 
 ## [v0.4.0] - 2018-06-20
 
