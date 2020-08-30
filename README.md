@@ -253,7 +253,8 @@ THEME = {
   table: :yellow,
   quote: :yellow,
   image: :bright_black,
-  note: :yellow
+  note: :yellow,
+  comment: :bright_black
 }
 ```
 
