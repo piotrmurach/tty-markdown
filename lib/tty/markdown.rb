@@ -40,7 +40,8 @@ module TTY
       paren_left: '(',
       paren_right: ')',
       bracket_left: '[',
-      bracket_right: ']'
+      bracket_right: ']',
+      hash: "#"
     }.freeze
 
     ASCII_SYMBOLS = {
@@ -73,7 +74,8 @@ module TTY
       paren_left: '(',
       paren_right: ')',
       bracket_left: '[',
-      bracket_right: ']'
+      bracket_right: ']',
+      hash: "#"
     }.freeze
 
     THEME = {
@@ -86,7 +88,8 @@ module TTY
       table: :yellow,
       quote: :yellow,
       image: :bright_black,
-      note: :yellow
+      note: :yellow,
+      comment: :bright_black
     }.freeze
 
     # Parse a markdown string

@@ -797,8 +797,26 @@ module TTY
         end
       end
 
+      # Convert xml comment element
+      #
+      # @param [Kramdown::Element] element
+      #   the `kd:xml_comment` element
+      # @param [Hash] opts
+      #   the element options
+      #
+      # @api private
       def convert_xml_comment(el, opts)
-        el.value
+        block = el.options[:category] == :block
+        indent = SPACE * @current_indent
+        styles = Array(@theme[:comment])
+        content = el.value
+        content.gsub!(/^<!-{2,}\s*/, "") if content.start_with?("<!--")
+        content.gsub!(/-{2,}>$/, "") if content.end_with?("-->")
+        result = content.lines.map.with_index do |line, i|
+          (i.zero? && !block ? "" : indent) +
+          @pastel.decorate("#{@symbols[:hash]} " + line.chomp, *styles)
+        end.join(NEWLINE)
+        block ? result + NEWLINE : result
       end
       alias convert_comment convert_xml_comment
     end # Parser
