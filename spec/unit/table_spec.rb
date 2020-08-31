@@ -252,4 +252,26 @@ RSpec.describe TTY::Markdown, "table" do
 
     expect(parsed).to eq(expected_output)
   end
+
+  it "parses markdown table with ASCII border" do
+    markdown =<<-TEXT
+|foo|bar|
+|---|---|
+| a | b |
+|===|===|
+|baz|qux|
+    TEXT
+
+    parsed = TTY::Markdown.parse(markdown, symbols: :ascii)
+
+    expect(parsed).to eq([
+      "\e[33m+-----+-----+\e[0m\n",
+      "\e[33m|\e[0m foo \e[33m|\e[0m bar \e[33m|\e[0m \n",
+      "\e[33m+-----+-----+\e[0m\n",
+      "\e[33m|\e[0m a   \e[33m|\e[0m b   \e[33m|\e[0m \n",
+      "\e[33m+-----+-----+\e[0m\n",
+      "\e[33m|\e[0m baz \e[33m|\e[0m qux \e[33m|\e[0m \n",
+      "\e[33m+-----+-----+\e[0m\n",
+    ].join)
+  end
 end

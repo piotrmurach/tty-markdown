@@ -51,7 +51,7 @@ module TTY
       diamond: "*",
       bar: "│",
       pipe: "|",
-      line: "─",
+      line: "-",
       hellip: "...",
       laquo: "<<",
       laquo_space: "<< ",
