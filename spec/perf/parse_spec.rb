@@ -37,6 +37,6 @@ foo = {}
       TTY::Markdown.parse(markdown_doc)
     }.to perform_slower_than {
       Kramdown::Document.new(markdown_doc).to_html
-    }.at_most(4).times
+    }.at_most(3.6).times
   end
 end
