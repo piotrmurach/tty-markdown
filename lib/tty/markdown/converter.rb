@@ -22,7 +22,9 @@ module TTY
         @pastel = Pastel.new
         @color_opts = { mode: options[:colors] }
         @width = options[:width]
-        @theme = options[:theme]
+        @theme = options[:theme].each_with_object({}) do |(key, val), acc|
+                   acc[key] = Array(val)
+                 end
         @symbols = options[:symbols]
         @footnote_no = 1
         @footnotes = {}
@@ -108,7 +110,7 @@ module TTY
         else
           indent = SPACE * @current_indent
         end
-        styles = Array(@theme[:header]).dup
+        styles = @theme[:header].dup
         styles << :underline if level == 1
 
         content = inner(el, opts)
@@ -172,12 +174,10 @@ module TTY
       #
       # @api private
       def convert_strong(el, opts)
-        styles = Array(@theme[:strong])
-
         content = inner(el, opts)
 
         content.join.lines.map do |line|
-          @pastel.decorate(line.chomp, *styles)
+          @pastel.decorate(line.chomp, *@theme[:strong])
         end.join(NEWLINE)
       end
 
@@ -190,12 +190,10 @@ module TTY
       #
       # @api private
       def convert_em(el, opts)
-        styles = Array(@theme[:em])
-
         content = inner(el, opts)
 
         content.join.lines.map do |line|
-          @pastel.decorate(line.chomp, *styles)
+          @pastel.decorate(line.chomp, *@theme[:em])
         end.join(NEWLINE)
       end
 
@@ -267,8 +265,7 @@ module TTY
       def convert_blockquote(el, opts)
         indent = SPACE * @current_indent
         bar_symbol = @symbols[:bar]
-        styles = Array(@theme[:quote])
-        prefix = "#{indent}#{@pastel.decorate(bar_symbol, *styles)}  "
+        prefix = "#{indent}#{@pastel.decorate(bar_symbol, *@theme[:quote])}  "
 
         content = inner(el, opts)
 
@@ -305,9 +302,8 @@ module TTY
       def convert_li(el, opts)
         index = opts[:index] + 1
         indent = SPACE * @current_indent
-        styles = Array(@theme[:list])
         prefix_type = opts[:parent].type == :ol ? "#{index}." : @symbols[:bullet]
-        prefix = @pastel.decorate(prefix_type, *styles) + SPACE
+        prefix = @pastel.decorate(prefix_type, *@theme[:list]) + SPACE
         opts[:strip] = true
 
         content = inner(el, opts)
@@ -487,8 +483,7 @@ module TTY
           result << (@symbols[:line] * (width + 2))
         end
         result << @symbols[:"#{location}_right"]
-        styles = Array(@theme[:table])
-        @pastel.decorate(result.join, *styles)
+        @pastel.decorate(result.join, *@theme[:table])
       end
 
       # Convert tbody element
@@ -592,8 +587,7 @@ module TTY
       def convert_td(el, opts)
         indent = SPACE * @current_indent
         pipe_char = @symbols[:pipe]
-        styles = Array(@theme[:table])
-        pipe = @pastel.decorate(pipe_char, *styles)
+        pipe = @pastel.decorate(pipe_char, *@theme[:table])
         suffix = " #{pipe} "
 
         cell_content = inner(el, opts)
@@ -633,9 +627,8 @@ module TTY
       # @api private
       def convert_hr(el, opts)
         width = @width - @symbols[:diamond].length * 2
-        styles = Array(@theme[:hr])
         line = @symbols[:diamond] + @symbols[:line] * width + @symbols[:diamond]
-        @pastel.decorate(line, *styles) + NEWLINE
+        @pastel.decorate(line, *@theme[:hr]) + NEWLINE
       end
 
       # Convert a element
@@ -647,7 +640,6 @@ module TTY
       #
       # @api private
       def convert_a(el, opts)
-        styles = Array(@theme[:link])
         result = []
 
         if URI.parse(el.attr["href"]).class == URI::MailTo
@@ -660,7 +652,7 @@ module TTY
           if !el.attr["title"].nil? && !el.attr["title"].strip.empty?
             result << "(#{el.attr["title"]}) "
           end
-          result << @pastel.decorate(el.attr["href"], *styles)
+          result << @pastel.decorate(el.attr["href"], *@theme[:link])
 
         elsif el.children.size > 0  &&
              (el.children[0].type != :text || !el.children[0].value.strip.empty?)
@@ -672,7 +664,7 @@ module TTY
           if el.attr["title"]
             result << "(#{el.attr["title"]}) "
           end
-          result << @pastel.decorate(el.attr["href"], *styles)
+          result << @pastel.decorate(el.attr["href"], *@theme[:link])
         end
         result
       end
@@ -732,7 +724,6 @@ module TTY
       #
       # @api private
       def convert_footnote(el, opts)
-        styles = Array[@theme[:note]]
         name = el.options[:name]
         if footnote = @footnotes[name]
           number = footnote.last
@@ -743,7 +734,7 @@ module TTY
         end
 
         content = "#{@symbols[:bracket_left]}#{number}#{@symbols[:bracket_right]}"
-        @pastel.decorate(content, *styles)
+        @pastel.decorate(content, *@theme[:note])
       end
 
       def convert_raw(*)
@@ -759,7 +750,6 @@ module TTY
       #
       # @api private
       def convert_img(el, opts)
-        styles = Array(@theme[:image])
         src = el.attr["src"]
         alt = el.attr["alt"]
         link = [@symbols[:paren_left]]
@@ -767,7 +757,7 @@ module TTY
           link << "#{alt} #{@symbols[:ndash]} "
         end
         link << "#{src}#{@symbols[:paren_right]}"
-        @pastel.decorate(link.join, *styles)
+        @pastel.decorate(link.join, *@theme[:image])
       end
 
       # Convert html element
@@ -784,8 +774,7 @@ module TTY
         elsif el.value == "img"
           convert_img(el, opts)
         elsif el.value == "del"
-          styles = Array(@theme[:strong])
-          @pastel.decorate(inner(el, opts).join, *styles)
+          @pastel.decorate(inner(el, opts).join, *@theme[:strong])
         elsif el.value == "br"
           NEWLINE
         else
@@ -804,13 +793,13 @@ module TTY
       def convert_xml_comment(el, opts)
         block = el.options[:category] == :block
         indent = SPACE * @current_indent
-        styles = Array(@theme[:comment])
         content = el.value
         content.gsub!(/^<!-{2,}\s*/, "") if content.start_with?("<!--")
         content.gsub!(/-{2,}>$/, "") if content.end_with?("-->")
         result = content.lines.map.with_index do |line, i|
           (i.zero? && !block ? "" : indent) +
-            @pastel.decorate("#{@symbols[:hash]} " + line.chomp, *styles)
+            @pastel.decorate("#{@symbols[:hash]} " + line.chomp,
+                             *@theme[:comment])
         end.join(NEWLINE)
         block ? result + NEWLINE : result
       end
