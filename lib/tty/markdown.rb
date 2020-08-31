@@ -137,35 +137,17 @@ module TTY
       if options == :ascii
         ASCII_SYMBOLS
       elsif options.is_a?(Hash)
-        if options.key?(:base)
-          base_symbols = options[:base] == :ascii ? ASCII_SYMBOLS : SYMBOLS
-        else
-          base_symbols = unicode? ? SYMBOLS : ASCII_SYMBOLS
-        end
+        base_symbols = options[:base] == :ascii ? ASCII_SYMBOLS : SYMBOLS
         if options[:override].is_a?(Hash)
           base_symbols.merge(options[:override])
         else
           base_symbols
         end
-      elsif options.nil?
-        unicode? ? SYMBOLS : ASCII_SYMBOLS
       else
         SYMBOLS
       end
     end
     module_function :build_symbols
     private_class_method :build_symbols
-
-    # Check local env variable for terminal UTF-8 support
-    #
-    # @return [Boolean]
-    #
-    # @api private
-    def unicode?
-      lang = ENV.values_at("LANG", "LC_ALL", "LC_CTYPE").compact.first
-      lang.to_s.downcase.include?("utf-8")
-    end
-    module_function :unicode?
-    private_class_method :unicode?
   end # Markdown
 end # TTY
