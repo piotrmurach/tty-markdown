@@ -480,14 +480,13 @@ module TTY
       #
       # @api private
       def border(column_widths, location)
-        symbols = @symbols
         result = []
-        result << symbols[:"#{location}_left"]
+        result << @symbols[:"#{location}_left"]
         column_widths.each.with_index do |width, i|
-          result << symbols[:"#{location}_center"] if i != 0
-          result << (symbols[:line] * (width + 2))
+          result << @symbols[:"#{location}_center"] if i != 0
+          result << (@symbols[:line] * (width + 2))
         end
-        result << symbols[:"#{location}_right"]
+        result << @symbols[:"#{location}_right"]
         styles = Array(@theme[:table])
         @pastel.decorate(result.join, *styles)
       end
@@ -633,10 +632,9 @@ module TTY
       #
       # @api private
       def convert_hr(el, opts)
-        symbols = @symbols
-        width = @width - symbols[:diamond].length * 2
+        width = @width - @symbols[:diamond].length * 2
         styles = Array(@theme[:hr])
-        line = symbols[:diamond] + symbols[:line] * width + symbols[:diamond]
+        line = @symbols[:diamond] + @symbols[:line] * width + @symbols[:diamond]
         @pastel.decorate(line, *styles) + NEWLINE
       end
 
@@ -649,7 +647,6 @@ module TTY
       #
       # @api private
       def convert_a(el, opts)
-        symbols = @symbols
         styles = Array(@theme[:link])
         result = []
 
@@ -671,7 +668,7 @@ module TTY
           content = inner(el, opts)
 
           result << content.join
-          result << " #{symbols[:arrow]} "
+          result << " #{@symbols[:arrow]} "
           if el.attr["title"]
             result << "(#{el.attr["title"]}) "
           end
@@ -762,15 +759,14 @@ module TTY
       #
       # @api private
       def convert_img(el, opts)
-        symbols = @symbols
         styles = Array(@theme[:image])
         src = el.attr["src"]
         alt = el.attr["alt"]
-        link = [symbols[:paren_left]]
+        link = [@symbols[:paren_left]]
         unless alt.to_s.empty?
-          link << "#{alt} #{symbols[:ndash]} "
+          link << "#{alt} #{@symbols[:ndash]} "
         end
-        link << "#{src}#{symbols[:paren_right]}"
+        link << "#{src}#{@symbols[:paren_right]}"
         @pastel.decorate(link.join, *styles)
       end
 
@@ -814,7 +810,7 @@ module TTY
         content.gsub!(/-{2,}>$/, "") if content.end_with?("-->")
         result = content.lines.map.with_index do |line, i|
           (i.zero? && !block ? "" : indent) +
-          @pastel.decorate("#{@symbols[:hash]} " + line.chomp, *styles)
+            @pastel.decorate("#{@symbols[:hash]} " + line.chomp, *styles)
         end.join(NEWLINE)
         block ? result + NEWLINE : result
       end
