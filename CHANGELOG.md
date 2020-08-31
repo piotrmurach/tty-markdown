@@ -1,6 +1,6 @@
 # Change log
 
-## [v0.7.0] - unreleased
+## [v0.7.0] - 2020-08-31
 
 ### Added
 * Add converter for br element by @krage
@@ -22,6 +22,7 @@
 * Change to remove mailto: from email links for brevity @krage
 * Change to update kramdown to support versions >= 1.16 and < 3.0
 * Change to update pastel, tty-color & tty-screen dependencies
+* Change HTML del element formatting to strikethrough
 
 ### Fixed
 * Fix break line handling by @krage
@@ -30,6 +31,7 @@
 * Fix content wrapping to account for the current indentation
 * Fix header wrapping
 * Fix blockquote formatting of content with emphasised style or apostrophe
+* Fix support for HTML del element
 
 ## [v0.6.0] - 2019-03-30
 
