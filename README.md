@@ -56,6 +56,7 @@ Or install it yourself as:
   * [2.2 :theme](#22-theme)
   * [2.3 :width](#23-width)
   * [2.4 :symbols](#24-symbols)
+  * [2.5 :indent](#25-indent)
 * [3. Command line tool](#3-command-line-tool)
 
 ## 1. Usage
@@ -282,6 +283,14 @@ By default formatting will include various Unicode symbols. You can switch to an
 TTY::Markdown.parse(markdown_string, symbols: :ascii)
 TTY::Markdown.parse(markdown_string, symbols: {base: :ascii})
 TTY::Markdown.parse(markdown_string, symbols: {override: {bullet: "x"}})
+```
+
+### 2.5 `:indent`
+
+By default any content apart from the main `h1` header is indented with `2` spaces. Use `:indent` to provide custom indent or no indent at all:
+
+```ruby
+TTY::Markdown.parse(markdown_string, indent: 0)
 ```
 
 ### 3. Command line tool
