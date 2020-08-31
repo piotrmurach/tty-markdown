@@ -769,18 +769,27 @@ module TTY
       #
       # @api private
       def convert_html_element(el, opts)
-        content = inner(el, opts)
-
-        if el.value == "img"
+        if el.value == "div"
+          inner(el, opts)
+        elsif %w[i em].include?(el.value)
+          convert_em(el, opts)
+        elsif %w[b strong].include?(el.value)
+          convert_strong(el, opts)
+        elsif el.value == "img"
           convert_img(el, opts)
+        elsif el.value == "a"
+          convert_a(el, opts)
         elsif el.value == "del"
-          content.join.chars.to_a.map do |char|
+          inner(el, opts).join.chars.to_a.map do |char|
             char + @symbols[:delete]
           end
         elsif el.value == "br"
           NEWLINE
+        elsif !el.children.empty?
+          inner(el, opts)
         else
           warning("HTML element '#{el.value.inspect}' not supported")
+          ""
         end
       end
 
