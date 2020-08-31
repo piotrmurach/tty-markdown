@@ -2,7 +2,7 @@
 
 require_relative "../lib/tty-markdown"
 
-template = <<~MSG
+template = <<-TEXT
 
 ## Codespan
 
@@ -10,6 +10,6 @@ Code like this `foo = []` in line
 
 Another code ```bar = {}``` in line
 
-MSG
+TEXT
 
 print TTY::Markdown.parse template

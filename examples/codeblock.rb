@@ -2,7 +2,7 @@
 
 require_relative "../lib/tty-markdown"
 
-template = <<~MSG
+template = <<-TEXT
 
 ## Codeblock
 
@@ -18,6 +18,6 @@ class Greeter
 end
 ```
 
-MSG
+TEXT
 
 print TTY::Markdown.parse template

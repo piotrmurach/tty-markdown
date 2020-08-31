@@ -2,12 +2,12 @@
 
 require_relative "../lib/tty-markdown"
 
-template = <<~MSG
+template = <<-TEXT
 
 ## Horizontal Rule
 
 ---
 
-MSG
+TEXT
 
 print TTY::Markdown.parse template
