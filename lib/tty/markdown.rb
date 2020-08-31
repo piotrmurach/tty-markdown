@@ -41,7 +41,8 @@ module TTY
       paren_right: ')',
       bracket_left: '[',
       bracket_right: ']',
-      hash: "#"
+      hash: "#",
+      delete: "\u0336"
     }.freeze
 
     ASCII_SYMBOLS = {
@@ -75,7 +76,8 @@ module TTY
       paren_right: ')',
       bracket_left: '[',
       bracket_right: ']',
-      hash: "#"
+      hash: "#",
+      delete: "\u0336"
     }.freeze
 
     THEME = {

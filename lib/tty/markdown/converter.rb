@@ -769,12 +769,14 @@ module TTY
       #
       # @api private
       def convert_html_element(el, opts)
-        if el.children.size > 0
-          inner(el, opts)
-        elsif el.value == "img"
+        content = inner(el, opts)
+
+        if el.value == "img"
           convert_img(el, opts)
         elsif el.value == "del"
-          @pastel.decorate(inner(el, opts).join, *@theme[:strong])
+          content.join.chars.to_a.map do |char|
+            char + @symbols[:delete]
+          end
         elsif el.value == "br"
           NEWLINE
         else
