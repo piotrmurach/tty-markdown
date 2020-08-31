@@ -13,7 +13,7 @@ RSpec.describe TTY::Markdown, "list" do
     - Item 5
 - Item 6
     TEXT
-    parsed = TTY::Markdown.parse(markdown)
+    parsed = TTY::Markdown.parse(markdown, symbols: :unicode)
     expect(parsed).to eq([
       "#{pastel.yellow(symbols[:bullet])} Item 1",
       "  #{pastel.yellow(symbols[:bullet])} Item 2",
@@ -34,7 +34,7 @@ RSpec.describe TTY::Markdown, "list" do
     - Item 5
 - Item 6
     TEXT
-    parsed = TTY::Markdown.parse(markdown)
+    parsed = TTY::Markdown.parse(markdown, symbols: :unicode)
     expect(parsed).to eq([
       "    \e[36;1mheader\e[0m",
       "    #{pastel.yellow(symbols[:bullet])} Item 1",
@@ -56,7 +56,7 @@ RSpec.describe TTY::Markdown, "list" do
   - Item 3
 - Item 4
     TEXT
-    parsed = TTY::Markdown.parse(markdown)
+    parsed = TTY::Markdown.parse(markdown, symbols: :unicode)
     expect(parsed).to eq([
       "    \e[36;1mheader\e[0m",
       "    #{pastel.yellow(symbols[:bullet])} First multiline",
@@ -74,7 +74,7 @@ RSpec.describe TTY::Markdown, "list" do
 - Help: run `ruby -h` or `ruby --help`.
     TEXT
 
-    parsed = TTY::Markdown.parse(markdown, colors: 16)
+    parsed = TTY::Markdown.parse(markdown, colors: 16, symbols: :unicode)
     expect(parsed).to eq([
       "#{pastel.yellow(symbols[:bullet])} Version: run \e[33mruby -v\e[0m or \e[33mruby --version\e[0m.",
       "#{pastel.yellow(symbols[:bullet])} Help: run \e[33mruby -h\e[0m or \e[33mruby --help\e[0m.\n"
@@ -90,7 +90,7 @@ RSpec.describe TTY::Markdown, "list" do
         5. Item 5
 6. Item 6
     TEXT
-    parsed = TTY::Markdown.parse(markdown)
+    parsed = TTY::Markdown.parse(markdown, symbols: :unicode)
     expect(parsed).to eq([
       "#{pastel.yellow('1.')} Item 1",
       "  #{pastel.yellow('1.')} Item 2",

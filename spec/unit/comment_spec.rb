@@ -10,7 +10,7 @@ text before
 text after
     TEXT
 
-    parsed = TTY::Markdown.parse(markdown)
+    parsed = TTY::Markdown.parse(markdown, symbols: :unicode)
 
     expect(parsed).to eq([
       "text before",
@@ -29,7 +29,7 @@ that spans two lines
 text after
     TEXT
 
-    parsed = TTY::Markdown.parse(markdown)
+    parsed = TTY::Markdown.parse(markdown, symbols: :unicode)
 
     expect(parsed).to eq([
       "text before",
@@ -48,7 +48,7 @@ text before
 text after
     TEXT
 
-    parsed = TTY::Markdown.parse(markdown)
+    parsed = TTY::Markdown.parse(markdown, symbols: :unicode)
 
     expect(parsed).to eq([
       "    \e[36;1mHeader\e[0m",
@@ -71,7 +71,7 @@ that spans two lines
 text after
     TEXT
 
-    parsed = TTY::Markdown.parse(markdown)
+    parsed = TTY::Markdown.parse(markdown, symbols: :unicode)
 
     expect(parsed).to eq([
       "    \e[36;1mHeader\e[0m",
@@ -90,7 +90,7 @@ text after
 <!-- TODO: this is a comment -->
     TEXT
 
-    parsed = TTY::Markdown.parse(markdown)
+    parsed = TTY::Markdown.parse(markdown, symbols: :unicode)
 
     expect(parsed).to eq([
       "    \e[36;1mHeader\e[0m",
@@ -109,7 +109,7 @@ that spans two lines
 -->
     TEXT
 
-    parsed = TTY::Markdown.parse(markdown)
+    parsed = TTY::Markdown.parse(markdown, symbols: :unicode)
 
     expect(parsed).to eq([
       "    \e[36;1mHeader\e[0m",

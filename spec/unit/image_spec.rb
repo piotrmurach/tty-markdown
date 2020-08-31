@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe TTY::Markdown, "image" do
-  let(:symbols) { TTY::Markdown::SYMBOLS }
-
   it "displays image title and source location" do
     markdown =<<-TEXT
 ![Code highlight](assets/headers.png)

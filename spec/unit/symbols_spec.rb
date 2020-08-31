@@ -5,7 +5,7 @@ RSpec.describe TTY::Markdown, "symbols" do
 
   it "defaults to unicode symbols" do
     markdown = "- example"
-    parsed = TTY::Markdown.parse(markdown)
+    parsed = TTY::Markdown.parse(markdown, symbols: :unicode)
     expect(parsed).to eq("#{pastel.yellow(TTY::Markdown::SYMBOLS[:bullet])} example\n")
   end
 

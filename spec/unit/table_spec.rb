@@ -14,7 +14,7 @@ RSpec.describe TTY::Markdown, "table" do
 | Footers  |  are cool     | too   |
     TEXT
 
-    parsed = TTY::Markdown.parse(markdown)
+    parsed = TTY::Markdown.parse(markdown, symbols: :unicode)
 
     expect(parsed).to eq([
       "\e[33m#{symbols[:top_left]}#{symbols[:line]*10}#{symbols[:top_center]}",
@@ -76,7 +76,7 @@ RSpec.describe TTY::Markdown, "table" do
 | col 3 is | right-aligned |    $1 |
     TEXT
 
-    parsed = TTY::Markdown.parse(markdown)
+    parsed = TTY::Markdown.parse(markdown, symbols: :unicode)
 
     expect(parsed).to eq([
       "\e[33m#{symbols[:top_left]}#{symbols[:line]*10}#{symbols[:top_center]}",
@@ -122,7 +122,7 @@ RSpec.describe TTY::Markdown, "table" do
 | col 3 is a multiline column | right-aligned has also a very long content that wraps around |    $1 |
     TEXT
 
-    parsed = TTY::Markdown.parse(markdown, width: 80)
+    parsed = TTY::Markdown.parse(markdown, width: 80, symbols: :unicode)
 
     expected_output =
       "\e[33m#{symbols[:top_left]}#{symbols[:line]*24}#{symbols[:top_center]}" +
@@ -181,7 +181,7 @@ RSpec.describe TTY::Markdown, "table" do
 |   |
     TEXT
 
-    parsed = TTY::Markdown.parse(markdown)
+    parsed = TTY::Markdown.parse(markdown, symbols: :unicode)
 
     expect(parsed).to eq([
       "\e[33m#{symbols[:top_left]}#{symbols[:line]*3}#{symbols[:top_right]}\e[0m",
@@ -201,7 +201,7 @@ RSpec.describe TTY::Markdown, "table" do
 | foo | bar | baz |
     TEXT
 
-    parsed = TTY::Markdown.parse(markdown, width: 20)
+    parsed = TTY::Markdown.parse(markdown, width: 20, symbols: :unicode)
 
     expected_output = [
       "    \e[36;1mHeader3\e[0m\n\n",
@@ -232,7 +232,7 @@ RSpec.describe TTY::Markdown, "table" do
 | foo | foo | foo |
     TEXT
 
-    parsed = TTY::Markdown.parse(markdown, width: 20)
+    parsed = TTY::Markdown.parse(markdown, width: 20, symbols: :unicode)
 
     expected_output = [
       "\e[33m#{symbols[:top_left]}#{symbols[:line]*5}#{symbols[:top_center]}",
