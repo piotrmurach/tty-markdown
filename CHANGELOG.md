@@ -1,6 +1,6 @@
 # Change log
 
-## [v0.7.0] - 2020-08-31
+## [v0.7.0] - 2020-09-01
 
 ### Added
 * Add converter for br element by @krage
@@ -10,6 +10,7 @@
 * Add formatting of image source location
 * Add footnotes support
 * Add XML comments support
+* Add HTML div/i/em/b/strong/img/a element support
 
 ### Changed
 * Change #new to accept configuration options as keywords
@@ -88,7 +89,8 @@
 * Initial implementation and release
 
 [v0.7.0]: https://github.com/piotrmurach/tty-markdown/compare/v0.6.0...v0.7.0
-[v0.6.0]: https://github.com/piotrmurach/tty-markdown/compare/v0.5.0...v0.6.0
+[v0.6.0]: https://github.com/piotrmurach/tty-markdown/compare/v0.5.1...v0.6.0
+[v0.5.1]: https://github.com/piotrmurach/tty-markdown/compare/v0.5.0...v0.5.1
 [v0.5.0]: https://github.com/piotrmurach/tty-markdown/compare/v0.4.0...v0.5.0
 [v0.4.0]: https://github.com/piotrmurach/tty-markdown/compare/v0.3.0...v0.4.0
 [v0.3.0]: https://github.com/piotrmurach/tty-markdown/compare/v0.2.0...v0.3.0
