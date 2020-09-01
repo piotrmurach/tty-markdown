@@ -20,7 +20,7 @@ module TTY
         @current_indent = 0
         @indent = options[:indent]
         @pastel = Pastel.new
-        @color_opts = { mode: options[:colors] }
+        @color_opts = { mode: options[:colors], color: @pastel.yellow.detach }
         @width = options[:width]
         @theme = options[:theme].each_with_object({}) do |(key, val), acc|
                    acc[key] = Array(val)

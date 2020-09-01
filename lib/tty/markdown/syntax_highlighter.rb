@@ -57,8 +57,7 @@ module TTY
           formatter = Rouge::Formatters::Terminal256.new
           formatter.format(lexer.lex(code))
         else
-          pastel = Pastel.new
-          code.split("\n").map { |line| pastel.yellow(line) }.join("\n")
+          code.lines.map { |line| options[:color].(line.chomp) }.join("\n")
         end
       end
       module_function :highlight
