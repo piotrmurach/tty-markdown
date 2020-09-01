@@ -41,16 +41,16 @@ module TTY
       # Highlight code snippet
       #
       # @param [String] code
+      # @param [Integer] mode
+      #   the color mode supported by the terminal
+      # @param [String] lang
+      #   the code snippet language
+      # @param [Proc] color
+      #   the fallback coloring
       #
       # @api public
-      def highlight(code, **options)
-        lang = options.fetch(:lang, guess_lang(code))
-        mode = options[:mode]
-        lines = code.dup.lines
-        if options[:fenced].nil?
-          code = lines[1...-1].join + lines[-1].strip
-        end
-
+      def highlight(code, mode: 256, lang: nil, color: ->(line) { line })
+        lang = guess_lang(code) if lang.nil?
         lexer = Rouge::Lexer.find_fancy(lang, code) || Rouge::Lexers::PlainText
 
         if mode <= 0
@@ -59,7 +59,7 @@ module TTY
           formatter = Rouge::Formatters::Terminal256.new
           formatter.format(lexer.lex(code))
         else
-          code.lines.map { |line| options[:color].(line.chomp) }.join("\n")
+          code.lines.map { |line| color.(line.chomp) }.join("\n")
         end
       end
       module_function :highlight

@@ -231,9 +231,9 @@ module TTY
       # @api private
       def convert_codespan(el, opts)
         indent = SPACE * @current_indent
-        options = @color_opts.merge(el.options.merge(fenced: opts[:fenced]))
+        syntax_opts = @color_opts.merge(lang: el.options[:lang])
         raw_code = Strings.wrap(el.value, @width - @current_indent)
-        highlighted = SyntaxHighliter.highlight(raw_code, **options)
+        highlighted = SyntaxHighliter.highlight(raw_code, **syntax_opts)
 
         highlighted.lines.map.with_index do |line, i|
           i.zero? ? line.chomp : indent + line.chomp
@@ -249,7 +249,6 @@ module TTY
       #
       # @api private
       def convert_codeblock(el, opts)
-        opts[:fenced] = false
         indent = SPACE * @current_indent
         indent + convert_codespan(el, opts)
       end
