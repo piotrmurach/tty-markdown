@@ -147,4 +147,22 @@ lexer = Rouge::Lexer.find_fancy(lang, code) || Rouge::Lexers::PlainText
 
     expect(parsed).to eq(expected_output)
   end
+
+  it "doesn't highlights when zero colors specified" do
+    markdown =<<-TEXT
+```
+class Greeter
+  def say
+  end
+end
+```
+    TEXT
+    parsed = TTY::Markdown.parse(markdown, colors: 0)
+    expect(parsed).to eq([
+     "class Greeter",
+     "  def say",
+     "  end",
+     "end"
+    ].join("\n"))
+  end
 end

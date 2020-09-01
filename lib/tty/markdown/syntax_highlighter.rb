@@ -53,7 +53,9 @@ module TTY
 
         lexer = Rouge::Lexer.find_fancy(lang, code) || Rouge::Lexers::PlainText
 
-        if mode >= 256
+        if mode <= 0
+          code
+        elsif 256 <= mode
           formatter = Rouge::Formatters::Terminal256.new
           formatter.format(lexer.lex(code))
         else
