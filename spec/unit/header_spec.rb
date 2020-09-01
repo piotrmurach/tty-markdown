@@ -7,6 +7,12 @@ RSpec.describe TTY::Markdown, "header" do
     expect(parsed).to eq("\e[36;1;4mHeader1\e[0m\n")
   end
 
+  it "disables top level header coloring" do
+    parsed = TTY::Markdown.parse("Header1\n======", colors: 0)
+
+    expect(parsed).to eq("Header1\n")
+  end
+
   it "converts headers" do
     headers =<<-TEXT
 # Header1
