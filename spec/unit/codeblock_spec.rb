@@ -10,7 +10,7 @@ class Greeter
 end
 ```
     TEXT
-    parsed = TTY::Markdown.parse(markdown, colors: 16)
+    parsed = TTY::Markdown.parse(markdown, mode: 16)
     expect(parsed).to eq([
      "\e[33mclass Greeter\e[0m",
      "\e[33m  def say\e[0m",
@@ -26,7 +26,7 @@ end
       end
     end
     TEXT
-    parsed = TTY::Markdown.parse(markdown, colors: 16)
+    parsed = TTY::Markdown.parse(markdown, mode: 16)
     expect(parsed).to eq([
      "\e[33mclass Greeter\e[0m",
      "\e[33m  def say\e[0m",
@@ -44,7 +44,7 @@ class Greeter
 end
 ```
     TEXT
-    parsed = TTY::Markdown.parse(markdown, colors: 16)
+    parsed = TTY::Markdown.parse(markdown, mode: 16)
     expect(parsed).to eq([
      "\e[33mclass Greeter\e[0m",
      "\e[33m  def say\e[0m",
@@ -63,7 +63,7 @@ def say
 end
 ```
     TEXT
-    parsed = TTY::Markdown.parse(markdown, colors: 16)
+    parsed = TTY::Markdown.parse(markdown, mode: 16)
     expect(parsed).to eq([
      "\e[33mdef say\e[0m",
      "",
@@ -83,7 +83,7 @@ class Greeter
 end
 ```
     TEXT
-    parsed = TTY::Markdown.parse(markdown, colors: 16)
+    parsed = TTY::Markdown.parse(markdown, mode: 16)
     expect(parsed).to eq([
      "    \e[36;1mheader\e[0m",
      "    \e[33mclass Greeter\e[0m",
@@ -104,7 +104,7 @@ class Greeter
 end
 ```
     TEXT
-    parsed = TTY::Markdown.parse(markdown, colors: 16)
+    parsed = TTY::Markdown.parse(markdown, mode: 16)
     expect(parsed).to eq([
      "    \e[36;1mheader\e[0m",
      "",
@@ -121,7 +121,7 @@ end
 lexer = Rouge::Lexer.find_fancy(lang, code) || Rouge::Lexers::PlainText
 ```
     TEXT
-    parsed = TTY::Markdown.parse(markdown, width: 50, colors: 16)
+    parsed = TTY::Markdown.parse(markdown, width: 50, mode: 16)
 
     expected_output =
       "\e[33mlexer = Rouge::Lexer.find_fancy(lang, code) || \e[0m\n" +
@@ -138,7 +138,7 @@ lexer = Rouge::Lexer.find_fancy(lang, code) || Rouge::Lexers::PlainText
 lexer = Rouge::Lexer.find_fancy(lang, code) || Rouge::Lexers::PlainText
 ```
     TEXT
-    parsed = TTY::Markdown.parse(markdown, width: 50, colors: 16)
+    parsed = TTY::Markdown.parse(markdown, width: 50, mode: 16)
 
     expected_output =
       "    \e[36;1mlexer\e[0m\n\n" +

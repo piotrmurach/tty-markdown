@@ -27,7 +27,7 @@ RSpec.describe TTY::Markdown, "emphasis" do
 
   context "when backticks" do
     it "convertrs backtics to ansi codes" do
-      parsed = TTY::Markdown.parse("Some text with `important` content.", colors: 16)
+      parsed = TTY::Markdown.parse("Some text with `important` content.", mode: 16)
 
       expect(parsed).to eq("Some text with \e[33mimportant\e[0m content.\n")
     end

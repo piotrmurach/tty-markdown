@@ -98,7 +98,7 @@ module TTY
     #
     # @param [String] source
     #   the source with markdown
-    # @param [Integer] :colors
+    # @param [Integer] :mode
     #   a number of colors supported
     # @param [Integer] :indent
     #   the indent of the converted output
@@ -115,10 +115,10 @@ module TTY
     #
     # @api public
     def parse(source, width: TTY::Screen.width, theme: THEME, indent: 2,
-                      colors: TTY::Color.mode, symbols: {}, color: :auto,
+                      mode: TTY::Color.mode, symbols: {}, color: :auto,
                       **doc_opts)
       convert_options = { width: width, indent: indent, theme: theme,
-                          colors: colors, symbols: build_symbols(symbols),
+                          mode: mode, symbols: build_symbols(symbols),
                           input: "KramdownExt", enabled: color_enabled(color) }
       doc = Kramdown::Document.new(source, convert_options.merge(doc_opts))
       Converter.convert(doc.root, doc.options).join

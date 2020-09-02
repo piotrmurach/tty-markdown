@@ -13,7 +13,7 @@ RSpec.describe TTY::Markdown, "typography" do
 
   it "converts smart quotes to utf-8 chars" do
     markdown = "To \"extract\" `script.rb`'s..."
-    parsed = TTY::Markdown.parse(markdown, colors: 16, symbols: :unicode)
+    parsed = TTY::Markdown.parse(markdown, mode: 16, symbols: :unicode)
 
     expect(parsed).to eq("To #{symbols[:ldquo]}extract#{symbols[:rdquo]} \e[33mscript.rb\e[0m#{symbols[:rsquo]}s#{symbols[:hellip]}\n")
   end

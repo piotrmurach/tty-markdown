@@ -20,7 +20,7 @@ module TTY
         @current_indent = 0
         @indent = options[:indent]
         @pastel = Pastel.new(enabled: options[:enabled])
-        @color_opts = { mode: options[:colors],
+        @color_opts = { mode: options[:mode],
                         color: @pastel.yellow.detach,
                         enabled: options[:enabled] }
         @width = options[:width]

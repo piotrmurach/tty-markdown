@@ -74,7 +74,7 @@ RSpec.describe TTY::Markdown, "list" do
 - Help: run `ruby -h` or `ruby --help`.
     TEXT
 
-    parsed = TTY::Markdown.parse(markdown, colors: 16, symbols: :unicode)
+    parsed = TTY::Markdown.parse(markdown, mode: 16, symbols: :unicode)
     expect(parsed).to eq([
       "#{pastel.yellow(symbols[:bullet])} Version: run \e[33mruby -v\e[0m or \e[33mruby --version\e[0m.",
       "#{pastel.yellow(symbols[:bullet])} Help: run \e[33mruby -h\e[0m or \e[33mruby --help\e[0m.\n"
