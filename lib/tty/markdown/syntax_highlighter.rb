@@ -45,15 +45,18 @@ module TTY
       #   the color mode supported by the terminal
       # @param [String] lang
       #   the code snippet language
+      # @param [Boolean] enabled
+      #   whether or not coloring is enabled
       # @param [Proc] color
       #   the fallback coloring
       #
       # @api public
-      def highlight(code, mode: 256, lang: nil, color: ->(line) { line })
+      def highlight(code, mode: 256, lang: nil, enabled: nil,
+                    color: ->(line) { line })
         lang = guess_lang(code) if lang.nil?
         lexer = Rouge::Lexer.find_fancy(lang, code) || Rouge::Lexers::PlainText
 
-        if mode <= 0
+        if enabled == false
           code
         elsif 256 <= mode
           formatter = Rouge::Formatters::Terminal256.new

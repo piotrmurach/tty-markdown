@@ -8,7 +8,7 @@ RSpec.describe TTY::Markdown, "header" do
   end
 
   it "disables top level header coloring" do
-    parsed = TTY::Markdown.parse("Header1\n======", colors: 0)
+    parsed = TTY::Markdown.parse("Header1\n======", color: :never)
 
     expect(parsed).to eq("Header1\n")
   end

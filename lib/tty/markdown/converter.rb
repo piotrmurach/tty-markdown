@@ -19,10 +19,10 @@ module TTY
         super
         @current_indent = 0
         @indent = options[:indent]
-        mode = options[:colors]
-        pastel_opts = mode <= 0 ? { enabled: false } : {}
-        @pastel = Pastel.new(**pastel_opts)
-        @color_opts = { mode: mode, color: @pastel.yellow.detach }
+        @pastel = Pastel.new(enabled: options[:enabled])
+        @color_opts = { mode: options[:colors],
+                        color: @pastel.yellow.detach,
+                        enabled: options[:enabled] }
         @width = options[:width]
         @theme = options[:theme].each_with_object({}) do |(key, val), acc|
                    acc[key] = Array(val)

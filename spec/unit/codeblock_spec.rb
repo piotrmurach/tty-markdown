@@ -157,7 +157,7 @@ class Greeter
 end
 ```
     TEXT
-    parsed = TTY::Markdown.parse(markdown, colors: 0)
+    parsed = TTY::Markdown.parse(markdown, color: :never)
     expect(parsed).to eq([
      "class Greeter",
      "  def say",

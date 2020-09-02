@@ -108,15 +108,18 @@ module TTY
     #   the color names for markdown elements
     # @param [Integer] :width
     #   the width at which to wrap content
+    # @param [Boolean] :color
+    #   when to enable coloring out of always, never or auto
     # @param [Hash] :doc_opts
     #   the markdown document parser options
     #
     # @api public
     def parse(source, width: TTY::Screen.width, theme: THEME, indent: 2,
-                      colors: TTY::Color.mode, symbols: {}, **doc_opts)
+                      colors: TTY::Color.mode, symbols: {}, color: :auto,
+                      **doc_opts)
       convert_options = { width: width, indent: indent, theme: theme,
                           colors: colors, symbols: build_symbols(symbols),
-                          input: "KramdownExt" }
+                          input: "KramdownExt", enabled: color_enabled(color) }
       doc = Kramdown::Document.new(source, convert_options.merge(doc_opts))
       Converter.convert(doc.root, doc.options).join
     end
@@ -129,6 +132,19 @@ module TTY
       parse(::File.read(path), **options)
     end
     module_function :parse_file
+
+    # Convert color setting to Pastel setting
+    #
+    # @api private
+    def color_enabled(color)
+      case color.to_s
+      when "always" then true
+      when "never"  then false
+      else nil
+      end
+    end
+    module_function :color_enabled
+    private_class_method :color_enabled
 
     # Extract and build symbols
     #
