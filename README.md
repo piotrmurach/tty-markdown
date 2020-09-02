@@ -52,11 +52,12 @@ Or install it yourself as:
   * [1.8 Horizontal Rule](#18-horizontal-rule)
   * [1.9 Footnotes](#19-footnotes)
 * [2. Options](#2-options)
-  * [2.1 :colors](#21-colors)
+  * [2.1 :mode](#21-mode)
   * [2.2 :theme](#22-theme)
   * [2.3 :width](#23-width)
   * [2.4 :symbols](#24-symbols)
   * [2.5 :indent](#25-indent)
+  * [2.6 :color](#26-color)
 * [3. Command line tool](#3-command-line-tool)
 
 ## 1. Usage
@@ -229,15 +230,19 @@ All footnotes will be displayed with a sequential number and rendered in the ter
 
 ## 2. Options
 
-### 2.1 `:colors`
+### 2.1 `:mode`
 
-By default the `256` colors scheme is used to render code block elements. You can change that by specifying desired number of colors:
+By default the `256` color scheme is used to render code block elements.
+
+You can change this by specifying maximum number of colors to be `16` ANSI colors:
 
 ```ruby
-TTY::Markdown.pasre(markdown_string, colors: 16)
+TTY::Markdown.pasre(markdown_string, mode: 16)
 ```
 
-This feauture may be handy when working in terminals with limited color support. By default, **TTY::Markdown** detects your terminal color mode and adjusts output automatically.
+This feature may be handy when working in terminals with limited color support.
+
+By default, **TTY::Markdown** detects your terminal color mode and adjusts output automatically.
 
 ### 2.2 `:theme`
 
@@ -291,6 +296,18 @@ By default any content apart from the main `h1` header is indented with `2` spac
 
 ```ruby
 TTY::Markdown.parse(markdown_string, indent: 0)
+```
+
+### 2.6 `:color`
+
+You can control when to apply coloring to various document elements.
+
+Valid values are `:never`, `:always` or `:auto`. By default `:auto` is used which auto detects if coloring can be applied.
+
+For example, to always color content regardless of terminal support do:
+
+```ruby
+TTY::Markdown.parse(markdown_string, color: :always)
 ```
 
 ### 3. Command line tool
