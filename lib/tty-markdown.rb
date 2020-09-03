@@ -1,1 +1,1 @@
-require_relative 'tty/markdown'
+require_relative "tty/markdown"
