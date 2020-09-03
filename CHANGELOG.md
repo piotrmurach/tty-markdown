@@ -1,6 +1,6 @@
 # Change log
 
-## [v0.7.0] - 2020-09-01
+## [v0.7.0] - 2020-09-03
 
 ### Added
 * Add converter for br element by @krage
@@ -11,6 +11,7 @@
 * Add footnotes support
 * Add XML comments support
 * Add HTML div/i/em/b/strong/img/a element support
+* Add color configuration setting
 
 ### Changed
 * Change #new to accept configuration options as keywords
@@ -24,6 +25,7 @@
 * Change to update kramdown to support versions >= 1.16 and < 3.0
 * Change to update pastel, tty-color & tty-screen dependencies
 * Change HTML del element formatting to strikethrough
+* Rename colors setting to mode
 
 ### Fixed
 * Fix break line handling by @krage
