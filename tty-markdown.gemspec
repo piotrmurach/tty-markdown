@@ -12,6 +12,15 @@ Gem::Specification.new do |spec|
   spec.homepage      = "https://ttytoolkit.org"
   spec.license       = "MIT"
 
+  if spec.respond_to?(:metadata=)
+    spec.metadata["allowed_push_host"] = "https://rubygems.org"
+    spec.metadata["bug_tracker_uri"] = "https://github.com/piotrmurach/tty-markdown/issues"
+    spec.metadata["changelog_uri"] = "https://github.com/piotrmurach/tty-markdown/blob/master/CHANGELOG.md"
+    spec.metadata["documentation_uri"] = "https://www.rubydoc.info/gems/tty-markdown"
+    spec.metadata["homepage_uri"] = spec.homepage
+    spec.metadata["source_code_uri"] = "https://github.com/piotrmurach/tty-markdown"
+  end
+
   spec.files         = Dir["lib/**/*"]
   spec.extra_rdoc_files = ["README.md", "CHANGELOG.md", "LICENSE.txt"]
   spec.require_paths = ["lib"]
