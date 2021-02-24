@@ -5,7 +5,7 @@ RSpec.describe TTY::Markdown, "image" do
     markdown =<<-TEXT
 ![Code highlight](assets/headers.png)
     TEXT
-    parsed = TTY::Markdown.parse(markdown)
+    parsed = TTY::Markdown.parse(markdown, color: :always)
     expect(parsed).to eq("\e[90m(Code highlight - assets/headers.png)\e[0m\n")
   end
 
@@ -13,7 +13,7 @@ RSpec.describe TTY::Markdown, "image" do
     markdown =<<-TEXT
 ![](assets/headers.png)
     TEXT
-    parsed = TTY::Markdown.parse(markdown)
+    parsed = TTY::Markdown.parse(markdown, color: :always)
     expect(parsed).to eq("\e[90m(assets/headers.png)\e[0m\n")
   end
 
@@ -21,7 +21,7 @@ RSpec.describe TTY::Markdown, "image" do
     markdown =<<-TEXT
 <img src="assets/headers.png" alt="Code highlight" />
     TEXT
-    parsed = TTY::Markdown.parse(markdown)
+    parsed = TTY::Markdown.parse(markdown, color: :always)
     expect(parsed).to eq("\e[90m(Code highlight - assets/headers.png)\e[0m\n")
   end
 end

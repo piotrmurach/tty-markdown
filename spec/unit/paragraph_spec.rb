@@ -23,7 +23,7 @@ And this is a next one.
 
 Human madness is oftentimes a cunning and most feline thing. When you think it fled, it may have but become transfigured into some still subtler form.
     TEXT
-    parsed = TTY::Markdown.parse(markdown, width: 50)
+    parsed = TTY::Markdown.parse(markdown, color: :always, width: 50)
     expect(parsed).to eq([
       "    \e[36;1mheader\e[0m",
       "",
@@ -42,7 +42,7 @@ that spans two lines.
 
 And this is a next one.
     TEXT
-    parsed = TTY::Markdown.parse(markdown)
+    parsed = TTY::Markdown.parse(markdown, color: :always)
     expect(parsed).to eq([
       "    \e[36;1mheader\e[0m",
       "    This is a first paragraph",

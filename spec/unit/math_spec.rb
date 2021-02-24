@@ -7,7 +7,7 @@ math
 $$5+5$$
 formula
     TEXT
-    parsed = TTY::Markdown.parse(markdown, mode: 16)
+    parsed = TTY::Markdown.parse(markdown, color: :always, mode: 16)
     expect(parsed).to eq("math\n\e[33m5+5\e[0m\nformula\n")
   end
 
@@ -15,7 +15,7 @@ formula
     markdown =<<-TEXT
 $$5+5$$
     TEXT
-    parsed = TTY::Markdown.parse(markdown, mode: 16)
+    parsed = TTY::Markdown.parse(markdown, color: :always, mode: 16)
     expect(parsed).to eq("\e[33m5+5\e[0m\n")
   end
 
@@ -23,7 +23,7 @@ $$5+5$$
     markdown =<<-TEXT
 math $$5+5$$ formula
     TEXT
-    parsed = TTY::Markdown.parse(markdown, mode: 16)
+    parsed = TTY::Markdown.parse(markdown, color: :always, mode: 16)
     expect(parsed).to eq("math \e[33m5+5\e[0m formula\n")
   end
 
@@ -33,7 +33,7 @@ math $$5+5$$ formula
 
 $$5+5$$
     TEXT
-    parsed = TTY::Markdown.parse(markdown, mode: 16)
+    parsed = TTY::Markdown.parse(markdown, color: :always, mode: 16)
     expect(parsed).to eq([
       "    \e[36;1mheader\e[0m",
       "",
@@ -46,7 +46,7 @@ $$5+5$$
 ### header
 $$5+5$$
     TEXT
-    parsed = TTY::Markdown.parse(markdown, mode: 16)
+    parsed = TTY::Markdown.parse(markdown, color: :always, mode: 16)
     expect(parsed).to eq([
       "    \e[36;1mheader\e[0m",
       "    \e[33m5+5\e[0m\n"

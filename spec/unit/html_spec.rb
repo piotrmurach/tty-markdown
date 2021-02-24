@@ -8,7 +8,7 @@ RSpec.describe TTY::Markdown, "html" do
     markdown =<<-TEXT
 <del>done</del> made a mistake
     TEXT
-    parsed = TTY::Markdown.parse(markdown, symbols: :unicode)
+    parsed = TTY::Markdown.parse(markdown, color: :always, symbols: :unicode)
     expect(parsed).to eq("d#{del}o#{del}n#{del}e#{del} made a mistake\n")
   end
 
@@ -18,7 +18,7 @@ RSpec.describe TTY::Markdown, "html" do
 
 <del>done</del>
     TEXT
-    parsed = TTY::Markdown.parse(markdown, symbols: :unicode)
+    parsed = TTY::Markdown.parse(markdown, color: :always, symbols: :unicode)
     expect(parsed).to eq([
       "    \e[36;1mHeader\e[0m\n",
       "    d#{del}o#{del}n#{del}e#{del}\n"
@@ -29,7 +29,7 @@ RSpec.describe TTY::Markdown, "html" do
     markdown =<<-TEXT
 <a href="https://ttytoolkit.org">TTY Toolkit</a>
     TEXT
-    parsed = TTY::Markdown.parse(markdown, symbols: :unicode)
+    parsed = TTY::Markdown.parse(markdown, color: :always, symbols: :unicode)
     expect(parsed).to eq("TTY Toolkit #{symbols[:arrow]} \e[33;4mhttps://ttytoolkit.org\e[0m\n")
   end
 
@@ -37,7 +37,7 @@ RSpec.describe TTY::Markdown, "html" do
     markdown =<<-TEXT
 <strong>bold</strong>
     TEXT
-    parsed = TTY::Markdown.parse(markdown, symbols: :unicode)
+    parsed = TTY::Markdown.parse(markdown, color: :always, symbols: :unicode)
     expect(parsed).to eq("\e[33;1mbold\e[0m\n")
   end
 
@@ -45,7 +45,7 @@ RSpec.describe TTY::Markdown, "html" do
     markdown =<<-TEXT
 <em>emphasised</em>
     TEXT
-    parsed = TTY::Markdown.parse(markdown, symbols: :unicode)
+    parsed = TTY::Markdown.parse(markdown, color: :always, symbols: :unicode)
     expect(parsed).to eq("\e[33memphasised\e[0m\n")
   end
 end

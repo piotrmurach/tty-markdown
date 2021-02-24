@@ -19,7 +19,7 @@ write HTML page
 
 *[HTML]: Hyper Text Markup Language
     TEXT
-    parsed = TTY::Markdown.parse(markdown)
+    parsed = TTY::Markdown.parse(markdown, color: :always)
     expect(parsed).to eq([
       "    \e[36;1mheader\e[0m\n",
       "    write HTML(Hyper Text Markup Language) page\n\n"

@@ -40,7 +40,7 @@ Item2
 After para
     TEXT
 
-    parsed = described_class.parse(markdown)
+    parsed = described_class.parse(markdown, color: :always)
 
     expect(parsed).to eq([
       "    \e[36;1mHeader3\e[0m\n",
@@ -60,7 +60,7 @@ List + header
 : # Header 1
     TEXT
 
-    parsed = described_class.parse(markdown)
+    parsed = described_class.parse(markdown, color: :always)
 
     expect(parsed).to eq([
       "List + header",
