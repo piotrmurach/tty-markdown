@@ -237,7 +237,7 @@ By default the `256` color scheme is used to render code block elements.
 You can change this by specifying maximum number of colors to be `16` ANSI colors:
 
 ```ruby
-TTY::Markdown.pasre(markdown_string, mode: 16)
+TTY::Markdown.parse(markdown_string, mode: 16)
 ```
 
 This feature may be handy when working in terminals with limited color support.
