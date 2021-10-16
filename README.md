@@ -9,15 +9,15 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/k4vub4koct329ggd?svg=true)][appveyor]
 [![Maintainability](https://api.codeclimate.com/v1/badges/1656060107c73ac42c2b/maintainability)][codeclimate]
 [![Coverage Status](https://coveralls.io/repos/github/piotrmurach/tty-markdown/badge.svg)][coverage]
-[![Inline docs](http://inch-ci.org/github/piotrmurach/tty-markdown.svg?branch=master)][inchpages]
+[![Inline docs](https://inch-ci.org/github/piotrmurach/tty-markdown.svg?branch=master)][inchpages]
 
 [gitter]: https://gitter.im/piotrmurach/tty
-[gem]: http://badge.fury.io/rb/tty-markdown
+[gem]: https://badge.fury.io/rb/tty-markdown
 [gh_actions_ci]: https://github.com/piotrmurach/tty-markdown/actions?query=workflow%3ACI
 [appveyor]: https://ci.appveyor.com/project/piotrmurach/tty-markdown
 [codeclimate]: https://codeclimate.com/github/piotrmurach/tty-markdown/maintainability
 [coverage]: https://coveralls.io/github/piotrmurach/tty-markdown
-[inchpages]: http://inch-ci.org/github/piotrmurach/tty-markdown
+[inchpages]: https://inch-ci.org/github/piotrmurach/tty-markdown
 
 > Convert a markdown document or text into a terminal friendly output.
 
@@ -326,7 +326,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/piotrmurach/tty-markdown. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/piotrmurach/tty-markdown. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/piotrmurach/tty-markdown/blob/master/CODE_OF_CONDUCT.md).
 
 ## License
 
