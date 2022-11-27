@@ -164,14 +164,18 @@ module TTY
     end
     module_function :parse_file
 
-    # Convert color setting to Pastel setting
+    # Convert color option to Pastel option
+    #
+    # @param [String, Symbol] color
+    #   the color option to convert
+    #
+    # @return [Boolean, nil]
     #
     # @api private
     def color_enabled(color)
       case color.to_s
       when "always" then true
       when "never"  then false
-      else nil
       end
     end
     module_function :color_enabled

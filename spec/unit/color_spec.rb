@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe TTY::Markdown, "color" do
-  it "switches off coloring for all elements" do
-    markdown =<<-TEXT
+  let(:markdown) {
+    <<-TEXT
 # Header
 
 **bold**
@@ -14,7 +14,25 @@ class Greeter
 end
 ```
     TEXT
-    parsed = TTY::Markdown.parse(markdown, color: :never)
+  }
+
+  it "switches off coloring for all elements with never value as a symbol" do
+    parsed = described_class.parse(markdown, color: :never)
+
+    expect(parsed).to eq([
+      "Header",
+      "",
+      "bold",
+      "",
+      "class Greeter",
+      "  def say",
+      "  end",
+      "end"
+    ].join("\n"))
+  end
+
+  it "switches off coloring for all elements with never value as a string" do
+    parsed = described_class.parse(markdown, color: "never")
 
     expect(parsed).to eq([
       "Header",
