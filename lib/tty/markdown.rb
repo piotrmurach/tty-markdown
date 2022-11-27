@@ -9,6 +9,9 @@ require_relative "markdown/version"
 require_relative "markdown/kramdown_ext"
 
 module TTY
+  # Responsible for converting Markdown to the terminal output
+  #
+  # @api public
   module Markdown
     SYMBOLS = {
       arrow: "»",
@@ -96,36 +99,64 @@ module TTY
 
     # Parse a markdown string
     #
+    # @example
+    #   TTY::Markdown.parse("# Header")
+    #
     # @param [String] source
     #   the source with markdown
-    # @param [Integer] :mode
-    #   a number of colors supported
-    # @param [Integer] :indent
-    #   the indent of the converted output
-    # @param [Hash<Symbol, String>] :symbols
-    #   the symbols to use when generating output
-    # @param [Hash<Symbol, Symbol>] :theme
-    #   the color names for markdown elements
-    # @param [Integer] :width
+    # @param [String, Symbol] color
+    #   the output coloring support out of always, auto or never
+    # @param [Integer] indent
+    #   the converted output indent
+    # @param [Integer] mode
+    #   the number of supported colors
+    # @param [Hash, String, Symbol, nil] symbols
+    #   the converted output symbols
+    # @param [Hash{Symbol => Array<Symbol>, Symbol}] theme
+    #   the converted output color theme
+    # @param [Integer] width
     #   the width at which to wrap content
-    # @param [Boolean] :color
-    #   when to enable coloring out of always, never or auto
-    # @param [Hash] :doc_opts
+    # @param [Hash] doc_opts
     #   the markdown document parser options
     #
+    # @return [String]
+    #   the converted terminal output
+    #
     # @api public
-    def parse(source, width: TTY::Screen.width, theme: THEME, indent: 2,
-                      mode: TTY::Color.mode, symbols: {}, color: :auto,
-                      **doc_opts)
-      convert_options = { width: width, indent: indent, theme: theme,
-                          mode: mode, symbols: build_symbols(symbols),
-                          input: "KramdownExt", enabled: color_enabled(color) }
-      doc = Kramdown::Document.new(source, convert_options.merge(doc_opts))
+    def parse(source,
+              color: :auto,
+              indent: 2,
+              mode: TTY::Color.mode,
+              symbols: {},
+              theme: THEME,
+              width: TTY::Screen.width,
+              **doc_opts)
+      converter_options = {
+        enabled: color_enabled(color),
+        indent: indent,
+        input: "KramdownExt",
+        mode: mode,
+        symbols: build_symbols(symbols),
+        theme: theme,
+        width: width
+      }
+      doc = Kramdown::Document.new(source, converter_options.merge(doc_opts))
       Converter.convert(doc.root, doc.options).join
     end
     module_function :parse
 
-    # Pase a markdown document
+    # Parse a markdown document
+    #
+    # @example
+    #   TTY::Markdown.parse_file("example.md")
+    #
+    # @param [String] path
+    #   the file path
+    # @param [Hash] options
+    #   the conversion options
+    #
+    # @return [String]
+    #   the converted terminal output
     #
     # @api public
     def parse_file(path, **options)
