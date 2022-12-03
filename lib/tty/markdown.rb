@@ -181,24 +181,40 @@ module TTY
     module_function :color_enabled
     private_class_method :color_enabled
 
-    # Extract and build symbols
+    # Build symbols hash from the provided symbols option
+    #
+    # @param [Hash, String, Symbol, nil] symbols
+    #   the converted output symbols
+    #
+    # @return [Hash{Symbol => String}]
     #
     # @api private
-    def build_symbols(options)
-      if options == :ascii
-        ASCII_SYMBOLS
-      elsif options.is_a?(Hash)
-        base_symbols = options[:base] == :ascii ? ASCII_SYMBOLS : SYMBOLS
-        if options[:override].is_a?(Hash)
-          base_symbols.merge(options[:override])
-        else
-          base_symbols
-        end
+    def build_symbols(symbols)
+      case symbols
+      when String, Symbol
+        select_symbols(symbols)
+      when Hash
+        base_symbols = select_symbols(symbols[:base])
+        base_symbols.merge(symbols[:override].to_h)
       else
         SYMBOLS
       end
     end
     module_function :build_symbols
     private_class_method :build_symbols
+
+    # Select between ASCII or Unicode symbols
+    #
+    # @param [String, Symbol, nil] name
+    #   the symbols name
+    #
+    # @return [Hash{Symbol => String}]
+    #
+    # @api private
+    def select_symbols(name)
+      name.to_s == "ascii" ? ASCII_SYMBOLS : SYMBOLS
+    end
+    module_function :select_symbols
+    private_class_method :select_symbols
   end # Markdown
 end # TTY
