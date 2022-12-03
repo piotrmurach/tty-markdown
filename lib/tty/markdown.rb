@@ -112,7 +112,7 @@ module TTY
     #   the number of supported colors
     # @param [Hash, String, Symbol, nil] symbols
     #   the converted output symbols
-    # @param [Hash{Symbol => Array<Symbol>, Symbol}] theme
+    # @param [Hash{Symbol => Array, String, Symbol}, nil] theme
     #   the converted output color theme
     # @param [Integer] width
     #   the width at which to wrap content
@@ -128,7 +128,7 @@ module TTY
               indent: 2,
               mode: TTY::Color.mode,
               symbols: {},
-              theme: THEME,
+              theme: {},
               width: TTY::Screen.width,
               **doc_opts)
       converter_options = {
@@ -137,7 +137,7 @@ module TTY
         input: "KramdownExt",
         mode: mode,
         symbols: build_symbols(symbols),
-        theme: theme,
+        theme: build_theme(theme),
         width: width
       }
       doc = Kramdown::Document.new(source, converter_options.merge(doc_opts))
@@ -216,5 +216,21 @@ module TTY
     end
     module_function :select_symbols
     private_class_method :select_symbols
+
+    # Build theme hash from the provided theme option
+    #
+    # @param [Hash{Symbol => Array, String, Symbol}, nil] theme
+    #   the converted output theme
+    #
+    # @return [Hash{Symbol => Array<Symbol>}]
+    #
+    # @api private
+    def build_theme(theme)
+      THEME.merge(theme.to_h) do |*, new_style|
+        Array(new_style).map(&:to_sym)
+      end
+    end
+    module_function :build_theme
+    private_class_method :build_theme
   end # Markdown
 end # TTY

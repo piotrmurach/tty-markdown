@@ -24,9 +24,7 @@ module TTY
                         color: @pastel.yellow.detach,
                         enabled: options[:enabled] }
         @width = options[:width]
-        @theme = options[:theme].each_with_object({}) do |(key, val), acc|
-                   acc[key] = Array(val)
-                 end
+        @theme = options[:theme]
         @symbols = options[:symbols]
         @footnote_no = 1
         @footnotes = {}

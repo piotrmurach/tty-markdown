@@ -5,6 +5,9 @@
 ### Changed
 * Change the symbols option to accept string value
 
+### Fixed
+* Fix the theme option to allow overriding specific markdown element styles
+
 ## [v0.7.0] - 2020-09-03
 
 ### Added
