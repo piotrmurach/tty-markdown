@@ -246,29 +246,31 @@ By default, **TTY::Markdown** detects your terminal color mode and adjusts outpu
 
 ### 2.2 `:theme`
 
-A hash of styles that allows to customize specific elements of the markdown text. By default the following styles are used:
+Use the `:theme` option to change specific markdown element styles.
+
+For example, to override styles for the `link` and `list` elements do:
 
 ```ruby
-THEME = {
-  em: :yellow,
-  header: [:cyan, :bold],
-  hr: :yellow,
-  link: [:yellow, :underline],
-  list: :yellow,
-  strong: [:yellow, :bold],
-  table: :yellow,
-  quote: :yellow,
-  image: :bright_black,
-  note: :yellow,
-  comment: :bright_black
-}
+TTY::Markdown.parse(markdown_string, theme: {link: :magenta, list: %i[magenta bold]})
 ```
 
-In order to provide new styles use `:theme` key:
+Here's a complete list of element names with corresponding styles:
 
-```ruby
-TTY::Markdown.parse(markdown_string, theme: { ... })
-```
+| Name       | Style                   |
+|------------|-------------------------|
+| `:comment` | `:bright_black`         |
+| `:em`      | `:yellow`               |
+| `:header`  | `%i[cyan bold]`         |
+| `:hr`      | `:yellow`               |
+| `:image`   | `:bright_black`         |
+| `:link`    | `%i[yellow underline]`  |
+| `:list`    | `:yellow`               |
+| `:note`    | `:yellow`               |
+| `:quote`   | `:yellow`               |
+| `:strong`  | `%i[yellow bold]`       |
+| `:table`   | `:yellow`               |
+
+Read [pastel documentation](https://github.com/piotrmurach/pastel#3-supported-colors) for all supported styles.
 
 ### 2.3 `:width`
 
