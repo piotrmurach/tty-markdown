@@ -290,6 +290,42 @@ TTY::Markdown.parse(markdown_string, symbols: {base: :ascii})
 TTY::Markdown.parse(markdown_string, symbols: {override: {bullet: "x"}})
 ```
 
+Here's a complete list of symbol names with corresponding ASCII and Unicode characters:
+
+| Name             | ASCII | Unicode |
+|------------------|-------|---------|
+| `:arrow`         | `->`  | `»`     |
+| `:bar`           | `\|`  | `┃`     |
+| `:bottom_center` | `+`   | `┴`     |
+| `:bottom_left`   | `+`   | `└`     |
+| `:bottom_right`  | `+`   | `┘`     |
+| `:bracket_left`  | `[`   | `[`     |
+| `:bracket_right` | `]`   | `]`     |
+| `:bullet`        | `*`   | `●`     |
+| `:diamond`       | `*`   | `◈`     |
+| `:hash`          | `#`   | `#`     |
+| `:hellip`        | `...` | `…`     |
+| `:laquo`         | `<<`  | `«`     |
+| `:laquo_space`   | `<< ` | `« `    |
+| `:ldquo`         | `"`   | `“`     |
+| `:lsquo`         | `"`   | `‘`     |
+| `:line`          | `-`   | `─`     |
+| `:mdash`         | `-`   | `—`     |
+| `:mid_center`    | `+`   | `┼`     |
+| `:mid_left`      | `+`   | `├`     |
+| `:mid_right`     | `+`   | `┤`     |
+| `:ndash`         | `-`   | `-`     |
+| `:paren_left`    | `(`   | `(`     |
+| `:paren_right`   | `)`   | `)`     |
+| `:pipe`          | `\|`  | `│`     |
+| `:raquo`         | `>>`  | `»`     |
+| `:raquo_space`   | ` >>` | ` »`    |
+| `:rdquo`         | `"`   | `”`     |
+| `:rsquo`         | `"`   | `’`     |
+| `:top_center`    | `+`   | `┬`     |
+| `:top_left`      | `+`   | `┌`     |
+| `:top_right`     | `+`   | `┐`     |
+
 ### 2.5 `:indent`
 
 By default any content apart from the main `h1` header is indented with `2` spaces. Use `:indent` to provide custom indent or no indent at all:
