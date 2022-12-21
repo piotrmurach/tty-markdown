@@ -1,6 +1,6 @@
 # Change log
 
-## [v0.7.1] - unreleased
+## [v0.7.1] - 2022-12-21
 
 ### Changed
 * Change the symbols option to accept string value
