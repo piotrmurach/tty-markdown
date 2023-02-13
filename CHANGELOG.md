@@ -1,5 +1,10 @@
 # Change log
 
+## unreleased
+
+### Changed
+* Change gemspec to expand supported rouge versions by Ash McKenzie(@ashmckenzie)
+
 ## [v0.7.1] - 2022-12-21
 
 ### Changed
