@@ -1,6 +1,6 @@
 # Change log
 
-## unreleased
+## [v0.7.2] - 2023-03-12
 
 ### Changed
 * Change gemspec to expand supported rouge versions by Ash McKenzie(@ashmckenzie)
@@ -103,6 +103,7 @@
 
 * Initial implementation and release
 
+[v0.7.2]: https://github.com/piotrmurach/tty-markdown/compare/v0.7.1...v0.7.2
 [v0.7.1]: https://github.com/piotrmurach/tty-markdown/compare/v0.7.0...v0.7.1
 [v0.7.0]: https://github.com/piotrmurach/tty-markdown/compare/v0.6.0...v0.7.0
 [v0.6.0]: https://github.com/piotrmurach/tty-markdown/compare/v0.5.1...v0.6.0
