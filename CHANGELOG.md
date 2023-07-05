@@ -1,5 +1,18 @@
 # Change log
 
+## [v0.7.2] - 2023-03-12
+
+### Changed
+* Change gemspec to expand supported rouge versions by Ash McKenzie(@ashmckenzie)
+
+## [v0.7.1] - 2022-12-21
+
+### Changed
+* Change the symbols option to accept string value
+
+### Fixed
+* Fix the theme option to allow overriding specific markdown element styles
+
 ## [v0.7.0] - 2020-09-03
 
 ### Added
@@ -90,6 +103,8 @@
 
 * Initial implementation and release
 
+[v0.7.2]: https://github.com/piotrmurach/tty-markdown/compare/v0.7.1...v0.7.2
+[v0.7.1]: https://github.com/piotrmurach/tty-markdown/compare/v0.7.0...v0.7.1
 [v0.7.0]: https://github.com/piotrmurach/tty-markdown/compare/v0.6.0...v0.7.0
 [v0.6.0]: https://github.com/piotrmurach/tty-markdown/compare/v0.5.1...v0.6.0
 [v0.5.1]: https://github.com/piotrmurach/tty-markdown/compare/v0.5.0...v0.5.1

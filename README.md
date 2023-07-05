@@ -9,15 +9,15 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/k4vub4koct329ggd?svg=true)][appveyor]
 [![Maintainability](https://api.codeclimate.com/v1/badges/1656060107c73ac42c2b/maintainability)][codeclimate]
 [![Coverage Status](https://coveralls.io/repos/github/piotrmurach/tty-markdown/badge.svg)][coverage]
-[![Inline docs](http://inch-ci.org/github/piotrmurach/tty-markdown.svg?branch=master)][inchpages]
+[![Inline docs](https://inch-ci.org/github/piotrmurach/tty-markdown.svg?branch=master)][inchpages]
 
 [gitter]: https://gitter.im/piotrmurach/tty
-[gem]: http://badge.fury.io/rb/tty-markdown
+[gem]: https://badge.fury.io/rb/tty-markdown
 [gh_actions_ci]: https://github.com/piotrmurach/tty-markdown/actions?query=workflow%3ACI
 [appveyor]: https://ci.appveyor.com/project/piotrmurach/tty-markdown
 [codeclimate]: https://codeclimate.com/github/piotrmurach/tty-markdown/maintainability
 [coverage]: https://coveralls.io/github/piotrmurach/tty-markdown
-[inchpages]: http://inch-ci.org/github/piotrmurach/tty-markdown
+[inchpages]: https://inch-ci.org/github/piotrmurach/tty-markdown
 
 > Convert a markdown document or text into a terminal friendly output.
 
@@ -246,29 +246,31 @@ By default, **TTY::Markdown** detects your terminal color mode and adjusts outpu
 
 ### 2.2 `:theme`
 
-A hash of styles that allows to customize specific elements of the markdown text. By default the following styles are used:
+Use the `:theme` option to change specific markdown element styles.
+
+For example, to override styles for the `link` and `list` elements do:
 
 ```ruby
-THEME = {
-  em: :yellow,
-  header: [:cyan, :bold],
-  hr: :yellow,
-  link: [:yellow, :underline],
-  list: :yellow,
-  strong: [:yellow, :bold],
-  table: :yellow,
-  quote: :yellow,
-  image: :bright_black,
-  note: :yellow,
-  comment: :bright_black
-}
+TTY::Markdown.parse(markdown_string, theme: {link: :magenta, list: %i[magenta bold]})
 ```
 
-In order to provide new styles use `:theme` key:
+Here's a complete list of element names with corresponding styles:
 
-```ruby
-TTY::Markdown.parse(markdown_string, theme: { ... })
-```
+| Name       | Style                   |
+|------------|-------------------------|
+| `:comment` | `:bright_black`         |
+| `:em`      | `:yellow`               |
+| `:header`  | `%i[cyan bold]`         |
+| `:hr`      | `:yellow`               |
+| `:image`   | `:bright_black`         |
+| `:link`    | `%i[yellow underline]`  |
+| `:list`    | `:yellow`               |
+| `:note`    | `:yellow`               |
+| `:quote`   | `:yellow`               |
+| `:strong`  | `%i[yellow bold]`       |
+| `:table`   | `:yellow`               |
+
+Read [pastel documentation](https://github.com/piotrmurach/pastel#3-supported-colors) for all supported styles.
 
 ### 2.3 `:width`
 
@@ -289,6 +291,42 @@ TTY::Markdown.parse(markdown_string, symbols: :ascii)
 TTY::Markdown.parse(markdown_string, symbols: {base: :ascii})
 TTY::Markdown.parse(markdown_string, symbols: {override: {bullet: "x"}})
 ```
+
+Here's a complete list of symbol names with corresponding ASCII and Unicode characters:
+
+| Name             | ASCII | Unicode |
+|------------------|-------|---------|
+| `:arrow`         | `->`  | `»`     |
+| `:bar`           | `\|`  | `┃`     |
+| `:bottom_center` | `+`   | `┴`     |
+| `:bottom_left`   | `+`   | `└`     |
+| `:bottom_right`  | `+`   | `┘`     |
+| `:bracket_left`  | `[`   | `[`     |
+| `:bracket_right` | `]`   | `]`     |
+| `:bullet`        | `*`   | `●`     |
+| `:diamond`       | `*`   | `◈`     |
+| `:hash`          | `#`   | `#`     |
+| `:hellip`        | `...` | `…`     |
+| `:laquo`         | `<<`  | `«`     |
+| `:laquo_space`   | `<< ` | `« `    |
+| `:ldquo`         | `"`   | `“`     |
+| `:lsquo`         | `"`   | `‘`     |
+| `:line`          | `-`   | `─`     |
+| `:mdash`         | `-`   | `—`     |
+| `:mid_center`    | `+`   | `┼`     |
+| `:mid_left`      | `+`   | `├`     |
+| `:mid_right`     | `+`   | `┤`     |
+| `:ndash`         | `-`   | `-`     |
+| `:paren_left`    | `(`   | `(`     |
+| `:paren_right`   | `)`   | `)`     |
+| `:pipe`          | `\|`  | `│`     |
+| `:raquo`         | `>>`  | `»`     |
+| `:raquo_space`   | ` >>` | ` »`    |
+| `:rdquo`         | `"`   | `”`     |
+| `:rsquo`         | `"`   | `’`     |
+| `:top_center`    | `+`   | `┬`     |
+| `:top_left`      | `+`   | `┌`     |
+| `:top_right`     | `+`   | `┐`     |
 
 ### 2.5 `:indent`
 
@@ -326,7 +364,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/piotrmurach/tty-markdown. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/piotrmurach/tty-markdown. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/piotrmurach/tty-markdown/blob/master/CODE_OF_CONDUCT.md).
 
 ## License
 

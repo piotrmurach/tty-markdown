@@ -9,6 +9,9 @@ require_relative "markdown/version"
 require_relative "markdown/kramdown_ext"
 
 module TTY
+  # Responsible for converting Markdown to the terminal output
+  #
+  # @api public
   module Markdown
     SYMBOLS = {
       arrow: "»",
@@ -96,36 +99,64 @@ module TTY
 
     # Parse a markdown string
     #
+    # @example
+    #   TTY::Markdown.parse("# Header")
+    #
     # @param [String] source
     #   the source with markdown
-    # @param [Integer] :mode
-    #   a number of colors supported
-    # @param [Integer] :indent
-    #   the indent of the converted output
-    # @param [Hash<Symbol, String>] :symbols
-    #   the symbols to use when generating output
-    # @param [Hash<Symbol, Symbol>] :theme
-    #   the color names for markdown elements
-    # @param [Integer] :width
+    # @param [String, Symbol] color
+    #   the output coloring support out of always, auto or never
+    # @param [Integer] indent
+    #   the converted output indent
+    # @param [Integer] mode
+    #   the number of supported colors
+    # @param [Hash, String, Symbol, nil] symbols
+    #   the converted output symbols
+    # @param [Hash{Symbol => Array, String, Symbol}, nil] theme
+    #   the converted output color theme
+    # @param [Integer] width
     #   the width at which to wrap content
-    # @param [Boolean] :color
-    #   when to enable coloring out of always, never or auto
-    # @param [Hash] :doc_opts
+    # @param [Hash] doc_opts
     #   the markdown document parser options
     #
+    # @return [String]
+    #   the converted terminal output
+    #
     # @api public
-    def parse(source, width: TTY::Screen.width, theme: THEME, indent: 2,
-                      mode: TTY::Color.mode, symbols: {}, color: :auto,
-                      **doc_opts)
-      convert_options = { width: width, indent: indent, theme: theme,
-                          mode: mode, symbols: build_symbols(symbols),
-                          input: "KramdownExt", enabled: color_enabled(color) }
-      doc = Kramdown::Document.new(source, convert_options.merge(doc_opts))
+    def parse(source,
+              color: :auto,
+              indent: 2,
+              mode: TTY::Color.mode,
+              symbols: {},
+              theme: {},
+              width: TTY::Screen.width,
+              **doc_opts)
+      converter_options = {
+        enabled: color_enabled(color),
+        indent: indent,
+        input: "KramdownExt",
+        mode: mode,
+        symbols: build_symbols(symbols),
+        theme: build_theme(theme),
+        width: width
+      }
+      doc = Kramdown::Document.new(source, converter_options.merge(doc_opts))
       Converter.convert(doc.root, doc.options).join
     end
     module_function :parse
 
-    # Pase a markdown document
+    # Parse a markdown document
+    #
+    # @example
+    #   TTY::Markdown.parse_file("example.md")
+    #
+    # @param [String] path
+    #   the file path
+    # @param [Hash] options
+    #   the conversion options
+    #
+    # @return [String]
+    #   the converted terminal output
     #
     # @api public
     def parse_file(path, **options)
@@ -133,37 +164,73 @@ module TTY
     end
     module_function :parse_file
 
-    # Convert color setting to Pastel setting
+    # Convert color option to Pastel option
+    #
+    # @param [String, Symbol] color
+    #   the color option to convert
+    #
+    # @return [Boolean, nil]
     #
     # @api private
     def color_enabled(color)
       case color.to_s
       when "always" then true
       when "never"  then false
-      else nil
       end
     end
     module_function :color_enabled
     private_class_method :color_enabled
 
-    # Extract and build symbols
+    # Build symbols hash from the provided symbols option
+    #
+    # @param [Hash, String, Symbol, nil] symbols
+    #   the converted output symbols
+    #
+    # @return [Hash{Symbol => String}]
     #
     # @api private
-    def build_symbols(options)
-      if options == :ascii
-        ASCII_SYMBOLS
-      elsif options.is_a?(Hash)
-        base_symbols = options[:base] == :ascii ? ASCII_SYMBOLS : SYMBOLS
-        if options[:override].is_a?(Hash)
-          base_symbols.merge(options[:override])
-        else
-          base_symbols
-        end
+    def build_symbols(symbols)
+      case symbols
+      when String, Symbol
+        select_symbols(symbols)
+      when Hash
+        base_symbols = select_symbols(symbols[:base])
+        base_symbols.merge(symbols[:override].to_h)
       else
         SYMBOLS
       end
     end
     module_function :build_symbols
     private_class_method :build_symbols
+
+    # Select between ASCII or Unicode symbols
+    #
+    # @param [String, Symbol, nil] name
+    #   the symbols name
+    #
+    # @return [Hash{Symbol => String}]
+    #
+    # @api private
+    def select_symbols(name)
+      name.to_s == "ascii" ? ASCII_SYMBOLS : SYMBOLS
+    end
+    module_function :select_symbols
+    private_class_method :select_symbols
+
+    # Build theme hash from the provided theme option
+    #
+    # @param [Hash{Symbol => Array, String, Symbol}, nil] theme
+    #   the converted output theme
+    #
+    # @return [Hash{Symbol => Array<Symbol>}]
+    #
+    # @api private
+    def build_theme(theme)
+      THEME.merge(theme.to_h) do |*, new_style|
+        Array(new_style).map(&:to_sym)
+      end
+    end
+    module_function :build_theme
+    private_class_method :build_theme
   end # Markdown
 end # TTY

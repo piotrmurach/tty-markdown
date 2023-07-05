@@ -1,5 +1,6 @@
 AllCops:
   NewCops: enable
+  TargetRubyVersion: 2.0
 
 Layout/LineLength:
   Max: 80
@@ -11,11 +12,9 @@ Metrics/AbcSize:
   Max: 30
 
 Metrics/BlockLength:
-  CountComments: true
-  Max: 25
-  IgnoredMethods: []
   Exclude:
     - "spec/**/*"
+    - "*.gemspec"
 
 Metrics/ClassLength:
   Max: 1500
@@ -35,6 +34,12 @@ Naming/MethodParameterName:
 Style/AsciiComments:
   Enabled: false
 
+Style/BlockDelimiters:
+  Enabled: false
+
+Style/CommentedKeyword:
+  Enabled: false
+
 Style/LambdaCall:
   SupportedStyles:
   - call
@@ -44,11 +49,4 @@ Style/StringLiterals:
   EnforcedStyle: double_quotes
 
 Style/TrivialAccessors:
-  Enabled: false
-
-# { ... } for multi-line blocks is okay
-Style/BlockDelimiters:
-  Enabled: false
-
-Style/CommentedKeyword:
   Enabled: false
