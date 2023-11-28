@@ -17,6 +17,7 @@ Gem::Specification.new do |spec|
     spec.metadata["bug_tracker_uri"] = "https://github.com/piotrmurach/tty-markdown/issues"
     spec.metadata["changelog_uri"] = "https://github.com/piotrmurach/tty-markdown/blob/master/CHANGELOG.md"
     spec.metadata["documentation_uri"] = "https://www.rubydoc.info/gems/tty-markdown"
+    spec.metadata["funding_uri"] = "https://github.com/sponsors/piotrmurach"
     spec.metadata["homepage_uri"] = spec.homepage
     spec.metadata["source_code_uri"] = "https://github.com/piotrmurach/tty-markdown"
   end
