@@ -19,6 +19,7 @@ Gem::Specification.new do |spec|
     spec.metadata["documentation_uri"] = "https://www.rubydoc.info/gems/tty-markdown"
     spec.metadata["funding_uri"] = "https://github.com/sponsors/piotrmurach"
     spec.metadata["homepage_uri"] = spec.homepage
+    spec.metadata["rubygems_mfa_required"] = "true"
     spec.metadata["source_code_uri"] = "https://github.com/piotrmurach/tty-markdown"
   end
 
