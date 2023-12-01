@@ -5,13 +5,13 @@
 # TTY::Markdown
 
 [![Gem Version](https://badge.fury.io/rb/tty-markdown.svg)][gem]
-[![Actions CI](https://github.com/piotrmurach/tty-markdown/workflows/CI/badge.svg?branch=master)][gh_actions_ci]
+[![Actions CI](https://github.com/piotrmurach/tty-markdown/actions/workflows/ci.yml/badge.svg)][gh_actions_ci]
 [![Build status](https://ci.appveyor.com/api/projects/status/k4vub4koct329ggd?svg=true)][appveyor]
 [![Maintainability](https://api.codeclimate.com/v1/badges/1656060107c73ac42c2b/maintainability)][codeclimate]
 [![Coverage Status](https://coveralls.io/repos/github/piotrmurach/tty-markdown/badge.svg)][coverage]
 
 [gem]: https://badge.fury.io/rb/tty-markdown
-[gh_actions_ci]: https://github.com/piotrmurach/tty-markdown/actions?query=workflow%3ACI
+[gh_actions_ci]: https://github.com/piotrmurach/tty-markdown/actions/workflows/ci.yml
 [appveyor]: https://ci.appveyor.com/project/piotrmurach/tty-markdown
 [codeclimate]: https://codeclimate.com/github/piotrmurach/tty-markdown/maintainability
 [coverage]: https://coveralls.io/github/piotrmurach/tty-markdown
