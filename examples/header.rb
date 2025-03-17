@@ -2,7 +2,7 @@
 
 require_relative "../lib/tty-markdown"
 
-markdown =<<-TEXT
+markdown = <<-TEXT
 # Header 1
 
 I try all things, I achieve what I can.

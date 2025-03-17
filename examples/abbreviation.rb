@@ -2,7 +2,7 @@
 
 require_relative "../lib/tty-markdown"
 
-markdown =<<-TEXT
+markdown = <<-TEXT
 
 ## Abbreviation
 
