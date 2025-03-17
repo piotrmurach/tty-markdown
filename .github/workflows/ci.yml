@@ -36,7 +36,6 @@ jobs:
           - "3.2"
           - "3.3"
           - ruby-head
-          - jruby-9.2
           - jruby-9.3
           - jruby-9.4
           - jruby-head
@@ -47,6 +46,8 @@ jobs:
           - ruby: "2.7"
             os: ubuntu-latest
             coverage: true
+          - ruby: jruby-9.2
+            os: ubuntu-20.04
     env:
       COVERAGE: ${{ matrix.coverage }}
       COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
