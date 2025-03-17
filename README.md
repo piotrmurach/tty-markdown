@@ -16,25 +16,30 @@
 [codeclimate]: https://codeclimate.com/github/piotrmurach/tty-markdown/maintainability
 [coverage]: https://coveralls.io/github/piotrmurach/tty-markdown
 
-> Convert a markdown document or text into a terminal friendly output.
+> Convert a Markdown document or text into a terminal friendly output.
 
-**TTY::Markdown** provides independent markdown processing component for [TTY](https://github.com/piotrmurach/tty) toolkit.
+**TTY::Markdown** provides a Markdown processing component for the
+[TTY Toolkit](https://github.com/piotrmurach/tty).
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'tty-markdown'
+gem "tty-markdown"
 ```
 
 And then execute:
 
-    $ bundle
+```shell
+$ bundle
+```
 
 Or install it yourself as:
 
-    $ gem install tty-markdown
+```shell
+$ gem install tty-markdown
+```
 
 ## Contents
 
@@ -59,7 +64,8 @@ Or install it yourself as:
 
 ## 1. Usage
 
-Using `parse` method, you can transform a markdown string into a terminal formatted content:
+Using `parse` method, you can transform a Markdown string into a terminal
+formatted content:
 
 ```ruby
 parsed = TTY::Markdown.parse("# Hello")
@@ -67,7 +73,8 @@ puts parsed
 # => "\e[36;1mHello\e[0m\n"
 ```
 
-The `parse_file` allows you to transform a markdown document into a terminal formatted output:
+The `parse_file` allows you to transform a Markdown document into a terminal
+formatted output:
 
 ```ruby
 parsed = TTY::Markdown.parse_file('example.md')
@@ -76,7 +83,7 @@ puts parsed
 
 ### 1.1 Header
 
-Parsing the following markdown headers:
+Parsing the following Markdown headers:
 
 ```markdown
 TTY::Markdown
@@ -95,7 +102,7 @@ The terminal output looks like this:
 
 ### 1.2 List
 
-Both numbered and unordered lists are supported. Given a markdown:
+Both numbered and unordered lists are supported. Given a Markdown:
 
 ```markdown
 - Item 1
@@ -128,7 +135,7 @@ The parsed output looks like this:
 
 ### 1.4 Link
 
-A markdown link:
+A Markdown link:
 
 ```markdown
 [An inline-style link](https://ttytoolkit.org)
@@ -142,7 +149,7 @@ The link text will be rendered with the link next to it:
 
 ### 1.5 Blockquote
 
-Given a markdown quote:
+Given a Markdown quote:
 
 ```markdown
 > Blockquotes are very handy in email to emulate reply text.
@@ -158,7 +165,7 @@ The rendered output looks like this:
 
 The parser can highlight syntax of many programming languages.
 
-Given a markdown codeblock with a language specification:
+Given a Markdown codeblock with a language specification:
 
 ````markdown
 ```ruby
@@ -176,7 +183,7 @@ The terminal output will look like this:
 
 ### 1.7 Table
 
-You can transform tables which understand the markdown alignment.
+You can transform tables which understand the Markdown alignment.
 
 For example, given the following table:
 
@@ -194,7 +201,7 @@ Then the terminal output will look like this:
 
 ### 1.8 Horizontal Rule
 
-You can specify a horizontal rule in markdown:
+You can specify a horizontal rule in Markdown:
 
 ```markdown
 ***
@@ -221,7 +228,8 @@ It is not down on any map[^foo]; true places[^bar] never are.
 [^bar]: A particular position, point, or area in space; a location.
 ```
 
-All footnotes will be displayed with a sequential number and rendered in the terminal like this:
+All footnotes will be displayed with a sequential number and rendered in
+the terminal like this:
 
 ![Footnotes example](assets/footnotes.png)
 
@@ -231,7 +239,8 @@ All footnotes will be displayed with a sequential number and rendered in the ter
 
 By default the `256` color scheme is used to render code block elements.
 
-You can change this by specifying maximum number of colors to be `16` ANSI colors:
+Use the `:mode` keyword to specify the maximum number of colors, for example,
+to be `16` ANSI colors:
 
 ```ruby
 TTY::Markdown.parse(markdown_string, mode: 16)
@@ -239,11 +248,12 @@ TTY::Markdown.parse(markdown_string, mode: 16)
 
 This feature may be handy when working in terminals with limited color support.
 
-By default, **TTY::Markdown** detects your terminal color mode and adjusts output automatically.
+By default, **TTY::Markdown** detects terminal color mode and adjusts output
+automatically.
 
 ### 2.2 `:theme`
 
-Use the `:theme` option to change specific markdown element styles.
+Use the `:theme` keyword to change specific Markdown element styles.
 
 For example, to override styles for the `link` and `list` elements do:
 
@@ -267,11 +277,12 @@ Here's a complete list of element names with corresponding styles:
 | `:strong`  | `%i[yellow bold]`       |
 | `:table`   | `:yellow`               |
 
-Read [pastel documentation](https://github.com/piotrmurach/pastel#3-supported-colors) for all supported styles.
+Read the [pastel](https://github.com/piotrmurach/pastel#3-supported-colors)
+documentation for all supported styles.
 
 ### 2.3 `:width`
 
-You can easily control the maximum width of the output by using the `:width` key:
+Use the `:width` keyword to control the maximum width of the output:
 
 ```ruby
 TTY::Markdown.parse(markdown_string, width: 80)
@@ -281,7 +292,9 @@ By default the terminal screen width is used.
 
 ### 2.4 `:symbols`
 
-By default formatting will include various Unicode symbols. You can switch to an included ASCII set and/or override individually with the `:symbols` key:
+By default, formatted output includes various Unicode symbols. Use the
+`:symbols` keyword to switch to an ASCII set and/or override individual
+symbols.
 
 ```ruby
 TTY::Markdown.parse(markdown_string, symbols: :ascii)
@@ -289,7 +302,8 @@ TTY::Markdown.parse(markdown_string, symbols: {base: :ascii})
 TTY::Markdown.parse(markdown_string, symbols: {override: {bullet: "x"}})
 ```
 
-Here's a complete list of symbol names with corresponding ASCII and Unicode characters:
+Here's a complete list of symbol names with corresponding ASCII and Unicode
+characters:
 
 | Name             | ASCII | Unicode |
 |------------------|-------|---------|
@@ -327,7 +341,8 @@ Here's a complete list of symbol names with corresponding ASCII and Unicode char
 
 ### 2.5 `:indent`
 
-By default any content apart from the main `h1` header is indented with `2` spaces. Use `:indent` to provide custom indent or no indent at all:
+By default, any content apart from the main `h1` header is indented with `2`
+spaces. Use the `:indent` keyword to provide custom indent or no indent at all:
 
 ```ruby
 TTY::Markdown.parse(markdown_string, indent: 0)
@@ -335,11 +350,11 @@ TTY::Markdown.parse(markdown_string, indent: 0)
 
 ### 2.6 `:color`
 
-You can control when to apply coloring to various document elements.
+Use the `:color` keyword to control when to apply coloring to various document
+elements. Valid values are `:always`, `:auto` or `:never`. The default `:auto`
+value automatically detects whether to color the output or not.
 
-Valid values are `:never`, `:always` or `:auto`. By default `:auto` is used which auto detects if coloring can be applied.
-
-For example, to always color content regardless of terminal support do:
+For example, to always color content regardless of terminal support:
 
 ```ruby
 TTY::Markdown.parse(markdown_string, color: :always)
@@ -347,7 +362,8 @@ TTY::Markdown.parse(markdown_string, color: :always)
 
 ### 3. Command line tool
 
-You can install [tty-markdown-cli](https://github.com/piotrmurach/tty-markdown-cli) to use `tty-markdown` executable in terminal:
+Install the [tty-markdown-cli](https://github.com/piotrmurach/tty-markdown-cli)
+to use the `tty-markdown` executable in the terminal:
 
 ```bash
 $ tty-markdown README.md
@@ -355,22 +371,37 @@ $ tty-markdown README.md
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bin/setup` to install dependencies.
+Then, run `rake spec` to run the tests. You can also run `bin/console`
+for an interactive prompt that will allow you to experiment.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+To install this gem onto your local machine, run `bundle exec rake install`.
+To release a new version, update the version number in `version.rb`, and then
+run `bundle exec rake release`, which will create a git tag for the version,
+push git commits and tags, and push the `.gem` file to
+[rubygems.org](https://rubygems.org).
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/piotrmurach/tty-markdown. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/piotrmurach/tty-markdown/blob/master/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at
+https://github.com/piotrmurach/tty-markdown.
+This project is intended to be a safe, welcoming space for collaboration,
+and contributors are expected to adhere to the
+[code of conduct](https://github.com/piotrmurach/tty-markdown/blob/master/CODE_OF_CONDUCT.md).
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+The gem is available as open source under the terms of the
+[MIT License](https://opensource.org/licenses/MIT).
 
 ## Code of Conduct
 
-Everyone interacting in the TTY::Markdown project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/piotrmurach/tty-markdown/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the TTY::Markdown project’s codebases, issue trackers,
+chat rooms and mailing lists is expected to follow the
+[code of conduct](https://github.com/piotrmurach/tty-markdown/blob/master/CODE_OF_CONDUCT.md).
 
 ## Copyright
 
-Copyright (c) 2018 Piotr Murach. See LICENSE for further details.
+Copyright (c) 2018 Piotr Murach. See
+[LICENSE.txt](https://github.com/piotrmurach/tty-markdown/blob/master/LICENSE.txt)
+for further details.
