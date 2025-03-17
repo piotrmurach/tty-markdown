@@ -33,7 +33,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "pastel",     "~> 0.8"
   spec.add_dependency "rouge",      ">= 3.14", "< 5.0"
   spec.add_dependency "strings",    "~> 0.2.0"
-  spec.add_dependency "tty-color",  "~> 0.5"
+  spec.add_dependency "tty-color",  "~> 0.6"
   spec.add_dependency "tty-screen", "~> 0.8"
 
   spec.add_development_dependency "rake"
