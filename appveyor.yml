@@ -1,6 +1,7 @@
 ---
 skip_commits:
   files:
+    - ".github/**"
     - "bin/**"
     - "examples/**"
     - "*.md"
