@@ -1,5 +1,6 @@
 plugins:
   - rubocop-performance
+  - rubocop-rake
 
 AllCops:
   NewCops: enable
