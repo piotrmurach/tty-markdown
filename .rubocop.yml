@@ -10,12 +10,21 @@ AllCops:
 Gemspec/DevelopmentDependencies:
   Enabled: false
 
+Layout/FirstArrayElementIndentation:
+  EnforcedStyle: consistent
+
+Layout/FirstHashElementIndentation:
+  EnforcedStyle: consistent
+
 Layout/LineLength:
   Max: 80
   Exclude:
-    - "**/*.gemspec"
+    - "*.gemspec"
 
-Lint/AssignmentInCondition:
+Layout/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: no_space
+
+Lint/UnusedMethodArgument:
   Enabled: false
 
 Metrics/AbcSize:
@@ -27,19 +36,29 @@ Metrics/BlockLength:
     - "*.gemspec"
 
 Metrics/ClassLength:
-  Max: 1500
+  Enabled: false
 
 Metrics/CyclomaticComplexity:
   Enabled: false
 
 Metrics/MethodLength:
-  Max: 20
+  Exclude:
+    - "lib/tty/markdown/converter.rb"
 
-Naming/BinaryOperatorParameterName:
+Metrics/ParameterLists:
   Enabled: false
 
+Metrics/PerceivedComplexity:
+  Max: 5
+  AllowedPatterns:
+    - '\Aconvert_*'
+
+Naming/FileName:
+  Exclude:
+    - "lib/tty-markdown.rb"
+
 Naming/MethodParameterName:
- MinNameLength: 2
+  MinNameLength: 2
 
 RSpec/DescribedClass:
   Exclude:
@@ -60,13 +79,17 @@ Style/BlockDelimiters:
 Style/CommentedKeyword:
   Enabled: false
 
+Style/FetchEnvVar:
+  Enabled: false
+
 Style/LambdaCall:
-  SupportedStyles:
-  - call
-  - braces
+  EnforcedStyle: braces
+
+Style/ParallelAssignment:
+  Enabled: false
 
 Style/StringLiterals:
   EnforcedStyle: double_quotes
 
-Style/TrivialAccessors:
-  Enabled: false
+Style/StringLiteralsInInterpolation:
+  EnforcedStyle: double_quotes
