@@ -1,6 +1,7 @@
 plugins:
   - rubocop-performance
   - rubocop-rake
+  - rubocop-rspec
 
 AllCops:
   NewCops: enable
@@ -39,6 +40,16 @@ Naming/BinaryOperatorParameterName:
 
 Naming/MethodParameterName:
  MinNameLength: 2
+
+RSpec/DescribedClass:
+  Exclude:
+    - "spec/perf/**/*"
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/SpecFilePathFormat:
+  Enabled: false
 
 Style/AsciiComments:
   Enabled: false
