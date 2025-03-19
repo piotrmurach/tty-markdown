@@ -12,6 +12,7 @@ if ENV["COVERAGE"] == "true"
   SimpleCov.start do
     command_name "spec"
     add_filter "spec"
+    enable_coverage :branch
   end
 end
 
