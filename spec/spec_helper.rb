@@ -17,7 +17,7 @@ if ENV["COVERAGE"] == "true"
 end
 
 require "bundler/setup"
-require "tty/markdown"
+require "tty-markdown"
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
