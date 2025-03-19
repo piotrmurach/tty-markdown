@@ -22,6 +22,7 @@ require "tty-markdown"
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
     expectations.max_formatted_output_length = nil
+    expectations.syntax = :expect
   end
 
   # Enable flags like --only-failures and --next-failure
@@ -29,8 +30,4 @@ RSpec.configure do |config|
 
   # Disable RSpec exposing methods globally on `Module` and `main`
   config.disable_monkey_patching!
-
-  config.expect_with :rspec do |c|
-    c.syntax = :expect
-  end
 end
