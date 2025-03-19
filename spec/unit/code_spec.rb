@@ -1,60 +1,74 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Markdown, "codeblock" do
-  it "highlights a fenced code without language" do
-    markdown =<<-TEXT
+RSpec.describe TTY::Markdown, ".parse" do
+  context "when inline code" do
+    it "converts text marked with a double backtick to colored text" do
+      parsed = described_class.parse(
+        "Some `inline code` in text", color: :always, mode: 16
+      )
+
+      expect(parsed).to eq("Some \e[33minline code\e[0m in text\n")
+    end
+  end
+
+  context "when code block" do
+    it "highlights indented code without a language indicator" do
+      markdown = <<-TEXT
+    class Greeter
+      def say
+      end
+    end
+      TEXT
+      parsed = described_class.parse(markdown, color: :always, mode: 16)
+
+      expect(parsed).to eq([
+        "\e[33mclass Greeter\e[0m",
+        "\e[33m  def say\e[0m",
+        "\e[33m  end\e[0m",
+        "\e[33mend\e[0m"
+      ].join("\n"))
+    end
+
+    it "highlights fenced code without a language indicator" do
+      markdown = <<-TEXT
 ```
 class Greeter
   def say
   end
 end
 ```
-    TEXT
-    parsed = TTY::Markdown.parse(markdown, color: :always, mode: 16)
-    expect(parsed).to eq([
-     "\e[33mclass Greeter\e[0m",
-     "\e[33m  def say\e[0m",
-     "\e[33m  end\e[0m",
-     "\e[33mend\e[0m"
-    ].join("\n"))
-  end
+      TEXT
+      parsed = described_class.parse(markdown, color: :always, mode: 16)
 
-  it "highlights code without language" do
-    markdown =<<-TEXT
-    class Greeter
-      def say
-      end
+      expect(parsed).to eq([
+        "\e[33mclass Greeter\e[0m",
+        "\e[33m  def say\e[0m",
+        "\e[33m  end\e[0m",
+        "\e[33mend\e[0m"
+      ].join("\n"))
     end
-    TEXT
-    parsed = TTY::Markdown.parse(markdown, color: :always, mode: 16)
-    expect(parsed).to eq([
-     "\e[33mclass Greeter\e[0m",
-     "\e[33m  def say\e[0m",
-     "\e[33m  end\e[0m",
-     "\e[33mend\e[0m"
-    ].join("\n"))
-  end
 
-  it "highlights fenced code according to language" do
-    markdown =<<-TEXT
+    it "highlights fenced code with a language indicator" do
+      markdown = <<-TEXT
 ```ruby
 class Greeter
   def say
   end
 end
 ```
-    TEXT
-    parsed = TTY::Markdown.parse(markdown, color: :always, mode: 16)
-    expect(parsed).to eq([
-     "\e[33mclass Greeter\e[0m",
-     "\e[33m  def say\e[0m",
-     "\e[33m  end\e[0m",
-     "\e[33mend\e[0m"
-    ].join("\n"))
-  end
+      TEXT
+      parsed = described_class.parse(markdown, color: :always, mode: 16)
 
-  it "highlights fenced code with newlines inside" do
-    markdown =<<-TEXT
+      expect(parsed).to eq([
+        "\e[33mclass Greeter\e[0m",
+        "\e[33m  def say\e[0m",
+        "\e[33m  end\e[0m",
+        "\e[33mend\e[0m"
+      ].join("\n"))
+    end
+
+    it "highlights fenced code with a language indicator and blank lines" do
+      markdown = <<-TEXT
 ```ruby
 def say
 
@@ -62,19 +76,20 @@ def say
 
 end
 ```
-    TEXT
-    parsed = TTY::Markdown.parse(markdown, color: :always, mode: 16)
-    expect(parsed).to eq([
-     "\e[33mdef say\e[0m",
-     "",
-     "\e[33m  puts \"saying\"\e[0m",
-     "",
-     "\e[33mend\e[0m"
-    ].join("\n"))
-  end
+      TEXT
+      parsed = described_class.parse(markdown, color: :always, mode: 16)
 
-  it "indents immediate code correctly" do
-    markdown =<<-TEXT
+      expect(parsed).to eq([
+        "\e[33mdef say\e[0m",
+        "",
+        "\e[33m  puts \"saying\"\e[0m",
+        "",
+        "\e[33mend\e[0m"
+      ].join("\n"))
+    end
+
+    it "indents fenced code immediately after the heading" do
+      markdown = <<-TEXT
 ### header
 ```
 class Greeter
@@ -82,19 +97,20 @@ class Greeter
   end
 end
 ```
-    TEXT
-    parsed = TTY::Markdown.parse(markdown, color: :always, mode: 16)
-    expect(parsed).to eq([
-     "    \e[36;1mheader\e[0m",
-     "    \e[33mclass Greeter\e[0m",
-     "    \e[33m  def say\e[0m",
-     "    \e[33m  end\e[0m",
-     "    \e[33mend\e[0m"
-    ].join("\n"))
-  end
+      TEXT
+      parsed = described_class.parse(markdown, color: :always, mode: 16)
 
-  it "indents code after blank correctly" do
-    markdown =<<-TEXT
+      expect(parsed).to eq([
+        "    \e[36;1mheader\e[0m",
+        "    \e[33mclass Greeter\e[0m",
+        "    \e[33m  def say\e[0m",
+        "    \e[33m  end\e[0m",
+        "    \e[33mend\e[0m"
+      ].join("\n"))
+    end
+
+    it "indents fenced code after the heading separated by a blank line" do
+      markdown = <<-TEXT
 ### header
 
 ```
@@ -103,66 +119,71 @@ class Greeter
   end
 end
 ```
-    TEXT
-    parsed = TTY::Markdown.parse(markdown, color: :always, mode: 16)
-    expect(parsed).to eq([
-     "    \e[36;1mheader\e[0m",
-     "",
-     "    \e[33mclass Greeter\e[0m",
-     "    \e[33m  def say\e[0m",
-     "    \e[33m  end\e[0m",
-     "    \e[33mend\e[0m"
-    ].join("\n"))
-  end
+      TEXT
+      parsed = described_class.parse(markdown, color: :always, mode: 16)
 
-  it "wraps code exceeding set width" do
-    markdown =<<-TEXT
+      expect(parsed).to eq([
+        "    \e[36;1mheader\e[0m",
+        "",
+        "    \e[33mclass Greeter\e[0m",
+        "    \e[33m  def say\e[0m",
+        "    \e[33m  end\e[0m",
+        "    \e[33mend\e[0m"
+      ].join("\n"))
+    end
+
+    it "wraps fenced code exceeding the maximum width" do
+      markdown = <<-TEXT
 ```
 lexer = Rouge::Lexer.find_fancy(lang, code) || Rouge::Lexers::PlainText
 ```
-    TEXT
-    parsed = TTY::Markdown.parse(markdown, color: :always, mode: 16, width: 50)
+      TEXT
+      parsed = described_class.parse(
+        markdown, color: :always, mode: 16, width: 50
+      )
 
-    expected_output =
-      "\e[33mlexer = Rouge::Lexer.find_fancy(lang, code) || \e[0m\n" +
-      "\e[33mRouge::Lexers::PlainText\e[0m"
+      expect(parsed).to eq([
+        "\e[33mlexer = Rouge::Lexer.find_fancy(lang, code) || \e[0m",
+        "\e[33mRouge::Lexers::PlainText\e[0m"
+      ].join("\n"))
+    end
 
-    expect(parsed).to eq(expected_output)
-  end
-
-  it "wraps code exceeding set width preserving indentation" do
-    markdown =<<-TEXT
+    it "wraps code exceeding the maximum width preserving indentation" do
+      markdown = <<-TEXT
 ### lexer
 
 ```
 lexer = Rouge::Lexer.find_fancy(lang, code) || Rouge::Lexers::PlainText
 ```
-    TEXT
-    parsed = TTY::Markdown.parse(markdown, color: :always, mode: 16, width: 50)
+      TEXT
+      parsed = described_class.parse(
+        markdown, color: :always, mode: 16, width: 50
+      )
 
-    expected_output =
-      "    \e[36;1mlexer\e[0m\n\n" +
-      "    \e[33mlexer = Rouge::Lexer.find_fancy(lang, code) \e[0m\n" +
-      "    \e[33m|| Rouge::Lexers::PlainText\e[0m"
+      expect(parsed).to eq([
+        "    \e[36;1mlexer\e[0m\n",
+        "    \e[33mlexer = Rouge::Lexer.find_fancy(lang, code) \e[0m",
+        "    \e[33m|| Rouge::Lexers::PlainText\e[0m"
+      ].join("\n"))
+    end
 
-    expect(parsed).to eq(expected_output)
-  end
-
-  it "doesn't highlights when zero colors specified" do
-    markdown =<<-TEXT
+    it "doesn't highlight fenced code when colors are disabled" do
+      markdown = <<-TEXT
 ```
 class Greeter
   def say
   end
 end
 ```
-    TEXT
-    parsed = TTY::Markdown.parse(markdown, color: :never)
-    expect(parsed).to eq([
-     "class Greeter",
-     "  def say",
-     "  end",
-     "end"
-    ].join("\n"))
+      TEXT
+      parsed = described_class.parse(markdown, color: :never)
+
+      expect(parsed).to eq([
+        "class Greeter",
+        "  def say",
+        "  end",
+        "end"
+      ].join("\n"))
+    end
   end
 end
