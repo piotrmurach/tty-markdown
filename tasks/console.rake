@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
-desc "Load gem inside irb console"
+desc "Load gem inside IRB console"
 task :console do
   require "irb"
   require "irb/completion"
-  require File.join(__FILE__, "../../lib/tty-markdown")
+  require_relative "../lib/tty-markdown"
   ARGV.clear
   IRB.start
 end
-task c: %w[ console ]
+
+desc "Alias for the :console task"
+task c: %w[console]
