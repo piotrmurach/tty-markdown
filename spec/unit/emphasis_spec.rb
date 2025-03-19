@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Markdown, "emphasis" do
-  context "when italics emphasis" do
-    it "converts asterisks to bold ansi codes" do
-      parsed = TTY::Markdown.parse("Some text with *italic* content.",
-                                   color: :always)
+RSpec.describe TTY::Markdown, ".parse" do
+  it "converts text marked with a single asterisk to colored text" do
+    parsed = described_class.parse(
+      "Some *easily noticeable* text", color: :always
+    )
 
-      expect(parsed).to eq("Some text with \e[33mitalic\e[0m content.\n")
-    end
+    expect(parsed).to eq("Some \e[33measily noticeable\e[0m text\n")
   end
 end
