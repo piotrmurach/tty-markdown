@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe TTY::Markdown, "list" do
-  let(:symbols) { TTY::Markdown::SYMBOLS }
   let(:pastel) { Pastel.new(enabled: true) }
 
   it "converts unordered bulleted lists of nested items" do
@@ -15,12 +14,12 @@ RSpec.describe TTY::Markdown, "list" do
     TEXT
     parsed = TTY::Markdown.parse(markdown, color: :always, symbols: :unicode)
     expect(parsed).to eq([
-      "#{pastel.yellow(symbols[:bullet])} Item 1",
-      "  #{pastel.yellow(symbols[:bullet])} Item 2",
-      "  #{pastel.yellow(symbols[:bullet])} Item 3",
-      "    #{pastel.yellow(symbols[:bullet])} Item 4",
-      "    #{pastel.yellow(symbols[:bullet])} Item 5",
-      "#{pastel.yellow(symbols[:bullet])} Item 6\n"
+      "#{pastel.yellow("●")} Item 1",
+      "  #{pastel.yellow("●")} Item 2",
+      "  #{pastel.yellow("●")} Item 3",
+      "    #{pastel.yellow("●")} Item 4",
+      "    #{pastel.yellow("●")} Item 5",
+      "#{pastel.yellow("●")} Item 6\n"
     ].join("\n"))
   end
 
@@ -37,12 +36,12 @@ RSpec.describe TTY::Markdown, "list" do
     parsed = TTY::Markdown.parse(markdown, color: :always, symbols: :unicode)
     expect(parsed).to eq([
       "    \e[36;1mheader\e[0m",
-      "    #{pastel.yellow(symbols[:bullet])} Item 1",
-      "      #{pastel.yellow(symbols[:bullet])} Item 2",
-      "      #{pastel.yellow(symbols[:bullet])} Item 3",
-      "        #{pastel.yellow(symbols[:bullet])} Item 4",
-      "        #{pastel.yellow(symbols[:bullet])} Item 5",
-      "    #{pastel.yellow(symbols[:bullet])} Item 6\n"
+      "    #{pastel.yellow("●")} Item 1",
+      "      #{pastel.yellow("●")} Item 2",
+      "      #{pastel.yellow("●")} Item 3",
+      "        #{pastel.yellow("●")} Item 4",
+      "        #{pastel.yellow("●")} Item 5",
+      "    #{pastel.yellow("●")} Item 6\n"
     ].join("\n"))
   end
 
@@ -59,12 +58,12 @@ RSpec.describe TTY::Markdown, "list" do
     parsed = TTY::Markdown.parse(markdown, color: :always, symbols: :unicode)
     expect(parsed).to eq([
       "    \e[36;1mheader\e[0m",
-      "    #{pastel.yellow(symbols[:bullet])} First multiline",
+      "    #{pastel.yellow("●")} First multiline",
       "    Item 1",
-      "      #{pastel.yellow(symbols[:bullet])} Second multiline",
+      "      #{pastel.yellow("●")} Second multiline",
       "      Item 2",
-      "      #{pastel.yellow(symbols[:bullet])} Item 3",
-      "    #{pastel.yellow(symbols[:bullet])} Item 4\n",
+      "      #{pastel.yellow("●")} Item 3",
+      "    #{pastel.yellow("●")} Item 4\n",
     ].join("\n"))
   end
 
@@ -77,8 +76,8 @@ RSpec.describe TTY::Markdown, "list" do
     parsed = TTY::Markdown.parse(markdown, color: :always, mode: 16,
                                            symbols: :unicode)
     expect(parsed).to eq([
-      "#{pastel.yellow(symbols[:bullet])} Version: run \e[33mruby -v\e[0m or \e[33mruby --version\e[0m.",
-      "#{pastel.yellow(symbols[:bullet])} Help: run \e[33mruby -h\e[0m or \e[33mruby --help\e[0m.\n"
+      "#{pastel.yellow("●")} Version: run \e[33mruby -v\e[0m or \e[33mruby --version\e[0m.",
+      "#{pastel.yellow("●")} Help: run \e[33mruby -h\e[0m or \e[33mruby --help\e[0m.\n"
     ].join("\n"))
   end
 

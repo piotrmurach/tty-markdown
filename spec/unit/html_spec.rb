@@ -1,15 +1,12 @@
 # frozen_string_literal: true
 
 RSpec.describe TTY::Markdown, "html" do
-  let(:symbols) { TTY::Markdown::SYMBOLS }
-  let(:del) { symbols[:delete] }
-
   it "supports del html element" do
     markdown =<<-TEXT
 <del>done</del> made a mistake
     TEXT
     parsed = TTY::Markdown.parse(markdown, color: :always, symbols: :unicode)
-    expect(parsed).to eq("d#{del}o#{del}n#{del}e#{del} made a mistake\n")
+    expect(parsed).to eq("d\u0336o\u0336n\u0336e\u0336 made a mistake\n")
   end
 
   it "supports del html element without context" do
@@ -21,7 +18,7 @@ RSpec.describe TTY::Markdown, "html" do
     parsed = TTY::Markdown.parse(markdown, color: :always, symbols: :unicode)
     expect(parsed).to eq([
       "    \e[36;1mHeader\e[0m\n",
-      "    d#{del}o#{del}n#{del}e#{del}\n"
+      "    d\u0336o\u0336n\u0336e\u0336\n"
     ].join("\n"))
   end
 
@@ -30,7 +27,7 @@ RSpec.describe TTY::Markdown, "html" do
 <a href="https://ttytoolkit.org">TTY Toolkit</a>
     TEXT
     parsed = TTY::Markdown.parse(markdown, color: :always, symbols: :unicode)
-    expect(parsed).to eq("TTY Toolkit #{symbols[:arrow]} \e[33;4mhttps://ttytoolkit.org\e[0m\n")
+    expect(parsed).to eq("TTY Toolkit » \e[33;4mhttps://ttytoolkit.org\e[0m\n")
   end
 
   it "supports b/strong html element" do
