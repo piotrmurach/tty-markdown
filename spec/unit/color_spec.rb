@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Markdown, "color" do
+RSpec.describe TTY::Markdown, ".parse" do
   let(:markdown) {
     <<-TEXT
 # Header

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Markdown, "table" do
+RSpec.describe TTY::Markdown, ".parse" do
   it "parses markdown table with header" do
-    markdown =<<-TEXT
+    markdown = <<-TEXT
 | Tables   |      Are      |  Cool |
 |----------|:-------------:|------:|
 | col 1 is |  left-aligned | $1600 |
@@ -11,8 +11,7 @@ RSpec.describe TTY::Markdown, "table" do
 |==========|===============|=======|
 | Footers  |  are cool     | too   |
     TEXT
-
-    parsed = TTY::Markdown.parse(markdown, color: :always, symbols: :unicode)
+    parsed = described_class.parse(markdown, color: :always, symbols: :unicode)
 
     expect(parsed).to eq([
       "\e[33m┌#{"─" * 10}┬#{"─" * 15}┬#{"─" * 7}┐\e[0m\n",
@@ -40,13 +39,12 @@ RSpec.describe TTY::Markdown, "table" do
   end
 
   it "parses markdown table without header" do
-    markdown =<<-TEXT
+    markdown = <<-TEXT
 | col 1 is |  left-aligned | $1600 |
 | col 2 is |    centered   |   $12 |
 | col 3 is | right-aligned |    $1 |
     TEXT
-
-    parsed = TTY::Markdown.parse(markdown, color: :always, symbols: :unicode)
+    parsed = described_class.parse(markdown, color: :always, symbols: :unicode)
 
     expect(parsed).to eq([
       "\e[33m┌#{"─" * 10}┬#{"─" * 15}┬#{"─" * 7}┐\e[0m\n",
@@ -66,16 +64,16 @@ RSpec.describe TTY::Markdown, "table" do
   end
 
   it "wraps multiline records" do
-    markdown =<<-TEXT
+    markdown = <<-TEXT
 | Tables   |      Are      |  Cool |
 |----------|:-------------:|------:|
 | col 1 is |  left-aligned | $1600 |
 | col 2 is |    centered   |   $12 |
 | col 3 is a multiline column | right-aligned has also a very long content that wraps around |    $1 |
     TEXT
-
-    parsed = TTY::Markdown.parse(markdown, color: :always, symbols: :unicode,
-                                           width: 80)
+    parsed = described_class.parse(
+      markdown, color: :always, symbols: :unicode, width: 80
+    )
 
     expect(parsed).to eq([
       "\e[33m┌#{"─" * 24}┬#{"─" * 51}┬#{"─" * 7}┐\e[0m\n",
@@ -102,14 +100,13 @@ RSpec.describe TTY::Markdown, "table" do
   end
 
   it "formats empty cells correctly" do
-    markdown =<<-TEXT
+    markdown = <<-TEXT
 | a |
 |---|
 |   |
 |   |
     TEXT
-
-    parsed = TTY::Markdown.parse(markdown, color: :always, symbols: :unicode)
+    parsed = described_class.parse(markdown, color: :always, symbols: :unicode)
 
     expect(parsed).to eq([
       "\e[33m┌#{"─" * 3}┐\e[0m",
@@ -123,14 +120,14 @@ RSpec.describe TTY::Markdown, "table" do
   end
 
   it "indents within the specified width" do
-    markdown =<<-TEXT
+    markdown = <<-TEXT
 ### Header3
 
 | foo | bar | baz |
     TEXT
-
-    parsed = TTY::Markdown.parse(markdown, color: :always, symbols: :unicode,
-                                           width: 20)
+    parsed = described_class.parse(
+      markdown, color: :always, symbols: :unicode, width: 20
+    )
 
     expect(parsed).to eq([
       "    \e[36;1mHeader3\e[0m\n",
@@ -142,12 +139,12 @@ RSpec.describe TTY::Markdown, "table" do
   end
 
   it "formats identical content within the specified width" do
-    markdown =<<-TEXT
+    markdown = <<-TEXT
 | foo | foo | foo |
     TEXT
-
-    parsed = TTY::Markdown.parse(markdown, color: :always, symbols: :unicode,
-                                           width: 20)
+    parsed = described_class.parse(
+      markdown, color: :always, symbols: :unicode, width: 20
+    )
 
     expect(parsed).to eq([
       "\e[33m┌#{"─" * 5}┬#{"─" * 5}┬#{"─" * 5}┐\e[0m",
@@ -157,15 +154,14 @@ RSpec.describe TTY::Markdown, "table" do
   end
 
   it "parses markdown table with ASCII border" do
-    markdown =<<-TEXT
+    markdown = <<-TEXT
 |foo|bar|
 |---|---|
 | a | b |
 |===|===|
 |baz|qux|
     TEXT
-
-    parsed = TTY::Markdown.parse(markdown, color: :always, symbols: :ascii)
+    parsed = described_class.parse(markdown, color: :always, symbols: :ascii)
 
     expect(parsed).to eq([
       "\e[33m+-----+-----+\e[0m\n",

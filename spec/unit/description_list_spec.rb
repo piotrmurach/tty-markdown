@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Markdown, "definition list" do
+RSpec.describe TTY::Markdown, ".parse" do
   it "supports definition list conversion" do
-    markdown =<<-TEXT
+    markdown = <<-TEXT
 Before para
 Item1
 : description1
@@ -12,7 +12,6 @@ Item2
 
 After para
     TEXT
-
     parsed = described_class.parse(markdown)
 
     expect(parsed).to eq([
@@ -28,7 +27,7 @@ After para
   end
 
   it "indents definition list within header section" do
-    markdown =<<-TEXT
+    markdown = <<-TEXT
 ### Header3
 
 Item1
@@ -39,7 +38,6 @@ Item2
 
 After para
     TEXT
-
     parsed = described_class.parse(markdown, color: :always)
 
     expect(parsed).to eq([
@@ -55,11 +53,10 @@ After para
   end
 
   it "allows headers in description" do
-    markdown =<<-TEXT
+    markdown = <<-TEXT
 List + header
 : # Header 1
     TEXT
-
     parsed = described_class.parse(markdown, color: :always)
 
     expect(parsed).to eq([
