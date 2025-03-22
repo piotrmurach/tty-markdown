@@ -25,6 +25,13 @@ RSpec.describe TTY::Markdown, ".parse" do
     ].join)
   end
 
+  it "displays a link with a title when text equals destination" do
+    markdown = "[https://ttytoolkit.org](https://ttytoolkit.org \"TTY\")"
+    parsed = described_class.parse(markdown, color: :always, symbols: :unicode)
+
+    expect(parsed).to eq("(TTY) \e[33;4mhttps://ttytoolkit.org\e[0m\n")
+  end
+
   it "displays email links with mailto: prefix removed" do
     markdown = "[Email me](mailto:test@example.com)"
     parsed = described_class.parse(markdown, color: :always, symbols: :unicode)
