@@ -1,22 +1,19 @@
 # frozen_string_literal: true
 
 RSpec.describe TTY::Markdown, ".parse" do
-  it "breaks a line" do
-    markdown = <<-TEXT
-hello
-world
-    TEXT
-    parsed = described_class.parse(markdown)
+  context "when Markdown" do
+    it "converts two spaces at the end of a line into a line break" do
+      parsed = described_class.parse("First line  \nSecond line")
 
-    expect(parsed).to eq("hello\nworld\n")
+      expect(parsed).to eq("First line\n\nSecond line\n")
+    end
   end
 
-  it "breaks a line with html tag" do
-    markdown = <<-TEXT
-hello<br/>world
-    TEXT
-    parsed = described_class.parse(markdown)
+  context "when HTML" do
+    it "converts the <br> element into a line break" do
+      parsed = described_class.parse("First line<br/>Second line")
 
-    expect(parsed).to eq("hello\nworld\n")
+      expect(parsed).to eq("First line\nSecond line\n")
+    end
   end
 end
