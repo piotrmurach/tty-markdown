@@ -27,6 +27,12 @@ RSpec.describe TTY::Markdown, ".parse" do
     expect(parsed).to eq("\e[33mSome\e[0m text \e[33;1mcontent\e[0m\n")
   end
 
+  it "converts an empty <span> element" do
+    parsed = described_class.parse("<span></span>")
+
+    expect(parsed).to eq("\nHTML element '\"span\"' not supported")
+  end
+
   it "supports del html element" do
     markdown = <<-TEXT
 <del>done</del> made a mistake
