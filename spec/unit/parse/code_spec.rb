@@ -9,6 +9,14 @@ RSpec.describe TTY::Markdown, ".parse" do
 
       expect(parsed).to eq("Some \e[33minline code\e[0m in text\n")
     end
+
+    it "converts text marked with a double backtick in 256 color mode" do
+      parsed = described_class.parse(
+        "Some `inline code` in text", color: :always, mode: 256
+      )
+
+      expect(parsed).to eq("Some \e[38;5;230minline code\e[39m in text\n")
+    end
   end
 
   context "when code block" do
@@ -48,6 +56,26 @@ end
       ].join("\n"))
     end
 
+    it "highlights fenced code in 256 color mode without a language" do
+      markdown = <<-TEXT
+```
+class Greeter
+  def say
+  end
+end
+```
+      TEXT
+      parsed = described_class.parse(markdown, color: :always, mode: 256)
+
+      expect(parsed).to eq([
+        "\e[38;5;230mclass Greeter\e[39m",
+        "\e[38;5;230m  def say\e[39m",
+        "\e[38;5;230m  end\e[39m",
+        "\e[38;5;230mend\e[39m",
+        "\e[38;5;230m\e[39m"
+      ].join("\n"))
+    end
+
     it "highlights fenced code with a language indicator" do
       markdown = <<-TEXT
 ```ruby
@@ -65,6 +93,28 @@ end
         "\e[33m  end\e[0m",
         "\e[33mend\e[0m"
       ].join("\n"))
+    end
+
+    it "highlights fenced code in 256 color mode with a language" do
+      markdown = <<-TEXT
+```ruby
+class Greeter
+  def say
+  end
+end
+```
+      TEXT
+      parsed = described_class.parse(markdown, color: :always, mode: 256)
+
+      expect(parsed).to eq([
+        "\e[38;5;221;01mclass\e[39;00m\e[38;5;230m \e[39m",
+        "\e[38;5;155;01mGreeter\e[39;00m\e[38;5;230m\e[39m\n",
+        "\e[38;5;230m  \e[39m\e[38;5;221;01mdef\e[39;00m\e[38;5;230m \e[39m",
+        "\e[38;5;153msay\e[39m\e[38;5;230m\e[39m\n",
+        "\e[38;5;230m  \e[39m\e[38;5;221;01mend\e[39;00m\e[38;5;230m\e[39m\n",
+        "\e[38;5;230m\e[39m\e[38;5;221;01mend\e[39;00m\e[38;5;230m\e[39m\n",
+        "\e[38;5;230m\e[39m"
+      ].join)
     end
 
     it "highlights fenced code with a language indicator and blank lines" do
