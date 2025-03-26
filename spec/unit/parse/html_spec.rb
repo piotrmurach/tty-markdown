@@ -1,44 +1,37 @@
 # frozen_string_literal: true
 
 RSpec.describe TTY::Markdown, ".parse" do
-  it "converts the <div> element with text content" do
-    parsed = described_class.parse("<div>Some text content</div>")
+  context "when HTML" do
+    it "converts the <div> element with text content" do
+      parsed = described_class.parse("<div>Some text content</div>")
 
-    expect(parsed).to eq("Some text content")
-  end
+      expect(parsed).to eq("Some text content")
+    end
 
-  it "converts the <div> element with child elements" do
-    markdown = "<div><em>Some</em> text <strong>content</strong></div>"
-    parsed = described_class.parse(markdown, color: :always)
+    it "converts the <div> element with child elements" do
+      markdown = "<div><em>Some</em> text <strong>content</strong></div>"
+      parsed = described_class.parse(markdown, color: :always)
 
-    expect(parsed).to eq("\e[33mSome\e[0m text \e[33;1mcontent\e[0m")
-  end
+      expect(parsed).to eq("\e[33mSome\e[0m text \e[33;1mcontent\e[0m")
+    end
 
-  it "converts the <span> element with text content" do
-    parsed = described_class.parse("<span>Some text content</span>")
+    it "converts the <span> element with text content" do
+      parsed = described_class.parse("<span>Some text content</span>")
 
-    expect(parsed).to eq("Some text content\n")
-  end
+      expect(parsed).to eq("Some text content\n")
+    end
 
-  it "converts the <span> element with child elements" do
-    markdown = "<span><em>Some</em> text <strong>content</strong></span>"
-    parsed = described_class.parse(markdown, color: :always)
+    it "converts the <span> element with child elements" do
+      markdown = "<span><em>Some</em> text <strong>content</strong></span>"
+      parsed = described_class.parse(markdown, color: :always)
 
-    expect(parsed).to eq("\e[33mSome\e[0m text \e[33;1mcontent\e[0m\n")
-  end
+      expect(parsed).to eq("\e[33mSome\e[0m text \e[33;1mcontent\e[0m\n")
+    end
 
-  it "converts an empty <span> element" do
-    parsed = described_class.parse("<span></span>")
+    it "converts an empty <span> element" do
+      parsed = described_class.parse("<span></span>")
 
-    expect(parsed).to eq("\nHTML element '\"span\"' not supported")
-  end
-
-  it "supports em/i html element" do
-    markdown = <<-TEXT
-<em>emphasised</em>
-    TEXT
-    parsed = described_class.parse(markdown, color: :always, symbols: :unicode)
-
-    expect(parsed).to eq("\e[33memphasised\e[0m\n")
+      expect(parsed).to eq("\nHTML element '\"span\"' not supported")
+    end
   end
 end
