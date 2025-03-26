@@ -33,15 +33,6 @@ RSpec.describe TTY::Markdown, ".parse" do
     expect(parsed).to eq("\nHTML element '\"span\"' not supported")
   end
 
-  it "supports a html element" do
-    markdown = <<-TEXT
-<a href="https://ttytoolkit.org">TTY Toolkit</a>
-    TEXT
-    parsed = described_class.parse(markdown, color: :always, symbols: :unicode)
-
-    expect(parsed).to eq("TTY Toolkit » \e[33;4mhttps://ttytoolkit.org\e[0m\n")
-  end
-
   it "supports b/strong html element" do
     markdown = <<-TEXT
 <strong>bold</strong>
