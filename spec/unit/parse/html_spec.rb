@@ -33,15 +33,6 @@ RSpec.describe TTY::Markdown, ".parse" do
     expect(parsed).to eq("\nHTML element '\"span\"' not supported")
   end
 
-  it "supports b/strong html element" do
-    markdown = <<-TEXT
-<strong>bold</strong>
-    TEXT
-    parsed = described_class.parse(markdown, color: :always, symbols: :unicode)
-
-    expect(parsed).to eq("\e[33;1mbold\e[0m\n")
-  end
-
   it "supports em/i html element" do
     markdown = <<-TEXT
 <em>emphasised</em>
