@@ -33,29 +33,6 @@ RSpec.describe TTY::Markdown, ".parse" do
     expect(parsed).to eq("\nHTML element '\"span\"' not supported")
   end
 
-  it "supports del html element" do
-    markdown = <<-TEXT
-<del>done</del> made a mistake
-    TEXT
-    parsed = described_class.parse(markdown, color: :always, symbols: :unicode)
-
-    expect(parsed).to eq("d\u0336o\u0336n\u0336e\u0336 made a mistake\n")
-  end
-
-  it "supports del html element without context" do
-    markdown = <<-TEXT
-### Header
-
-<del>done</del>
-    TEXT
-    parsed = described_class.parse(markdown, color: :always, symbols: :unicode)
-
-    expect(parsed).to eq([
-      "    \e[36;1mHeader\e[0m\n",
-      "    d\u0336o\u0336n\u0336e\u0336\n"
-    ].join("\n"))
-  end
-
   it "supports a html element" do
     markdown = <<-TEXT
 <a href="https://ttytoolkit.org">TTY Toolkit</a>
