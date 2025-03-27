@@ -12,98 +12,150 @@ module TTY
   module Markdown
     # Converts a Kramdown::Document tree to a terminal friendly output
     class Converter < ::Kramdown::Converter::Base
+      # The empty string
+      #
+      # @return [String]
+      #
+      # @api private
+      EMPTY = ""
+      private_constant :EMPTY
+
+      # The indented HTML elements
+      #
+      # @return [Array<Symbol>]
+      #
+      # @api private
+      INDENTED_HTML_ELEMENTS = %i[blockquote li].freeze
+      private_constant :INDENTED_HTML_ELEMENTS
+
+      # The newline character
+      #
+      # @return [String]
+      #
+      # @api private
       NEWLINE = "\n"
+      private_constant :NEWLINE
+
+      # The space character
+      #
+      # @return [String]
+      #
+      # @api private
       SPACE = " "
+      private_constant :SPACE
+
+      # The UTF-8 characters directive
+      #
+      # @return [String]
+      #
+      # @api private
+      UTF8_CHARACTERS_DIRECTIVE = "U*"
+      private_constant :UTF8_CHARACTERS_DIRECTIVE
 
       def initialize(root, options = {})
         super
-        @current_indent = 0
-        @indent = options[:indent]
         @pastel = Pastel.new(enabled: options[:enabled])
-        @color_opts = { mode: options[:mode],
-                        color: @pastel.yellow.detach,
-                        enabled: options[:enabled] }
-        @width = options[:width]
-        @theme = options[:theme]
-        @symbols = options[:symbols]
+        @color_options = {
+          color: @pastel.yellow.detach,
+          enabled: options[:enabled],
+          mode: options[:mode]
+        }
+        @current_indent = 0
         @footnote_no = 1
         @footnotes = {}
+        @indent = options[:indent]
+        @symbols = options[:symbols]
+        @theme = options[:theme]
+        @width = options[:width]
       end
 
       # Invoke an element conversion
       #
       # @api public
-      def convert(el, opts = { indent: 0 })
-        send("convert_#{el.type}", el, opts)
+      def convert(element, options = {indent: 0})
+        send(:"convert_#{element.type}", element, options)
       end
 
       private
 
       # Process children of this element
       #
-      # @param [Kramdown::Element] el
+      # @param [Kramdown::Element] element
       #   the element with child elements
       #
       # @api private
-      def inner(el, opts)
-        result = []
-        el.children.each_with_index do |inner_el, i|
-          options = opts.dup
-          options[:parent] = el
-          options[:prev] = (i.zero? ? nil : el.children[i - 1])
-          options[:next] = (i == el.children.length - 1 ? nil : el.children[i + 1])
-          options[:index] = i
-          result << convert(inner_el, options)
+      def transform_children(element, options)
+        element.children.map.with_index do |child_element, child_index|
+          child_options = build_child_options(element, child_index)
+          convert(child_element, options.merge(child_options))
         end
-        result
+      end
+
+      # Build a child element options
+      #
+      # @param [Kramdown::Element] element
+      #   the element with child elements
+      # @param [Integer] child_index
+      #   the child element index
+      #
+      # @return [Hash]
+      #
+      # @api private
+      def build_child_options(element, child_index)
+        {
+          index: child_index,
+          next: element.children[child_index + 1],
+          parent: element,
+          prev: child_index > 0 ? element.children[child_index - 1] : nil
+        }
       end
 
       # Convert root element
       #
-      # @param [Kramdown::Element] el
+      # @param [Kramdown::Element] element
       #   the `kd:root` element
-      # @param [Hash] opts
+      # @param [Hash] options
       #   the element options
       #
       # @api private
-      def convert_root(el, opts)
-        content = inner(el, opts)
+      def convert_root(element, options)
+        content = transform_children(element, options)
         return content.join if @footnotes.empty?
 
-        content.join + footnotes_list(root, opts)
+        content.join + build_footnotes_list(root, options)
       end
 
-      # Create an ordered list of footnotes
+      # Build an ordered list of footnotes
       #
       # @param [Kramdown::Element] root
       #   the `kd:root` element
-      # @param [Hash] opts
+      # @param [Hash] options
       #   the root element options
       #
       # @api private
-      def footnotes_list(root, opts)
+      def build_footnotes_list(root, options)
         ol = Kramdown::Element.new(:ol)
-        @footnotes.values.each do |footnote|
+        @footnotes.each_value do |footnote|
           value, index = *footnote
-          options = { index: index, parent: ol }
-          li = Kramdown::Element.new(:li, nil, {}, options.merge(opts))
+          li_options = {index: index, parent: ol}.merge(options)
+          li = Kramdown::Element.new(:li, nil, {}, li_options)
           li.children = Marshal.load(Marshal.dump(value.children))
           ol.children << li
         end
-        convert_ol(ol, { parent: root }.merge(opts))
+        convert_ol(ol, {parent: root}.merge(options))
       end
 
       # Convert header element
       #
-      # @param [Kramdown::Element] el
+      # @param [Kramdown::Element] element
       #   the `kd:header` element
-      # @param [Hash] opts
+      # @param [Hash] options
       #   the element options
       #
       # @api private
-      def convert_header(el, opts)
-        level = el.options[:level]
-        if opts[:parent] && opts[:parent].type == :root
+      def convert_header(element, options)
+        level = element.options[:level]
+        if options[:parent] && options[:parent].type == :root
           # Header determines indentation only at top level
           @current_indent = (level - 1) * @indent
           indent = SPACE * (level - 1) * @indent
@@ -113,69 +165,60 @@ module TTY
         styles = @theme[:header].dup
         styles << :underline if level == 1
 
-        content = inner(el, opts)
+        content = transform_children(element, options)
 
         content.join.lines.map do |line|
-          indent + @pastel.decorate(line.chomp, *styles) + NEWLINE
+          "#{indent}#{@pastel.decorate(line.chomp, *styles)}#{NEWLINE}"
         end
       end
 
       # Convert paragraph element
       #
-      # @param [Kramdown::Element] el
+      # @param [Kramdown::Element] element
       #   the `kd:p` element
-      # @param [Hash] opts
+      # @param [Hash] options
       #   the element options
       #
       # @api private
-      def convert_p(el, opts)
+      def convert_p(element, options)
         indent = SPACE * @current_indent
-        result = []
+        parent_type = options[:parent].type
+        paragraph = []
+        paragraph << indent unless INDENTED_HTML_ELEMENTS.include?(parent_type)
+        options[:indent] = parent_type == :blockquote ? 0 : @current_indent
 
-        if ![:blockquote, :li].include?(opts[:parent].type)
-          result << indent
-        end
+        content = transform_children(element, options)
 
-        opts[:indent] = @current_indent
-        if opts[:parent].type == :blockquote
-          opts[:indent] = 0
-        end
-
-        content = inner(el, opts)
-
-        result << content.join
-        unless result.last.to_s.end_with?(NEWLINE)
-          result << NEWLINE
-        end
-        result
+        paragraph << content.join
+        paragraph << NEWLINE unless paragraph.last.to_s.end_with?(NEWLINE)
+        paragraph
       end
 
       # Convert text element
       #
       # @param [Kramdown::Element] element
       #   the `kd:text` element
-      # @param [Hash] opts
+      # @param [Hash] options
       #   the element options
       #
       # @api private
-      def convert_text(el, opts)
-        text = Strings.wrap(el.value, @width - @current_indent)
-        text = text.chomp if opts[:strip]
-        indent = SPACE * opts[:indent]
-        text.gsub(/\n/, "#{NEWLINE}#{indent}")
+      def convert_text(element, options)
+        text = Strings.wrap(element.value, @width - @current_indent)
+        text = text.chomp if options[:strip]
+        indent = SPACE * options[:indent]
+        text.gsub(NEWLINE, "#{NEWLINE}#{indent}")
       end
 
       # Convert strong element
       #
       # @param [Kramdown::Element] element
       #   the `kd:strong` element
-      # @param [Hash] opts
+      # @param [Hash] options
       #   the element options
       #
       # @api private
-      def convert_strong(el, opts)
-        content = inner(el, opts)
-
+      def convert_strong(element, options)
+        content = transform_children(element, options)
         content.join.lines.map do |line|
           @pastel.decorate(line.chomp, *@theme[:strong])
         end.join(NEWLINE)
@@ -183,15 +226,14 @@ module TTY
 
       # Convert em element
       #
-      # @param [Kramdown::Element] el
+      # @param [Kramdown::Element] element
       #   the `kd:em` element
-      # @param [Hash] opts
+      # @param [Hash] options
       #   the element options
       #
       # @api private
-      def convert_em(el, opts)
-        content = inner(el, opts)
-
+      def convert_em(element, options)
+        content = transform_children(element, options)
         content.join.lines.map do |line|
           @pastel.decorate(line.chomp, *@theme[:em])
         end.join(NEWLINE)
@@ -211,80 +253,78 @@ module TTY
 
       # Convert smart quote element
       #
-      # @param [Kramdown::Element] el
+      # @param [Kramdown::Element] element
       #   the `kd:smart_quote` element
-      # @param [Hash] opts
+      # @param [Hash] options
       #   the element options
       #
       # @api private
-      def convert_smart_quote(el, opts)
-        @symbols[el.value]
+      def convert_smart_quote(element, options)
+        @symbols[element.value]
       end
 
       # Convert codespan element
       #
-      # @param [Kramdown::Element] el
+      # @param [Kramdown::Element] element
       #   the `kd:codespan` element
-      # @param [Hash] opts
+      # @param [Hash] options
       #   the element options
       #
       # @api private
-      def convert_codespan(el, opts)
+      def convert_codespan(element, options)
         indent = SPACE * @current_indent
-        syntax_opts = @color_opts.merge(lang: el.options[:lang])
-        raw_code = Strings.wrap(el.value, @width - @current_indent)
-        highlighted = SyntaxHighliter.highlight(raw_code, **syntax_opts)
-
-        highlighted.lines.map.with_index do |line, i|
-          i.zero? ? line.chomp : indent + line.chomp
+        highlighter_options = @color_options.merge(lang: element.options[:lang])
+        raw_code = Strings.wrap(element.value, @width - @current_indent)
+        highlighted = SyntaxHighliter.highlight(raw_code, **highlighter_options)
+        highlighted.lines.map.with_index do |line, line_index|
+          "#{indent unless line_index.zero?}#{line.chomp}"
         end.join(NEWLINE)
       end
 
       # Convert codeblock element
       #
-      # @param [Kramdown::Element] el
+      # @param [Kramdown::Element] element
       #   the `kd:codeblock` element
-      # @param [Hash] opts
+      # @param [Hash] options
       #   the element options
       #
       # @api private
-      def convert_codeblock(el, opts)
+      def convert_codeblock(element, options)
         indent = SPACE * @current_indent
-        indent + convert_codespan(el, opts)
+        "#{indent}#{convert_codespan(element, options)}"
       end
 
       # Convert blockquote element
       #
-      # @param [Kramdown::Element] el
+      # @param [Kramdown::Element] element
       #   the `kd:blockquote` element
-      # @param [Hash] opts
+      # @param [Hash] options
       #   the element options
       #
       # @api private
-      def convert_blockquote(el, opts)
+      def convert_blockquote(element, options)
         indent = SPACE * @current_indent
         bar_symbol = @symbols[:bar]
         prefix = "#{indent}#{@pastel.decorate(bar_symbol, *@theme[:quote])}  "
-
-        content = inner(el, opts)
-
+        content = transform_children(element, options)
         content.join.lines.map do |line|
-          prefix + line
+          "#{prefix}#{line}"
         end
       end
 
       # Convert ordered and unordered list element
       #
-      # @param [Kramdown::Element] el
+      # @param [Kramdown::Element] element
       #   the `kd:ul` or `kd:ol` element
-      # @param [Hash] opts
+      # @param [Hash] options
       #   the element options
       #
       # @api private
-      def convert_ul(el, opts)
-        @current_indent += @indent unless opts[:parent].type == :root
-        content = inner(el, opts)
-        @current_indent -= @indent unless opts[:parent].type == :root
+      def convert_ul(element, options)
+        indent_content = options[:parent].type != :root
+        @current_indent += @indent if indent_content
+        content = transform_children(element, options)
+        @current_indent -= @indent if indent_content
         content.join
       end
       alias convert_ol convert_ul
@@ -292,89 +332,89 @@ module TTY
 
       # Convert list element
       #
-      # @param [Kramdown::Element] el
+      # @param [Kramdown::Element] element
       #   the `kd:li` element
-      # @param [Hash] opts
+      # @param [Hash] options
       #   the element options
       #
       # @api private
-      def convert_li(el, opts)
-        index = opts[:index] + 1
+      def convert_li(element, options)
+        index = options[:index] + 1
         indent = SPACE * @current_indent
-        prefix_type = opts[:parent].type == :ol ? "#{index}." : @symbols[:bullet]
-        prefix = @pastel.decorate(prefix_type, *@theme[:list]) + SPACE
-        opts[:strip] = true
-
-        content = inner(el, opts)
-
-        indent + prefix + content.join
+        parent_type = options[:parent].type
+        prefix_type = parent_type == :ol ? "#{index}." : @symbols[:bullet]
+        prefix = "#{@pastel.decorate(prefix_type, *@theme[:list])} "
+        options[:strip] = true
+        content = transform_children(element, options)
+        "#{indent}#{prefix}#{content.join}"
       end
 
       # Convert dt element
       #
-      # @param [Kramdown::Element] el
+      # @param [Kramdown::Element] element
       #   the `kd:dt` element
-      # @param [Hash] opts
+      # @param [Hash] options
       #   the element options
       #
       # @api private
-      def convert_dt(el, opts)
+      def convert_dt(element, options)
         indent = SPACE * @current_indent
-        content = inner(el, opts)
-        indent + content.join + NEWLINE
+        content = transform_children(element, options)
+        "#{indent}#{content.join}#{NEWLINE}"
       end
 
       # Convert dd element
       #
-      # @param [Kramdown::Element] el
+      # @param [Kramdown::Element] element
       #   the `kd:dd` element
-      # @param [Hash] opts
+      # @param [Hash] options
       #   the element options
       #
       # @api private
-      def convert_dd(el, opts)
-        result = []
-        @current_indent += @indent unless opts[:parent].type == :root
-        content = inner(el, opts)
-        @current_indent -= @indent unless opts[:parent].type == :root
-        result << content.join
-        result << NEWLINE if opts[:next] && opts[:next].type == :dt
-        result
+      def convert_dd(element, options)
+        indent_content = options[:parent].type != :root
+        next_type = options[:next] && options[:next].type
+        suffix = next_type == :dt ? NEWLINE : EMPTY
+        @current_indent += @indent if indent_content
+        content = transform_children(element, options)
+        @current_indent -= @indent if indent_content
+        "#{content.join}#{suffix}"
       end
 
       # Convert table element
       #
-      # @param [Kramdown::Element] el
+      # @param [Kramdown::Element] element
       #   the `kd:table` element
-      # @param [Hash] opts
+      # @param [Hash] options
       #   the element options
       #
       # @api private
-      def convert_table(el, opts)
+      def convert_table(element, options)
         @row = 0
         @column = 0
-        opts[:alignment] = el.options[:alignment]
-        opts[:table_data] = extract_table_data(el, opts)
-        opts[:column_widths] = distribute_widths(max_widths(opts[:table_data]))
-        opts[:row_heights] = max_row_heights(opts[:table_data], opts[:column_widths])
-
-        inner(el, opts).join
+        table_data = extract_table_data(element, options)
+        max_column_widths = calculate_max_column_widths(table_data)
+        column_widths = distribute_column_widths(max_column_widths)
+        row_heights = calculate_max_row_heights(table_data, column_widths)
+        options[:alignment] = element.options[:alignment]
+        options[:column_widths] = column_widths
+        options[:row_heights] = row_heights
+        options[:table_data] = table_data
+        transform_children(element, options).join
       end
 
-      # Extract table data
+      # Extract the table data
       #
-      # @param [Kramdown::Element] el
+      # @param [Kramdown::Element] element
       #   the `kd:table` element
       #
       # @api private
-      def extract_table_data(el, opts)
-        el.children.each_with_object([]) do |container, data|
-          container.children.each do |row|
-            data_row = []
-            row.children.each do |cell|
-              data_row << inner(cell, opts)
+      def extract_table_data(element, options)
+        element.children.each_with_object([]) do |child_element, data|
+          child_element.children.each do |row|
+            data << row.children.map do |cell|
+              transform_children(cell, options)
             end
-            data << data_row
           end
         end
       end
@@ -384,17 +424,18 @@ module TTY
       # @return [Array<Integer>]
       #
       # @api private
-      def distribute_widths(widths)
+      def distribute_column_widths(column_widths)
+        borders_width = (column_widths.size + 1)
         indent = SPACE * @current_indent
-        total_width = widths.reduce(&:+)
-        screen_width = @width - (indent.length + 1) * 2 - (widths.size + 1)
-        return widths if total_width <= screen_width
+        indent_width = (indent.length + 1) * 2
+        screen_width = @width - borders_width - indent_width
+        total_width = column_widths.reduce(&:+)
+        return column_widths if total_width <= screen_width
 
         extra_width = total_width - screen_width
-
-        widths.map do |w|
-          ratio = w / total_width.to_f
-          w - (extra_width * ratio).floor
+        column_widths.map do |column_width|
+          ratio = column_width / total_width.to_f
+          column_width - (extra_width * ratio).floor
         end
       end
 
@@ -403,9 +444,9 @@ module TTY
       # @return [Array<Integer>]
       #
       # @api private
-      def max_widths(table_data)
-        table_data.first.each_with_index.reduce([]) do |acc, (*, col)|
-          acc << max_width(table_data, col)
+      def calculate_max_column_widths(table_data)
+        table_data.first.map.with_index do |_, column_index|
+          calculate_max_column_width(table_data, column_index)
         end
       end
 
@@ -414,9 +455,9 @@ module TTY
       # @return [Integer]
       #
       # @api private
-      def max_width(table_data, col)
+      def calculate_max_column_width(table_data, column_index)
         table_data.map do |row|
-          Strings.sanitize(row[col].join).lines.map(&:length).max || 0
+          Strings.sanitize(row[column_index].join).lines.map(&:length).max || 0
         end.max
       end
 
@@ -425,9 +466,9 @@ module TTY
       # @return [Array<Integer>]
       #
       # @api private
-      def max_row_heights(table_data, column_widths)
-        table_data.reduce([]) do |acc, row|
-          acc << max_row_height(row, column_widths)
+      def calculate_max_row_heights(table_data, column_widths)
+        table_data.map do |row|
+          calculate_max_row_height(row, column_widths)
         end
       end
 
@@ -436,35 +477,28 @@ module TTY
       # @return [Integer]
       #
       # @api private
-      def max_row_height(row, column_widths)
-        row.map.with_index do |column, col_index|
-          Strings.wrap(column.join, column_widths[col_index]).lines.size
+      def calculate_max_row_height(row, column_widths)
+        row.map.with_index do |cell, column_index|
+          Strings.wrap(cell.join, column_widths[column_index]).lines.size
         end.max
       end
 
       # Convert thead element
       #
-      # @param [Kramdown::Element] el
+      # @param [Kramdown::Element] element
       #   the `kd:thead` element
-      # @param [Hash] opts
+      # @param [Hash] options
       #   the element options
       #
       # @api private
-      def convert_thead(el, opts)
+      def convert_thead(element, options)
         indent = SPACE * @current_indent
-        result = []
-
-        result << indent
-        result << border(opts[:column_widths], :top)
-        result << NEWLINE
-
-        content = inner(el, opts)
-
-        result << content.join
-        result.join
+        top_border = build_border(options[:column_widths], :top)
+        content = transform_children(element, options)
+        "#{indent}#{top_border}#{NEWLINE}#{content.join}"
       end
 
-      # Render horizontal border line
+      # Build a horizontal border line
       #
       # @param [Array<Integer>] column_widths
       #   the table column widths
@@ -474,266 +508,283 @@ module TTY
       # @return [String]
       #
       # @api private
-      def border(column_widths, location)
-        result = []
-        result << @symbols[:"#{location}_left"]
-        column_widths.each.with_index do |width, i|
-          result << @symbols[:"#{location}_center"] if i != 0
-          result << (@symbols[:line] * (width + 2))
+      def build_border(column_widths, location)
+        border = [@symbols[:"#{location}_left"]]
+        column_widths.each.with_index do |column_width, column_index|
+          border << @symbols[:"#{location}_center"] unless column_index.zero?
+          border << (@symbols[:line] * (column_width + 2))
         end
-        result << @symbols[:"#{location}_right"]
-        @pastel.decorate(result.join, *@theme[:table])
+        border << @symbols[:"#{location}_right"]
+        @pastel.decorate(border.join, *@theme[:table])
       end
 
       # Convert tbody element
       #
-      # @param [Kramdown::Element] el
+      # @param [Kramdown::Element] element
       #   the `kd:tbody` element
-      # @param [Hash] opts
+      # @param [Hash] options
       #   the element options
       #
       # @api private
-      def convert_tbody(el, opts)
+      def convert_tbody(element, options)
+        column_widths = options[:column_widths]
         indent = SPACE * @current_indent
-        result = []
-
-        result << indent
-        if opts[:prev] && opts[:prev].type == :thead
-          result << border(opts[:column_widths], :mid)
-        else
-          result << border(opts[:column_widths], :top)
-        end
-        result << "\n"
-
-        content = inner(el, opts)
-
-        result << content.join
-        result << indent
-        if opts[:next] && opts[:next].type == :tfoot
-          result << border(opts[:column_widths], :mid)
-        else
-          result << border(opts[:column_widths], :bottom)
-        end
-        result << NEWLINE
-        result.join
+        next_type = options[:next] && options[:next].type
+        prev_type = options[:prev] && options[:prev].type
+        top_border_type = prev_type == :thead ? :mid : :top
+        top_border = build_border(column_widths, top_border_type)
+        bottom_border_type = next_type == :tfoot ? :mid : :bottom
+        bottom_border = build_border(column_widths, bottom_border_type)
+        content = transform_children(element, options)
+        "#{indent}#{top_border}#{NEWLINE}#{content.join}" \
+          "#{indent}#{bottom_border}#{NEWLINE}"
       end
 
       # Convert tfoot element
       #
-      # @param [Kramdown::Element] el
+      # @param [Kramdown::Element] element
       #   the `kd:tfoot` element
-      # @param [Hash] opts
+      # @param [Hash] options
       #   the element options
       #
       # @api private
-      def convert_tfoot(el, opts)
+      def convert_tfoot(element, options)
+        bottom_border = build_border(options[:column_widths], :bottom)
+        content = transform_children(element, options)
         indent = SPACE * @current_indent
-
-        inner(el, opts).join + indent +
-          border(opts[:column_widths], :bottom) +
-          NEWLINE
+        "#{content.join}#{indent}#{bottom_border}#{NEWLINE}"
       end
 
       # Convert td element
       #
-      # @param [Kramdown::Element] el
+      # @param [Kramdown::Element] element
       #   the `kd:td` element
-      # @param [Hash] opts
+      # @param [Hash] options
       #   the element options
       #
       # @api private
-      def convert_tr(el, opts)
+      def convert_tr(element, options)
+        border = EMPTY
         indent = SPACE * @current_indent
-        result = []
 
-        if opts[:prev] && opts[:prev].type == :tr
-          result << indent
-          result << border(opts[:column_widths], :mid)
-          result << NEWLINE
+        if options[:prev] && options[:prev].type == :tr
+          middle_border = build_border(options[:column_widths], :mid)
+          border = "#{indent}#{middle_border}#{NEWLINE}"
         end
 
-        content = inner(el, opts)
-
-        columns = content.count
-
-        row = content.each_with_index.reduce([]) do |acc, (cell, i)|
-          if cell.size > 1 # multiline
-            cell.each_with_index do |c, j| # zip columns
-              acc[j] = [] if acc[j].nil?
-              acc[j] << c.chomp
-              acc[j] << "\n" if i == (columns - 1)
-            end
-          else
-            acc << cell
-            acc << "\n" if i == (columns - 1)
-          end
-          acc
-        end.join
-
-        result << row
+        content = transform_children(element, options)
         @row += 1
-        result.join
+        "#{border}#{format_table_row(content)}"
+      end
+
+      # Format a table row
+      #
+      # @param [String] content
+      #   the content to format
+      #
+      # @return [String]
+      #
+      # @api private
+      def format_table_row(content)
+        number_of_columns = content.size
+        last_column_index = number_of_columns - 1
+        content.each_with_object([]).with_index do |(cell, row), column_index|
+          append_newline = column_index == last_column_index
+          insert_cell_into_row(cell, row, append_newline)
+        end.join
+      end
+
+      # Insert a cell into a table row
+      #
+      # @param [Array<String>] cell
+      #   the cell to insert
+      # @param [Array] row
+      #   the row to insert into
+      # @param [Boolean] append_newline
+      #   whether to append a newline
+      #
+      # @return [void]
+      #
+      # @api private
+      def insert_cell_into_row(cell, row, append_newline)
+        cell.each_with_index do |cell_line, cell_line_index|
+          (row[cell_line_index] ||= []) << cell_line.chomp
+          row[cell_line_index] << NEWLINE if append_newline
+        end
       end
 
       # Convert td element
       #
-      # @param [Kramdown::Element] el
+      # @param [Kramdown::Element] element
       #   the `kd:td` element
-      # @param [Hash] opts
+      # @param [Hash] options
       #   the element options
       #
       # @api private
-      def convert_td(el, opts)
+      def convert_td(element, options)
         indent = SPACE * @current_indent
-        pipe_char = @symbols[:pipe]
-        pipe = @pastel.decorate(pipe_char, *@theme[:table])
+        pipe = @pastel.decorate(@symbols[:pipe], *@theme[:table])
+        prefix = @column.zero? ? "#{indent}#{pipe} " : EMPTY
         suffix = " #{pipe} "
-
-        cell_content = inner(el, opts)
-        cell_width = opts[:column_widths][@column]
-        cell_height = opts[:row_heights][@row]
-        alignment = opts[:alignment][@column]
-        align_opts = alignment == :default ? {} : { direction: alignment }
-
-        wrapped = Strings.wrap(cell_content.join, cell_width)
-        aligned = Strings.align(wrapped, cell_width, **align_opts)
-        padded = if aligned.lines.size < cell_height
-                   Strings.pad(aligned, [0, 0, cell_height - aligned.lines.size, 0])
-                 else
-                   aligned.dup
-                 end
-
-        content =  padded.lines.map do |line|
-          # add pipe to first column
-          (@column.zero? ? "#{indent}#{pipe} " : "") +
-            (line.end_with?("\n") ? line.insert(-2, suffix) : line << suffix)
+        cell_content = transform_children(element, options)
+        formatted_cell = format_table_cell(cell_content, options)
+        @column = (@column + 1) % options[:column_widths].size
+        formatted_cell.lines.map do |line|
+          suffix_insert_index = line.end_with?(NEWLINE) ? -2 : -1
+          "#{prefix}#{line.insert(suffix_insert_index, suffix)}"
         end
-        @column = (@column + 1) % opts[:column_widths].size
-        content
       end
 
-      def convert_br(el, opts)
+      # Format a table cell
+      #
+      # @param [String] content
+      #   the content to format
+      # @param [Hash] options
+      #   the element options
+      #
+      # @return [String]
+      #
+      # @api private
+      def format_table_cell(content, options)
+        alignment = options[:alignment][@column]
+        align_options = alignment == :default ? {} : {direction: alignment}
+        cell_height = options[:row_heights][@row]
+        cell_width = options[:column_widths][@column]
+
+        wrapped = Strings.wrap(content.join, cell_width)
+        aligned = Strings.align(wrapped, cell_width, **align_options)
+        if aligned.lines.size < cell_height
+          Strings.pad(aligned, [0, 0, cell_height - aligned.lines.size, 0])
+        else
+          aligned.dup
+        end
+      end
+
+      def convert_br(element, options)
         NEWLINE
       end
 
       # Convert hr element
       #
-      # @param [Kramdown::Element] el
+      # @param [Kramdown::Element] element
       #   the `kd:hr` element
-      # @param [Hash] opts
+      # @param [Hash] options
       #   the element options
       #
       # @api private
-      def convert_hr(el, opts)
-        width = @width - @symbols[:diamond].length * 2
-        line = @symbols[:diamond] + @symbols[:line] * width + @symbols[:diamond]
-        @pastel.decorate(line, *@theme[:hr]) + NEWLINE
+      def convert_hr(element, options)
+        width = @width - (@symbols[:diamond].length * 2)
+        inner_line = @symbols[:line] * width
+        line = "#{@symbols[:diamond]}#{inner_line}#{@symbols[:diamond]}"
+        "#{@pastel.decorate(line, *@theme[:hr])}#{NEWLINE}"
       end
 
       # Convert a element
       #
-      # @param [Kramdown::Element] el
+      # @param [Kramdown::Element] element
       #   the `kd:a` element
-      # @param [Hash] opts
+      # @param [Hash] options
       #   the element options
       #
       # @api private
-      def convert_a(el, opts)
-        result = []
+      def convert_a(element, options)
+        attributes = element.attr
+        children = element.children
+        link = []
 
-        if URI.parse(el.attr["href"]).class == URI::MailTo
-          el.attr["href"] = URI.parse(el.attr["href"]).to
+        if URI.parse(attributes["href"]).instance_of?(URI::MailTo)
+          attributes["href"] = URI.parse(attributes["href"]).to
         end
 
-        if el.children.size == 1 && el.children[0].type == :text &&
-           el.children[0].value == el.attr["href"]
+        if children.size == 1 && children[0].type == :text &&
+           children[0].value == attributes["href"]
 
-          if !el.attr["title"].nil? && !el.attr["title"].strip.empty?
-            result << "(#{el.attr["title"]}) "
+          if !attributes["title"].nil? && !attributes["title"].strip.empty?
+            link << "(#{attributes["title"]}) "
           end
-          result << @pastel.decorate(el.attr["href"], *@theme[:link])
+          link << @pastel.decorate(attributes["href"], *@theme[:link])
 
-        elsif el.children.size > 0  &&
-             (el.children[0].type != :text || !el.children[0].value.strip.empty?)
+        elsif children.any? && (children[0].type != :text ||
+                                !children[0].value.strip.empty?)
 
-          content = inner(el, opts)
+          content = transform_children(element, options)
 
-          result << content.join
-          result << " #{@symbols[:arrow]} "
-          if el.attr["title"]
-            result << "(#{el.attr["title"]}) "
-          end
-          result << @pastel.decorate(el.attr["href"], *@theme[:link])
+          link << content.join
+          link << " #{@symbols[:arrow]} "
+          link << "(#{attributes["title"]}) " if attributes["title"]
+          link << @pastel.decorate(attributes["href"], *@theme[:link])
         end
-        result
+        link
       end
 
       # Convert math element
       #
-      # @param [Kramdown::Element] el
+      # @param [Kramdown::Element] element
       #   the `kd:math` element
-      # @param [Hash] opts
+      # @param [Hash] options
       #   the element options
       #
       # @api private
-      def convert_math(el, opts)
-        if el.options[:category] == :block
-          convert_codeblock(el, opts) + NEWLINE
+      def convert_math(element, options)
+        if element.options[:category] == :block
+          convert_codeblock(element, options) + NEWLINE
         else
-          convert_codespan(el, opts)
+          convert_codespan(element, options)
         end
       end
 
       # Convert abbreviation element
       #
-      # @param [Kramdown::Element] el
+      # @param [Kramdown::Element] element
       #   the `kd:abbreviation` element
-      # @param [Hash] opts
+      # @param [Hash] options
       #   the element options
       #
       # @api private
-      def convert_abbreviation(el, opts)
-        title = @root.options[:abbrev_defs][el.value]
+      def convert_abbreviation(element, options)
+        title = @root.options[:abbrev_defs][element.value]
         if title.to_s.empty?
-          el.value
+          element.value
         else
-          "#{el.value}(#{title})"
+          "#{element.value}(#{title})"
         end
       end
 
-      def convert_typographic_sym(el, opts)
-        @symbols[el.value]
+      def convert_typographic_sym(element, options)
+        @symbols[element.value]
       end
 
-      def convert_entity(el, opts)
-        unicode_char(el.value.code_point)
+      def convert_entity(element, options)
+        transform_codepoint(element.value.code_point)
       end
 
       # Convert codepoint to UTF-8 representation
-      def unicode_char(codepoint)
-        [codepoint].pack("U*")
+      def transform_codepoint(codepoint)
+        [codepoint].pack(UTF8_CHARACTERS_DIRECTIVE)
       end
 
       # Convert image element
       #
       # @param [Kramdown::Element] element
       #   the `kd:footnote` element
-      # @param [Hash] opts
+      # @param [Hash] options
       #   the element options
       #
       # @api private
-      def convert_footnote(el, opts)
-        name = el.options[:name]
-        if footnote = @footnotes[name]
+      def convert_footnote(element, options)
+        name = element.options[:name]
+        if (footnote = @footnotes[name])
           number = footnote.last
         else
           number = @footnote_no
           @footnote_no += 1
-          @footnotes[name] = [el.value, number]
+          @footnotes[name] = [element.value, number]
         end
 
-        content = "#{@symbols[:bracket_left]}#{number}#{@symbols[:bracket_right]}"
-        @pastel.decorate(content, *@theme[:note])
+        @pastel.decorate(
+          "#{@symbols[:bracket_left]}#{number}#{@symbols[:bracket_right]}",
+          *@theme[:note]
+        )
       end
 
       def convert_raw(*)
@@ -744,17 +795,15 @@ module TTY
       #
       # @param [Kramdown::Element] element
       #   the `kd:img` element
-      # @param [Hash] opts
+      # @param [Hash] options
       #   the element options
       #
       # @api private
-      def convert_img(el, opts)
-        src = el.attr["src"]
-        alt = el.attr["alt"]
+      def convert_img(element, options)
+        alt = element.attr["alt"]
+        src = element.attr["src"]
         link = [@symbols[:paren_left]]
-        unless alt.to_s.empty?
-          link << "#{alt} #{@symbols[:ndash]} "
-        end
+        link << "#{alt} #{@symbols[:ndash]} " unless alt.to_s.empty?
         link << "#{src}#{@symbols[:paren_right]}"
         @pastel.decorate(link.join, *@theme[:image])
       end
@@ -763,32 +812,32 @@ module TTY
       #
       # @param [Kramdown::Element] element
       #   the `kd:html_element` element
-      # @param [Hash] opts
+      # @param [Hash] options
       #   the element options
       #
       # @api private
-      def convert_html_element(el, opts)
-        if el.value == "div"
-          inner(el, opts)
-        elsif %w[i em].include?(el.value)
-          convert_em(el, opts)
-        elsif %w[b strong].include?(el.value)
-          convert_strong(el, opts)
-        elsif el.value == "img"
-          convert_img(el, opts)
-        elsif el.value == "a"
-          convert_a(el, opts)
-        elsif el.value == "del"
-          inner(el, opts).join.chars.to_a.map do |char|
+      def convert_html_element(element, options)
+        if element.value == "div"
+          transform_children(element, options)
+        elsif %w[i em].include?(element.value)
+          convert_em(element, options)
+        elsif %w[b strong].include?(element.value)
+          convert_strong(element, options)
+        elsif element.value == "img"
+          convert_img(element, options)
+        elsif element.value == "a"
+          convert_a(element, options)
+        elsif element.value == "del"
+          transform_children(element, options).join.chars.to_a.map do |char|
             char + @symbols[:delete]
           end
-        elsif el.value == "br"
+        elsif element.value == "br"
           NEWLINE
-        elsif !el.children.empty?
-          inner(el, opts)
+        elsif element.children.any?
+          transform_children(element, options)
         else
-          warning("HTML element '#{el.value.inspect}' not supported")
-          ""
+          warning("HTML element '#{element.value.inspect}' not supported")
+          EMPTY
         end
       end
 
@@ -796,22 +845,22 @@ module TTY
       #
       # @param [Kramdown::Element] element
       #   the `kd:xml_comment` element
-      # @param [Hash] opts
+      # @param [Hash] options
       #   the element options
       #
       # @api private
-      def convert_xml_comment(el, opts)
-        block = el.options[:category] == :block
+      def convert_xml_comment(element, options)
+        inline_level = element.options[:category] == :span
         indent = SPACE * @current_indent
-        content = el.value
-        content.gsub!(/^<!-{2,}\s*/, "") if content.start_with?("<!--")
-        content.gsub!(/-{2,}>$/, "") if content.end_with?("-->")
-        result = content.lines.map.with_index do |line, i|
-          (i.zero? && !block ? "" : indent) +
-            @pastel.decorate("#{@symbols[:hash]} " + line.chomp,
+        content = element.value
+        content.gsub!(/^<!-{2,}\s*/, EMPTY) if content.start_with?("<!--")
+        content.gsub!(/-{2,}>$/, EMPTY) if content.end_with?("-->")
+        comment = content.lines.map.with_index do |line, line_index|
+          (line_index.zero? && inline_level ? EMPTY : indent) +
+            @pastel.decorate("#{@symbols[:hash]} #{line.chomp}",
                              *@theme[:comment])
         end.join(NEWLINE)
-        block ? result + NEWLINE : result
+        inline_level ? comment : "#{comment}#{NEWLINE}"
       end
       alias convert_comment convert_xml_comment
     end # Parser
