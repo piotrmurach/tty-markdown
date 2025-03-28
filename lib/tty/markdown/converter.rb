@@ -10,7 +10,9 @@ require_relative "syntax_highlighter"
 
 module TTY
   module Markdown
-    # Converts a Kramdown::Document tree to a terminal friendly output
+    # Responsible for converting a Markdown document into terminal output
+    #
+    # @api private
     class Converter < ::Kramdown::Converter::Base
       # The empty string
       #
@@ -44,6 +46,17 @@ module TTY
       SPACE = " "
       private_constant :SPACE
 
+      # Create a {TTY::Markdown::Converter} instance
+      #
+      # @example
+      #   converter = TTY::Markdown::Converter.new(document)
+      #
+      # @param [Kramdown::Element] root
+      #   the root element
+      # @param [Hash] options
+      #   the root element options
+      #
+      # @api public
       def initialize(root, options = {})
         super
         @pastel = Pastel.new(enabled: options[:enabled])
@@ -61,7 +74,17 @@ module TTY
         @width = options[:width]
       end
 
-      # Invoke an element conversion
+      # Convert an element
+      #
+      # @example
+      #   converter.convert(root)
+      #
+      # @param [Kramdown::Element] el
+      #   the root element
+      # @param [Hash] opts
+      #   the root element options
+      #
+      # @return [String]
       #
       # @api public
       def convert(el, opts = {indent: 0})
@@ -70,10 +93,14 @@ module TTY
 
       private
 
-      # Process children of this element
+      # Convert element children
       #
       # @param [Kramdown::Element] el
       #   the element with child elements
+      # @param [Hash] opts
+      #   the element options
+      #
+      # @return [Array<String>]
       #
       # @api private
       def inner(el, opts)
@@ -90,12 +117,14 @@ module TTY
         result
       end
 
-      # Convert root element
+      # Convert a root element
       #
       # @param [Kramdown::Element] el
-      #   the `kd:root` element
+      #   the root element
       # @param [Hash] opts
-      #   the element options
+      #   the root element options
+      #
+      # @return [String]
       #
       # @api private
       def convert_root(el, opts)
@@ -108,9 +137,11 @@ module TTY
       # Create an ordered list of footnotes
       #
       # @param [Kramdown::Element] root
-      #   the `kd:root` element
+      #   the root element
       # @param [Hash] opts
       #   the root element options
+      #
+      # @return [String]
       #
       # @api private
       def footnotes_list(root, opts)
@@ -125,18 +156,20 @@ module TTY
         convert_ol(ol, {parent: root}.merge(opts))
       end
 
-      # Convert header element
+      # Convert a header element
       #
       # @param [Kramdown::Element] el
-      #   the `kd:header` element
+      #   the header element
       # @param [Hash] opts
-      #   the element options
+      #   the header element options
+      #
+      # @return [Array<String>]
       #
       # @api private
       def convert_header(el, opts)
         level = el.options[:level]
         if opts[:parent] && opts[:parent].type == :root
-          # Header determines indentation only at top level
+          # The top-level header determines indentation
           @current_indent = (level - 1) * @indent
           indent = SPACE * (level - 1) * @indent
         else
@@ -152,12 +185,14 @@ module TTY
         end
       end
 
-      # Convert paragraph element
+      # Convert a paragraph element
       #
       # @param [Kramdown::Element] el
-      #   the `kd:p` element
+      #   the p element
       # @param [Hash] opts
-      #   the element options
+      #   the p element options
+      #
+      # @return [Array<String>]
       #
       # @api private
       def convert_p(el, opts)
@@ -174,12 +209,14 @@ module TTY
         result
       end
 
-      # Convert text element
+      # Convert a text element
       #
-      # @param [Kramdown::Element] element
-      #   the `kd:text` element
+      # @param [Kramdown::Element] el
+      #   the text element
       # @param [Hash] opts
-      #   the element options
+      #   the text element options
+      #
+      # @return [String]
       #
       # @api private
       def convert_text(el, opts)
@@ -189,12 +226,14 @@ module TTY
         text.gsub(NEWLINE, "#{NEWLINE}#{indent}")
       end
 
-      # Convert strong element
+      # Convert a strong element
       #
-      # @param [Kramdown::Element] element
-      #   the `kd:strong` element
+      # @param [Kramdown::Element] el
+      #   the strong element
       # @param [Hash] opts
-      #   the element options
+      #   the strong element options
+      #
+      # @return [String]
       #
       # @api private
       def convert_strong(el, opts)
@@ -205,12 +244,14 @@ module TTY
         end.join(NEWLINE)
       end
 
-      # Convert em element
+      # Convert an emphasis element
       #
       # @param [Kramdown::Element] el
-      #   the `kd:em` element
+      #   the em element
       # @param [Hash] opts
-      #   the element options
+      #   the em element options
+      #
+      # @return [String]
       #
       # @api private
       def convert_em(el, opts)
@@ -221,36 +262,37 @@ module TTY
         end.join(NEWLINE)
       end
 
-      # Convert new line element
+      # Convert a blank element
       #
-      # @param [Kramdown::Element] el
-      #   the `kd:blank` element
-      # @param [Hash] opts
-      #   the element options
+      # @return [String]
       #
       # @api private
       def convert_blank(*)
         NEWLINE
       end
 
-      # Convert smart quote element
+      # Convert a smart quote element
       #
       # @param [Kramdown::Element] el
-      #   the `kd:smart_quote` element
+      #   the smart quote element
       # @param [Hash] opts
-      #   the element options
+      #   the smart quote element options
+      #
+      # @return [String]
       #
       # @api private
       def convert_smart_quote(el, opts)
         @symbols[el.value]
       end
 
-      # Convert codespan element
+      # Convert a codespan element
       #
       # @param [Kramdown::Element] el
-      #   the `kd:codespan` element
+      #   the codespan element
       # @param [Hash] opts
-      #   the element options
+      #   the codespan element options
+      #
+      # @return [String]
       #
       # @api private
       def convert_codespan(el, opts)
@@ -264,12 +306,14 @@ module TTY
         end.join(NEWLINE)
       end
 
-      # Convert codeblock element
+      # Convert a codeblock element
       #
       # @param [Kramdown::Element] el
-      #   the `kd:codeblock` element
+      #   the codeblock element
       # @param [Hash] opts
-      #   the element options
+      #   the codeblock element options
+      #
+      # @return [String]
       #
       # @api private
       def convert_codeblock(el, opts)
@@ -277,12 +321,14 @@ module TTY
         "#{indent}#{convert_codespan(el, opts)}"
       end
 
-      # Convert blockquote element
+      # Convert a blockquote element
       #
       # @param [Kramdown::Element] el
-      #   the `kd:blockquote` element
+      #   the blockquote element
       # @param [Hash] opts
-      #   the element options
+      #   the blockquote element options
+      #
+      # @return [Array<String>]
       #
       # @api private
       def convert_blockquote(el, opts)
@@ -297,12 +343,14 @@ module TTY
         end
       end
 
-      # Convert ordered and unordered list element
+      # Convert a description, ordered or unordered list element
       #
       # @param [Kramdown::Element] el
-      #   the `kd:ul` or `kd:ol` element
+      #   the dl, ol or ul element
       # @param [Hash] opts
-      #   the element options
+      #   the dl, ol or ul element options
+      #
+      # @return [String]
       #
       # @api private
       def convert_ul(el, opts)
@@ -314,12 +362,14 @@ module TTY
       alias convert_ol convert_ul
       alias convert_dl convert_ul
 
-      # Convert list element
+      # Convert a list item element
       #
       # @param [Kramdown::Element] el
-      #   the `kd:li` element
+      #   the li element
       # @param [Hash] opts
-      #   the element options
+      #   the li element options
+      #
+      # @return [String]
       #
       # @api private
       def convert_li(el, opts)
@@ -335,12 +385,14 @@ module TTY
         "#{indent}#{prefix}#{content.join}"
       end
 
-      # Convert dt element
+      # Convert a description term element
       #
       # @param [Kramdown::Element] el
-      #   the `kd:dt` element
+      #   the dt element
       # @param [Hash] opts
-      #   the element options
+      #   the dt element options
+      #
+      # @return [String]
       #
       # @api private
       def convert_dt(el, opts)
@@ -349,12 +401,14 @@ module TTY
         "#{indent}#{content.join}#{NEWLINE}"
       end
 
-      # Convert dd element
+      # Convert a description details element
       #
       # @param [Kramdown::Element] el
-      #   the `kd:dd` element
+      #   the dd element
       # @param [Hash] opts
-      #   the element options
+      #   the dd element options
+      #
+      # @return [Array<String>]
       #
       # @api private
       def convert_dd(el, opts)
@@ -367,12 +421,14 @@ module TTY
         result
       end
 
-      # Convert table element
+      # Convert a table element
       #
       # @param [Kramdown::Element] el
-      #   the `kd:table` element
+      #   the table element
       # @param [Hash] opts
-      #   the element options
+      #   the table element options
+      #
+      # @return [String]
       #
       # @api private
       def convert_table(el, opts)
@@ -390,7 +446,11 @@ module TTY
       # Extract table data
       #
       # @param [Kramdown::Element] el
-      #   the `kd:table` element
+      #   the table element
+      # @param [Hash] opts
+      #   the table element options
+      #
+      # @return [Array<Array<String>>]
       #
       # @api private
       def extract_table_data(el, opts)
@@ -403,7 +463,10 @@ module TTY
         end
       end
 
-      # Distribute column widths inside total width
+      # Distribute column widths within the total width
+      #
+      # @param [Array<Integer>] widths
+      #   the table column widths
       #
       # @return [Array<Integer>]
       #
@@ -422,7 +485,10 @@ module TTY
         end
       end
 
-      # Calculate maximum widths for each column
+      # Calculate maximum widths for every column
+      #
+      # @param [Array<Array<String>>] table_data
+      #   the table data
       #
       # @return [Array<Integer>]
       #
@@ -433,7 +499,12 @@ module TTY
         end
       end
 
-      # Calculate maximum cell width for a given column
+      # Calculate the maximum table cell width for a given column
+      #
+      # @param [Array<Array<String>>] table_data
+      #   the table data
+      # @param [Integer] col
+      #   the table column
       #
       # @return [Integer]
       #
@@ -444,7 +515,12 @@ module TTY
         end.max
       end
 
-      # Calculate maximum heights for each row
+      # Calculate maximum heights for every row
+      #
+      # @param [Array<Array<String>>] table_data
+      #   the table data
+      # @param [Array<Integer>] column_widths
+      #   the table column widths
       #
       # @return [Array<Integer>]
       #
@@ -455,7 +531,12 @@ module TTY
         end
       end
 
-      # Calculate maximum cell height for a given row
+      # Calculate the maximum table cell height for a given row
+      #
+      # @param [Array<Array<String>>] row
+      #   the table row
+      # @param [Array<Integer>] column_widths
+      #   the table column widths
       #
       # @return [Integer]
       #
@@ -466,12 +547,14 @@ module TTY
         end.max
       end
 
-      # Convert thead element
+      # Convert a table head element
       #
       # @param [Kramdown::Element] el
-      #   the `kd:thead` element
+      #   the thead element
       # @param [Hash] opts
-      #   the element options
+      #   the thead element options
+      #
+      # @return [String]
       #
       # @api private
       def convert_thead(el, opts)
@@ -488,7 +571,7 @@ module TTY
         result.join
       end
 
-      # Render horizontal border line
+      # Create a horizontal border line
       #
       # @param [Array<Integer>] column_widths
       #   the table column widths
@@ -509,12 +592,14 @@ module TTY
         @pastel.decorate(result.join, *@theme[:table])
       end
 
-      # Convert tbody element
+      # Convert a table body element
       #
       # @param [Kramdown::Element] el
-      #   the `kd:tbody` element
+      #   the tbody element
       # @param [Hash] opts
-      #   the element options
+      #   the tbody element options
+      #
+      # @return [String]
       #
       # @api private
       def convert_tbody(el, opts)
@@ -537,12 +622,14 @@ module TTY
         result.join
       end
 
-      # Convert tfoot element
+      # Convert a table foot element
       #
       # @param [Kramdown::Element] el
-      #   the `kd:tfoot` element
+      #   the tfoot element
       # @param [Hash] opts
-      #   the element options
+      #   the tfoot element options
+      #
+      # @return [String]
       #
       # @api private
       def convert_tfoot(el, opts)
@@ -553,12 +640,14 @@ module TTY
         "#{content.join}#{indent}#{bottom_border}#{NEWLINE}"
       end
 
-      # Convert td element
+      # Convert a table row element
       #
       # @param [Kramdown::Element] el
-      #   the `kd:td` element
+      #   the tr element
       # @param [Hash] opts
-      #   the element options
+      #   the tr element options
+      #
+      # @return [String]
       #
       # @api private
       def convert_tr(el, opts)
@@ -620,12 +709,14 @@ module TTY
         end
       end
 
-      # Convert td element
+      # Convert a table data element
       #
       # @param [Kramdown::Element] el
-      #   the `kd:td` element
+      #   the td element
       # @param [Hash] opts
-      #   the element options
+      #   the td element options
+      #
+      # @return [Array<String>]
       #
       # @api private
       def convert_td(el, opts)
@@ -669,16 +760,28 @@ module TTY
         end
       end
 
+      # Convert a line break element
+      #
+      # @param [Kramdown::Element] el
+      #   the br element
+      # @param [Hash] opts
+      #   the br element options
+      #
+      # @return [String]
+      #
+      # @api private
       def convert_br(el, opts)
         NEWLINE
       end
 
-      # Convert hr element
+      # Convert a horizontal rule element
       #
       # @param [Kramdown::Element] el
-      #   the `kd:hr` element
+      #   the hr element
       # @param [Hash] opts
-      #   the element options
+      #   the hr element options
+      #
+      # @return [String]
       #
       # @api private
       def convert_hr(el, opts)
@@ -688,12 +791,14 @@ module TTY
         @pastel.decorate(line, *@theme[:hr]) + NEWLINE
       end
 
-      # Convert a element
+      # Convert an anchor element
       #
       # @param [Kramdown::Element] el
-      #   the `kd:a` element
+      #   the a element
       # @param [Hash] opts
-      #   the element options
+      #   the a element options
+      #
+      # @return [Array<String>]
       #
       # @api private
       def convert_a(el, opts)
@@ -724,12 +829,14 @@ module TTY
         result
       end
 
-      # Convert math element
+      # Convert a math element
       #
       # @param [Kramdown::Element] el
-      #   the `kd:math` element
+      #   the math element
       # @param [Hash] opts
-      #   the element options
+      #   the math element options
+      #
+      # @return [String]
       #
       # @api private
       def convert_math(el, opts)
@@ -740,12 +847,14 @@ module TTY
         end
       end
 
-      # Convert abbreviation element
+      # Convert an abbreviation element
       #
       # @param [Kramdown::Element] el
-      #   the `kd:abbreviation` element
+      #   the abbreviation element
       # @param [Hash] opts
-      #   the element options
+      #   the abbreviation element options
+      #
+      # @return [String]
       #
       # @api private
       def convert_abbreviation(el, opts)
@@ -757,25 +866,54 @@ module TTY
         end
       end
 
+      # Convert a typographic symbol element
+      #
+      # @param [Kramdown::Element] el
+      #   the typographic sym element
+      # @param [Hash] opts
+      #   the typographic sym element options
+      #
+      # @return [String]
+      #
+      # @api private
       def convert_typographic_sym(el, opts)
         @symbols[el.value]
       end
 
+      # Convert an entity element
+      #
+      # @param [Kramdown::Element] el
+      #   the entity element
+      # @param [Hash] opts
+      #   the entity element options
+      #
+      # @return [String]
+      #
+      # @api private
       def convert_entity(el, opts)
         unicode_char(el.value.code_point)
       end
 
       # Convert codepoint to UTF-8 representation
+      #
+      # @param [Integer] codepoint
+      #   the codepoint
+      #
+      # @return [String]
+      #
+      # @api private
       def unicode_char(codepoint)
         [codepoint].pack("U*")
       end
 
-      # Convert image element
+      # Convert a footnote element
       #
-      # @param [Kramdown::Element] element
-      #   the `kd:footnote` element
+      # @param [Kramdown::Element] el
+      #   the footnote element
       # @param [Hash] opts
-      #   the element options
+      #   the footnote element options
+      #
+      # @return [String]
       #
       # @api private
       def convert_footnote(el, opts)
@@ -794,16 +932,23 @@ module TTY
         )
       end
 
+      # Convert a raw element
+      #
+      # @return [String]
+      #
+      # @api private
       def convert_raw(*)
         warning("Raw content is not supported")
       end
 
-      # Convert image element
+      # Convert an image element
       #
-      # @param [Kramdown::Element] element
-      #   the `kd:img` element
+      # @param [Kramdown::Element] el
+      #   the img element
       # @param [Hash] opts
-      #   the element options
+      #   the img element options
+      #
+      # @return [String]
       #
       # @api private
       def convert_img(el, opts)
@@ -815,12 +960,14 @@ module TTY
         @pastel.decorate(link.join, *@theme[:image])
       end
 
-      # Convert html element
+      # Convert an HTML element
       #
-      # @param [Kramdown::Element] element
-      #   the `kd:html_element` element
+      # @param [Kramdown::Element] el
+      #   the html element element
       # @param [Hash] opts
-      #   the element options
+      #   the html element options
+      #
+      # @return [Array<String>, String]
       #
       # @api private
       def convert_html_element(el, opts)
@@ -848,12 +995,14 @@ module TTY
         end
       end
 
-      # Convert xml comment element
+      # Convert an XML comment element
       #
-      # @param [Kramdown::Element] element
-      #   the `kd:xml_comment` element
+      # @param [Kramdown::Element] el
+      #   the xml comment element
       # @param [Hash] opts
-      #   the element options
+      #   the xml comment element options
+      #
+      # @return [String]
       #
       # @api private
       def convert_xml_comment(el, opts)
