@@ -57,9 +57,6 @@ Naming/FileName:
   Exclude:
     - "lib/tty-markdown.rb"
 
-Naming/MethodParameterName:
-  MinNameLength: 2
-
 RSpec/DescribedClass:
   Exclude:
     - "spec/perf/**/*"
