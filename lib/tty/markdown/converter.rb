@@ -169,14 +169,13 @@ module TTY
         level = element.options[:level]
         root_parent = options[:parent].type == :root
         indent_by(level - 1) if root_parent
-        indent = SPACE * @current_indent
         styles = @theme[:header].dup
         styles << :underline if level == 1
 
         content = inner(element, options)
 
         content.join.lines.map do |line|
-          "#{indent}#{@pastel.decorate(line.chomp, *styles)}#{NEWLINE}"
+          "#{indentation}#{@pastel.decorate(line.chomp, *styles)}#{NEWLINE}"
         end
       end
 
@@ -190,6 +189,15 @@ module TTY
       # @api private
       def indent_by(header_level)
         @current_indent = header_level * @indent
+      end
+
+      # The current space indentation
+      #
+      # @return [String]
+      #
+      # @api private
+      def indentation
+        SPACE * @current_indent
       end
 
       # Convert a paragraph element
