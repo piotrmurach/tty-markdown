@@ -434,9 +434,9 @@ module TTY
         next_type = options[:next] && options[:next].type
         root_parent = options[:parent].type == :root
         suffix = next_type == :dt ? NEWLINE : EMPTY
-        @current_indent += @indent unless root_parent
-        content = inner(element, options)
-        @current_indent -= @indent unless root_parent
+        content = indent_inner(root_parent) do
+          inner(element, options)
+        end
         "#{content.join}#{suffix}"
       end
 
