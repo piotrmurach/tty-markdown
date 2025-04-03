@@ -101,6 +101,18 @@ module TTY
 
       private
 
+      # Indent content by the indentation level
+      #
+      # @param [Integer] indentation_level
+      #   the indentation level
+      #
+      # @return [void]
+      #
+      # @api private
+      def indent_by(indentation_level)
+        @current_indent = indentation_level * @indent
+      end
+
       # Transform an element children
       #
       # @param [Kramdown::Element] element
@@ -188,12 +200,9 @@ module TTY
       # @api private
       def convert_header(element, options)
         level = element.options[:level]
-        if options[:parent] && options[:parent].type == :root
-          @current_indent = (level - 1) * @indent
-          indent = SPACE * (level - 1) * @indent
-        else
-          indent = SPACE * @current_indent
-        end
+        indent_content = options[:parent].type == :root
+        indent_by(level - 1) if indent_content
+        indent = SPACE * @current_indent
         styles = @theme[:header].dup
         styles << :underline if level == 1
 
