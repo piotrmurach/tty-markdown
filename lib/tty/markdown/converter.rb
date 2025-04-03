@@ -238,15 +238,9 @@ module TTY
       def convert_p(element, options)
         parent_type = options[:parent].type
         indent_content = !INDENTED_HTML_ELEMENTS.include?(parent_type)
-        result = []
-        result << indentation if indent_content
         options[:indent] = parent_type == :blockquote ? 0 : @current_indent
-
         content = transform_children(element, options)
-
-        result << content.join
-        result << NEWLINE unless result.last.to_s.end_with?(NEWLINE)
-        result
+        "#{indentation if indent_content}#{content.join}#{NEWLINE}"
       end
 
       # Convert a text element
