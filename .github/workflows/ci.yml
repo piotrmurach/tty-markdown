@@ -44,7 +44,6 @@ jobs:
           - truffleruby-head
         include:
           - ruby: "2.7"
-            os: ubuntu-latest
             coverage: true
           - ruby: jruby-9.2
             os: ubuntu-20.04
