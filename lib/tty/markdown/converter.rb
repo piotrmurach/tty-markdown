@@ -362,13 +362,28 @@ module TTY
       # @api private
       def convert_ul(element, options)
         root_parent = options[:parent].type == :root
-        @current_indent += @indent unless root_parent
-        content = inner(element, options)
-        @current_indent -= @indent unless root_parent
+        content = indent_inner(root_parent) do
+          inner(element, options)
+        end
         content.join
       end
       alias convert_ol convert_ul
       alias convert_dl convert_ul
+
+      # Indent non-root element inner content
+      #
+      # @param [Boolean] root_parent
+      #   whether the parent element is root or not
+      #
+      # @return [Object]
+      #
+      # @api private
+      def indent_inner(root_parent)
+        @current_indent += @indent unless root_parent
+        yield.tap do
+          @current_indent -= @indent unless root_parent
+        end
+      end
 
       # Convert a list item element
       #
