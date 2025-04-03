@@ -113,6 +113,15 @@ module TTY
         @current_indent = indentation_level * @indent
       end
 
+      # The current space indentation
+      #
+      # @return [String]
+      #
+      # @api private
+      def indentation
+        SPACE * @current_indent
+      end
+
       # Transform an element children
       #
       # @param [Kramdown::Element] element
@@ -202,14 +211,11 @@ module TTY
         level = element.options[:level]
         indent_content = options[:parent].type == :root
         indent_by(level - 1) if indent_content
-        indent = SPACE * @current_indent
         styles = @theme[:header].dup
         styles << :underline if level == 1
-
         content = transform_children(element, options)
-
         content.join.lines.map do |line|
-          "#{indent}#{@pastel.decorate(line.chomp, *styles)}#{NEWLINE}"
+          "#{indentation}#{@pastel.decorate(line.chomp, *styles)}#{NEWLINE}"
         end
       end
 
