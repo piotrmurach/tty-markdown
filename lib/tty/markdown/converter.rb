@@ -211,10 +211,10 @@ module TTY
       #
       # @api private
       def convert_p(element, options)
-        indent = SPACE * @current_indent
         parent_type = options[:parent].type
+        indented_parent = INDENTED_HTML_ELEMENTS.include?(parent_type)
         result = []
-        result << indent unless INDENTED_HTML_ELEMENTS.include?(parent_type)
+        result << indentation unless indented_parent
         options[:indent] = parent_type == :blockquote ? 0 : @current_indent
 
         content = inner(element, options)
@@ -309,12 +309,11 @@ module TTY
       #
       # @api private
       def convert_codespan(element, options)
-        indent = SPACE * @current_indent
         highlighter_options = @color_options.merge(lang: element.options[:lang])
         raw_code = Strings.wrap(element.value, @width - @current_indent)
         highlighted = SyntaxHighliter.highlight(raw_code, **highlighter_options)
         highlighted.lines.map.with_index do |line, i|
-          "#{indent unless i.zero?}#{line.chomp}"
+          "#{indentation unless i.zero?}#{line.chomp}"
         end.join(NEWLINE)
       end
 
@@ -329,8 +328,7 @@ module TTY
       #
       # @api private
       def convert_codeblock(element, options)
-        indent = SPACE * @current_indent
-        "#{indent}#{convert_codespan(element, options)}"
+        "#{indentation}#{convert_codespan(element, options)}"
       end
 
       # Convert a blockquote element
@@ -344,9 +342,8 @@ module TTY
       #
       # @api private
       def convert_blockquote(element, options)
-        indent = SPACE * @current_indent
-        bar_symbol = @symbols[:bar]
-        prefix = "#{indent}#{@pastel.decorate(bar_symbol, *@theme[:quote])}  "
+        bar = @pastel.decorate(@symbols[:bar], *@theme[:quote])
+        prefix = "#{indentation}#{bar}  "
         content = inner(element, options)
         content.join.lines.map do |line|
           "#{prefix}#{line}"
@@ -385,13 +382,12 @@ module TTY
       # @api private
       def convert_li(element, options)
         index = options[:index] + 1
-        indent = SPACE * @current_indent
         parent_type = options[:parent].type
         prefix_type = parent_type == :ol ? "#{index}." : @symbols[:bullet]
-        prefix = @pastel.decorate(prefix_type, *@theme[:list]) + SPACE
+        prefix = "#{@pastel.decorate(prefix_type, *@theme[:list])} "
         options[:strip] = true
         content = inner(element, options)
-        "#{indent}#{prefix}#{content.join}"
+        "#{indentation}#{prefix}#{content.join}"
       end
 
       # Convert a description term element
@@ -405,9 +401,8 @@ module TTY
       #
       # @api private
       def convert_dt(element, options)
-        indent = SPACE * @current_indent
         content = inner(element, options)
-        "#{indent}#{content.join}#{NEWLINE}"
+        "#{indentation}#{content.join}#{NEWLINE}"
       end
 
       # Convert a description details element
@@ -481,9 +476,8 @@ module TTY
       #
       # @api private
       def distribute_column_widths(column_widths)
-        indent = SPACE * @current_indent
-        indent_width = (indent.length + 1) * 2
-        screen_width = @width - indent_width - (column_widths.size + 1)
+        indentation_width = (indentation.length + 1) * 2
+        screen_width = @width - indentation_width - (column_widths.size + 1)
         total_width = column_widths.reduce(&:+)
         return column_widths if total_width <= screen_width
 
@@ -567,10 +561,9 @@ module TTY
       #
       # @api private
       def convert_thead(element, options)
-        indent = SPACE * @current_indent
         top_border = border(options[:column_widths], :top)
         content = inner(element, options)
-        "#{indent}#{top_border}#{NEWLINE}#{content.join}"
+        "#{indentation}#{top_border}#{NEWLINE}#{content.join}"
       end
 
       # Create a horizontal border line
@@ -605,7 +598,6 @@ module TTY
       # @api private
       def convert_tbody(element, options)
         column_widths = options[:column_widths]
-        indent = SPACE * @current_indent
         next_type = options[:next] && options[:next].type
         prev_type = options[:prev] && options[:prev].type
         top_border_type = prev_type == :thead ? :mid : :top
@@ -615,8 +607,8 @@ module TTY
 
         content = inner(element, options)
 
-        "#{indent}#{top_border}#{NEWLINE}#{content.join}" \
-          "#{indent}#{bottom_border}#{NEWLINE}"
+        "#{indentation}#{top_border}#{NEWLINE}#{content.join}" \
+          "#{indentation}#{bottom_border}#{NEWLINE}"
       end
 
       # Convert a table foot element
@@ -632,9 +624,8 @@ module TTY
       def convert_tfoot(element, options)
         bottom_border = border(options[:column_widths], :bottom)
         content = inner(element, options)
-        indent = SPACE * @current_indent
 
-        "#{content.join}#{indent}#{bottom_border}#{NEWLINE}"
+        "#{content.join}#{indentation}#{bottom_border}#{NEWLINE}"
       end
 
       # Convert a table row element
@@ -649,11 +640,10 @@ module TTY
       # @api private
       def convert_tr(element, options)
         border = EMPTY
-        indent = SPACE * @current_indent
 
         if options[:prev] && options[:prev].type == :tr
           middle_border = border(options[:column_widths], :mid)
-          border = "#{indent}#{middle_border}#{NEWLINE}"
+          border = "#{indentation}#{middle_border}#{NEWLINE}"
         end
 
         content = inner(element, options)
@@ -714,9 +704,8 @@ module TTY
       #
       # @api private
       def convert_td(element, options)
-        indent = SPACE * @current_indent
         pipe = @pastel.decorate(@symbols[:pipe], *@theme[:table])
-        prefix = @column.zero? ? "#{indent}#{pipe} " : EMPTY
+        prefix = @column.zero? ? "#{indentation}#{pipe} " : EMPTY
         suffix = " #{pipe} "
         cell_content = inner(element, options)
         formatted_cell = format_table_cell(cell_content, options)
@@ -1001,12 +990,11 @@ module TTY
       # @api private
       def convert_xml_comment(element, options)
         block = element.options[:category] == :block
-        indent = SPACE * @current_indent
         content = element.value
         content.gsub!(/^<!-{2,}\s*/, EMPTY) if content.start_with?("<!--")
         content.gsub!(/-{2,}>$/, EMPTY) if content.end_with?("-->")
         result = content.lines.map.with_index do |line, i|
-          (i.zero? && !block ? EMPTY : indent) +
+          (i.zero? && !block ? EMPTY : indentation) +
             @pastel.decorate("#{@symbols[:hash]} #{line.chomp}",
                              *@theme[:comment])
         end.join(NEWLINE)
