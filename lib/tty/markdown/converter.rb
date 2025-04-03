@@ -167,12 +167,9 @@ module TTY
       # @api private
       def convert_header(element, options)
         level = element.options[:level]
-        if options[:parent] && options[:parent].type == :root
-          @current_indent = (level - 1) * @indent
-          indent = SPACE * (level - 1) * @indent
-        else
-          indent = SPACE * @current_indent
-        end
+        root_parent = options[:parent].type == :root
+        indent_by(level - 1) if root_parent
+        indent = SPACE * @current_indent
         styles = @theme[:header].dup
         styles << :underline if level == 1
 
@@ -181,6 +178,18 @@ module TTY
         content.join.lines.map do |line|
           "#{indent}#{@pastel.decorate(line.chomp, *styles)}#{NEWLINE}"
         end
+      end
+
+      # Indent content by header level
+      #
+      # @param [Integer] header_level
+      #   the header level
+      #
+      # @return [void]
+      #
+      # @api private
+      def indent_by(header_level)
+        @current_indent = header_level * @indent
       end
 
       # Convert a paragraph element
