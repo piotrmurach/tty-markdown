@@ -46,7 +46,7 @@ jobs:
           - ruby: "2.7"
             coverage: true
           - ruby: jruby-9.2
-            os: ubuntu-20.04
+            os: ubuntu-22.04
     env:
       COVERAGE: ${{ matrix.coverage }}
       COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
