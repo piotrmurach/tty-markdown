@@ -332,8 +332,8 @@ module TTY
       # @api private
       def convert_codespan(element, options)
         highlighter_options = @color_options.merge(lang: element.options[:lang])
-        raw_code = Strings.wrap(element.value, @width - @current_indent)
-        highlighted = SyntaxHighliter.highlight(raw_code, **highlighter_options)
+        code = Strings.wrap(element.value, available_width)
+        highlighted = SyntaxHighliter.highlight(code, **highlighter_options)
         highlighted.lines.map.with_index do |line, line_index|
           "#{indentation unless line_index.zero?}#{line.chomp}"
         end.join(NEWLINE)
