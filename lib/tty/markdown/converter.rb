@@ -110,6 +110,22 @@ module TTY
         @width - @current_indent
       end
 
+      # Decorate each content line with styles
+      #
+      # @param [String] content
+      #   the content to decorate
+      # @param [Array<Symbol>] styles
+      #   the styles to decorate with
+      #
+      # @return [String]
+      #
+      # @api private
+      def decorate_each_line(content, styles)
+        content.lines.map do |line|
+          @pastel.decorate(line.chomp, *styles)
+        end.join(NEWLINE)
+      end
+
       # Indent content by the indentation level
       #
       # @param [Integer] indentation_level
@@ -275,9 +291,7 @@ module TTY
       # @api private
       def convert_strong(element, options)
         content = transform_children(element, options)
-        content.join.lines.map do |line|
-          @pastel.decorate(line.chomp, *@theme[:strong])
-        end.join(NEWLINE)
+        decorate_each_line(content.join, @theme[:strong])
       end
 
       # Convert an emphasis element
