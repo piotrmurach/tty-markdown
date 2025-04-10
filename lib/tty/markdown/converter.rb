@@ -306,9 +306,7 @@ module TTY
       # @api private
       def convert_em(element, options)
         content = transform_children(element, options)
-        content.join.lines.map do |line|
-          @pastel.decorate(line.chomp, *@theme[:em])
-        end.join(NEWLINE)
+        decorate_each_line(content.join, @theme[:em])
       end
 
       # Convert a blank element
