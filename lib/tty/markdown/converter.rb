@@ -101,6 +101,15 @@ module TTY
 
       private
 
+      # The available width without the current indentation
+      #
+      # @return [Integer]
+      #
+      # @api private
+      def available_width
+        @width - @current_indent
+      end
+
       # Indent content by the indentation level
       #
       # @param [Integer] indentation_level
@@ -248,7 +257,7 @@ module TTY
       #
       # @api private
       def convert_text(element, options)
-        text = Strings.wrap(element.value, @width - @current_indent)
+        text = Strings.wrap(element.value, available_width)
         text = text.chomp if options[:strip]
         indent = SPACE * options[:indent]
         text.gsub(NEWLINE, "#{NEWLINE}#{indent}")
