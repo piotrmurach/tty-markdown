@@ -465,12 +465,11 @@ module TTY
       #
       # @api private
       def convert_dd(element, options)
-        indent_content = options[:parent].type != :root
         next_type = options[:next] && options[:next].type
         suffix = next_type == :dt ? NEWLINE : EMPTY
-        @current_indent += @indent if indent_content
-        content = transform_children(element, options)
-        @current_indent -= @indent if indent_content
+        content = with_indentation do
+          transform_children(element, options)
+        end
         "#{content.join}#{suffix}"
       end
 
