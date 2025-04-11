@@ -147,6 +147,21 @@ module TTY
         SPACE * @current_indent
       end
 
+      # Invoke a block with indentation
+      #
+      # @param [Boolean] add_indentation
+      #   whether to add indentation
+      #
+      # @return [Object]
+      #
+      # @api private
+      def with_indentation(add_indentation: true)
+        @current_indent += @indent if add_indentation
+        yield.tap do
+          @current_indent -= @indent if add_indentation
+        end
+      end
+
       # Transform an element children
       #
       # @param [Kramdown::Element] element
@@ -396,9 +411,9 @@ module TTY
       # @api private
       def convert_ul(element, options)
         indent_content = options[:parent].type != :root
-        @current_indent += @indent if indent_content
-        content = transform_children(element, options)
-        @current_indent -= @indent if indent_content
+        content = with_indentation(add_indentation: indent_content) do
+          transform_children(element, options)
+        end
         content.join
       end
       alias convert_ol convert_ul
