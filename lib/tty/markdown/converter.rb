@@ -484,8 +484,7 @@ module TTY
       #
       # @api private
       def convert_table(element, options)
-        @row = 0
-        @column = 0
+        initialize_table
         table_data = extract_table_data(element, options)
         max_column_widths = calculate_max_column_widths(table_data)
         column_widths = distribute_column_widths(max_column_widths)
@@ -495,6 +494,16 @@ module TTY
         options[:row_heights] = row_heights
         options[:table_data] = table_data
         transform_children(element, options).join
+      end
+
+      # Initialise a table
+      #
+      # @return [void]
+      #
+      # @api private
+      def initialize_table
+        @column = 0
+        @row = 0
       end
 
       # Extract the table data
