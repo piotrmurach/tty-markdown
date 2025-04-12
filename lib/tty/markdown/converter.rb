@@ -558,6 +558,22 @@ module TTY
         total_width = column_widths.reduce(&:+)
         return column_widths if total_width <= screen_width
 
+        reduce_column_widths(column_widths, total_width, screen_width)
+      end
+
+      # Reduce column widths to the screen width
+      #
+      # @param [Array<Integer>] column_widths
+      #   the table column widths
+      # @param [Integer] total_width
+      #   the total width of the table columns
+      # @param [Integer] screen_width
+      #   the screen width
+      #
+      # @return [Array<Integer>]
+      #
+      # @api private
+      def reduce_column_widths(column_widths, total_width, screen_width)
         extra_width = total_width - screen_width
         column_widths.map do |column_width|
           ratio = column_width / total_width.to_f
