@@ -485,15 +485,10 @@ module TTY
       # @api private
       def convert_table(element, options)
         initialize_table
+        column_alignments = element.options[:alignment]
         table_data = extract_table_data(element, options)
-        max_column_widths = calculate_max_column_widths(table_data)
-        column_widths = distribute_column_widths(max_column_widths)
-        row_heights = calculate_max_row_heights(table_data, column_widths)
-        options[:alignment] = element.options[:alignment]
-        options[:column_widths] = column_widths
-        options[:row_heights] = row_heights
-        options[:table_data] = table_data
-        transform_children(element, options).join
+        table_options = build_table_options(table_data, column_alignments)
+        transform_children(element, options.merge(table_options)).join
       end
 
       # Initialise a table
@@ -524,6 +519,28 @@ module TTY
             end
           end
         end
+      end
+
+      # Build a table element options
+      #
+      # @param [Array<Array<String>>] table_data
+      #   the table data
+      # @param [Array<Symbol>] column_alignments
+      #   the table column alignments
+      #
+      # @return [Hash]
+      #
+      # @api private
+      def build_table_options(table_data, column_alignments)
+        max_column_widths = calculate_max_column_widths(table_data)
+        column_widths = distribute_column_widths(max_column_widths)
+        row_heights = calculate_max_row_heights(table_data, column_widths)
+        {
+          column_alignments: column_alignments,
+          column_widths: column_widths,
+          row_heights: row_heights,
+          table_data: table_data
+        }
       end
 
       # Distribute column widths within the total width
@@ -778,7 +795,7 @@ module TTY
       #
       # @api private
       def format_table_cell(content, options)
-        alignment = options[:alignment][@column]
+        alignment = options[:column_alignments][@column]
         align_options = alignment == :default ? {} : {direction: alignment}
         cell_height = options[:row_heights][@row]
         cell_width = options[:column_widths][@column]
