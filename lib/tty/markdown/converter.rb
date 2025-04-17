@@ -654,22 +654,22 @@ module TTY
       #
       # @api private
       def convert_thead(element, options)
-        top_border = build_border(options[:column_widths], :top)
+        top_border = build_border(:top, options[:column_widths])
         content = transform_children(element, options)
         "#{indentation}#{top_border}#{NEWLINE}#{content.join}"
       end
 
       # Build a horizontal border line
       #
+      # @param [Symbol] location
+      #   the location out of :bottom, :mid or :top
       # @param [Array<Integer>] column_widths
       #   the table column widths
-      # @param [Symbol] location
-      #   location out of :top, :mid, :bottom
       #
       # @return [String]
       #
       # @api private
-      def build_border(column_widths, location)
+      def build_border(location, column_widths)
         border = [@symbols[:"#{location}_left"]]
         column_widths.each.with_index do |column_width, column_index|
           border << @symbols[:"#{location}_center"] unless column_index.zero?
@@ -694,9 +694,9 @@ module TTY
         next_type = options[:next] && options[:next].type
         prev_type = options[:prev] && options[:prev].type
         top_border_type = prev_type == :thead ? :mid : :top
-        top_border = build_border(column_widths, top_border_type)
+        top_border = build_border(top_border_type, column_widths)
         bottom_border_type = next_type == :tfoot ? :mid : :bottom
-        bottom_border = build_border(column_widths, bottom_border_type)
+        bottom_border = build_border(bottom_border_type, column_widths)
         content = transform_children(element, options)
         "#{indentation}#{top_border}#{NEWLINE}#{content.join}" \
           "#{indentation}#{bottom_border}#{NEWLINE}"
@@ -713,7 +713,7 @@ module TTY
       #
       # @api private
       def convert_tfoot(element, options)
-        bottom_border = build_border(options[:column_widths], :bottom)
+        bottom_border = build_border(:bottom, options[:column_widths])
         content = transform_children(element, options)
         "#{content.join}#{indentation}#{bottom_border}#{NEWLINE}"
       end
@@ -732,7 +732,7 @@ module TTY
         border = EMPTY
 
         if options[:prev] && options[:prev].type == :tr
-          middle_border = build_border(options[:column_widths], :mid)
+          middle_border = build_border(:mid, options[:column_widths])
           border = "#{indentation}#{middle_border}#{NEWLINE}"
         end
 
