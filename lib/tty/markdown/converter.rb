@@ -809,11 +809,24 @@ module TTY
         suffix = " #{pipe} "
         cell_content = transform_children(element, options)
         formatted_cell = format_table_cell(cell_content, options)
-        @column = (@column + 1) % options[:column_widths].size
+        number_of_columns = options[:column_widths].size
+        cycle_to_next_column(number_of_columns)
         formatted_cell.lines.map do |line|
           suffix_insert_index = line.end_with?(NEWLINE) ? -2 : -1
           "#{prefix}#{line.insert(suffix_insert_index, suffix)}"
         end
+      end
+
+      # Cycle to the next table column
+      #
+      # @param [Integer] number_of_columns
+      #   the number of table columns
+      #
+      # @return [void]
+      #
+      # @api private
+      def cycle_to_next_column(number_of_columns)
+        @column = (@column + 1) % number_of_columns
       end
 
       # Format a table cell
