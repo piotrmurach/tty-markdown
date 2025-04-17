@@ -729,16 +729,23 @@ module TTY
       #
       # @api private
       def convert_tr(element, options)
-        border = EMPTY
-
-        if options[:prev] && options[:prev].type == :tr
-          middle_border = build_border(:mid, options[:column_widths])
-          border = "#{indentation}#{middle_border}#{NEWLINE}"
-        end
-
+        add_border = options[:prev] && options[:prev].type == :tr
+        border = add_border ? build_row_border(options[:column_widths]) : EMPTY
         content = transform_children(element, options)
         @row += 1
         "#{border}#{format_table_row(content)}"
+      end
+
+      # Build a table row border
+      #
+      # @param [Array<Integer>] column_widths
+      #   the table column widths
+      #
+      # @return [String]
+      #
+      # @api private
+      def build_row_border(column_widths)
+        "#{indentation}#{build_border(:mid, column_widths)}#{NEWLINE}"
       end
 
       # Format a table row
