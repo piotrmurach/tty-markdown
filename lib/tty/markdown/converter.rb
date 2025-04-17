@@ -842,11 +842,9 @@ module TTY
 
         wrapped = Strings.wrap(content.join, cell_width)
         aligned = Strings.align(wrapped, cell_width, **align_options)
-        if aligned.lines.size < cell_height
-          Strings.pad(aligned, [0, 0, cell_height - aligned.lines.size, 0])
-        else
-          aligned.dup
-        end
+        return aligned if aligned.lines.size == cell_height
+
+        Strings.pad(aligned, [0, 0, cell_height - aligned.lines.size, 0])
       end
 
       # Decorate a table cell
