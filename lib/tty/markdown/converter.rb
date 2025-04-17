@@ -732,7 +732,7 @@ module TTY
         add_border = options[:prev] && options[:prev].type == :tr
         border = add_border ? build_row_border(options[:column_widths]) : EMPTY
         content = transform_children(element, options)
-        @row += 1
+        move_to_next_row
         "#{border}#{format_table_row(content)}"
       end
 
@@ -746,6 +746,15 @@ module TTY
       # @api private
       def build_row_border(column_widths)
         "#{indentation}#{build_border(:mid, column_widths)}#{NEWLINE}"
+      end
+
+      # Move to the next table row
+      #
+      # @return [void]
+      #
+      # @api private
+      def move_to_next_row
+        @row += 1
       end
 
       # Format a table row
