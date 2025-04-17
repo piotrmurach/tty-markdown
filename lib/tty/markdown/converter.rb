@@ -891,8 +891,8 @@ module TTY
       #
       # @api private
       def convert_hr(element, options)
-        width = @width - (@symbols[:diamond].length * 2)
-        inner_line = @symbols[:line] * width
+        inner_line_width = @width - (@symbols[:diamond].length * 2)
+        inner_line = @symbols[:line] * inner_line_width
         line = "#{@symbols[:diamond]}#{inner_line}#{@symbols[:diamond]}"
         "#{@pastel.decorate(line, *@theme[:hr])}#{NEWLINE}"
       end
