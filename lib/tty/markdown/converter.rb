@@ -805,7 +805,7 @@ module TTY
       # @api private
       def convert_td(element, options)
         add_indentation = @column.zero?
-        cell_content = transform_children(element, options)
+        cell_content = transform_children(element, options).join
         formatted_cell = format_table_cell(cell_content, options)
         number_of_columns = options[:column_widths].size
         cycle_to_next_column(number_of_columns)
@@ -839,8 +839,7 @@ module TTY
         align_options = alignment == :default ? {} : {direction: alignment}
         cell_height = options[:row_heights][@row]
         cell_width = options[:column_widths][@column]
-
-        wrapped = Strings.wrap(content.join, cell_width)
+        wrapped = Strings.wrap(content, cell_width)
         aligned = Strings.align(wrapped, cell_width, **align_options)
         if aligned.lines.size < cell_height
           Strings.pad(aligned, [0, 0, cell_height - aligned.lines.size, 0])
