@@ -804,17 +804,12 @@ module TTY
       #
       # @api private
       def convert_td(element, options)
-        pipe = @pastel.decorate(@symbols[:pipe], *@theme[:table])
-        prefix = @column.zero? ? "#{indentation}#{pipe} " : EMPTY
-        suffix = " #{pipe} "
+        add_indentation = @column.zero?
         cell_content = transform_children(element, options)
         formatted_cell = format_table_cell(cell_content, options)
         number_of_columns = options[:column_widths].size
         cycle_to_next_column(number_of_columns)
-        formatted_cell.lines.map do |line|
-          suffix_insert_index = line.end_with?(NEWLINE) ? -2 : -1
-          "#{prefix}#{line.insert(suffix_insert_index, suffix)}"
-        end
+        decorate_table_cell(formatted_cell, add_indentation)
       end
 
       # Cycle to the next table column
@@ -851,6 +846,26 @@ module TTY
           Strings.pad(aligned, [0, 0, cell_height - aligned.lines.size, 0])
         else
           aligned.dup
+        end
+      end
+
+      # Decorate a table cell
+      #
+      # @param [String] content
+      #   the content to decorate
+      # @param [Boolean] add_indentation
+      #   whether to add indentation
+      #
+      # @return [Array<String>]
+      #
+      # @api private
+      def decorate_table_cell(content, add_indentation)
+        pipe = @pastel.decorate(@symbols[:pipe], *@theme[:table])
+        prefix = add_indentation ? "#{indentation}#{pipe} " : EMPTY
+        suffix = " #{pipe} "
+        content.lines.map do |line|
+          suffix_insert_index = line.end_with?(NEWLINE) ? -2 : -1
+          "#{prefix}#{line.insert(suffix_insert_index, suffix)}"
         end
       end
 
