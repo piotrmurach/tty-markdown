@@ -923,23 +923,21 @@ module TTY
       #
       # @api private
       def convert_a(element, options)
-        attributes = element.attr
         children = element.children
-        href = strip_mailto_scheme(attributes[HREF_ATTRIBUTE])
+        href = strip_mailto_scheme(element.attr[HREF_ATTRIBUTE])
+        title = element.attr["title"].to_s
         link = []
 
         if children.size == 1 && children[0].type == :text &&
            children[0].value == href
-          if !attributes["title"].nil? && !attributes["title"].strip.empty?
-            link << "(#{attributes["title"]}) "
-          end
+          link << "(#{title}) " unless title.strip.empty?
           link << @pastel.decorate(href, *@theme[:link])
         elsif children.any? && (children[0].type != :text ||
                                 !children[0].value.strip.empty?)
           content = transform_children(element, options)
           link << content.join
           link << " #{@symbols[:arrow]} "
-          link << "(#{attributes["title"]}) " if attributes["title"]
+          link << "(#{title}) " unless title.strip.empty?
           link << @pastel.decorate(href, *@theme[:link])
         end
         link
