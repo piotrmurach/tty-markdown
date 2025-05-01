@@ -22,6 +22,14 @@ module TTY
       EMPTY = ""
       private_constant :EMPTY
 
+      # The href attribute name
+      #
+      # @return [String]
+      #
+      # @api private
+      HREF_ATTRIBUTE = "href"
+      private_constant :HREF_ATTRIBUTE
+
       # The indented HTML elements
       #
       # @return [Array<Symbol>]
@@ -910,7 +918,7 @@ module TTY
       def convert_a(element, options)
         attributes = element.attr
         children = element.children
-        href = attributes["href"]
+        href = attributes[HREF_ATTRIBUTE]
         href = URI.parse(href).to if URI.parse(href).instance_of?(URI::MailTo)
         link = []
 
