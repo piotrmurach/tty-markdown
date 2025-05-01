@@ -4,7 +4,6 @@ require "kramdown/converter"
 require "kramdown/element"
 require "pastel"
 require "strings"
-require "uri"
 
 require_relative "syntax_highlighter"
 
@@ -37,6 +36,14 @@ module TTY
       # @api private
       INDENTED_HTML_ELEMENTS = %i[blockquote li].freeze
       private_constant :INDENTED_HTML_ELEMENTS
+
+      # The mailto scheme pattern
+      #
+      # @return [Regexp]
+      #
+      # @api private
+      MAILTO_SCHEME_PATTERN = /^mailto:/.freeze
+      private_constant :MAILTO_SCHEME_PATTERN
 
       # The newline character
       #
@@ -918,8 +925,7 @@ module TTY
       def convert_a(element, options)
         attributes = element.attr
         children = element.children
-        href = attributes[HREF_ATTRIBUTE]
-        href = URI.parse(href).to if URI.parse(href).instance_of?(URI::MailTo)
+        href = attributes[HREF_ATTRIBUTE].sub(MAILTO_SCHEME_PATTERN, EMPTY)
         link = []
 
         if children.size == 1 && children[0].type == :text &&
