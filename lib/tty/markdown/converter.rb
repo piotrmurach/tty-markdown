@@ -925,7 +925,7 @@ module TTY
       def convert_a(element, options)
         attributes = element.attr
         children = element.children
-        href = attributes[HREF_ATTRIBUTE].sub(MAILTO_SCHEME_PATTERN, EMPTY)
+        href = strip_mailto_scheme(attributes[HREF_ATTRIBUTE])
         link = []
 
         if children.size == 1 && children[0].type == :text &&
@@ -943,6 +943,18 @@ module TTY
           link << @pastel.decorate(href, *@theme[:link])
         end
         link
+      end
+
+      # Strip the mailto scheme from the href attribute
+      #
+      # @param [String] href
+      #   the href attribute
+      #
+      # @return [String]
+      #
+      # @api private
+      def strip_mailto_scheme(href)
+        href.sub(MAILTO_SCHEME_PATTERN, EMPTY)
       end
 
       # Convert a math element
