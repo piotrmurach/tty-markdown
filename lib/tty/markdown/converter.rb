@@ -936,10 +936,7 @@ module TTY
 
         href = strip_mailto_scheme(element.attr[HREF_ATTRIBUTE])
         title = element.attr[TITLE_ATTRIBUTE].to_s
-        link = []
-        link << "#{content} #{@symbols[:arrow]} " if content != href
-        link << "(#{title}) " unless title.strip.empty?
-        link << @pastel.decorate(href, *@theme[:link])
+        build_link(content, href, title)
       end
 
       # Strip the mailto scheme from the href attribute
@@ -952,6 +949,25 @@ module TTY
       # @api private
       def strip_mailto_scheme(href)
         href.sub(MAILTO_SCHEME_PATTERN, EMPTY)
+      end
+
+      # Build a link
+      #
+      # @param [String] content
+      #   the link content
+      # @param [String] href
+      #   the link href attribute
+      # @param [String] title
+      #   the link title attribute
+      #
+      # @return [Array<String>]
+      #
+      # @api private
+      def build_link(content, href, title)
+        link = []
+        link << "#{content} #{@symbols[:arrow]} " if content != href
+        link << "(#{title}) " unless title.strip.empty?
+        link << @pastel.decorate(href, *@theme[:link])
       end
 
       # Convert a math element
