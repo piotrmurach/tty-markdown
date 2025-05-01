@@ -61,6 +61,14 @@ module TTY
       SPACE = " "
       private_constant :SPACE
 
+      # The title attribute name
+      #
+      # @return [String]
+      #
+      # @api private
+      TITLE_ATTRIBUTE = "title"
+      private_constant :TITLE_ATTRIBUTE
+
       # The UTF-8 characters directive
       #
       # @return [String]
@@ -925,7 +933,7 @@ module TTY
       def convert_a(element, options)
         children = element.children
         href = strip_mailto_scheme(element.attr[HREF_ATTRIBUTE])
-        title = element.attr["title"].to_s
+        title = element.attr[TITLE_ATTRIBUTE].to_s
         link = []
 
         if children.size == 1 && children[0].type == :text &&
