@@ -931,24 +931,15 @@ module TTY
       #
       # @api private
       def convert_a(element, options)
-        children = element.children
+        content = transform_children(element, options).join
+        return [] if content.strip.empty?
+
         href = strip_mailto_scheme(element.attr[HREF_ATTRIBUTE])
         title = element.attr[TITLE_ATTRIBUTE].to_s
         link = []
-
-        if children.size == 1 && children[0].type == :text &&
-           children[0].value == href
-          link << "(#{title}) " unless title.strip.empty?
-          link << @pastel.decorate(href, *@theme[:link])
-        elsif children.any? && (children[0].type != :text ||
-                                !children[0].value.strip.empty?)
-          content = transform_children(element, options)
-          link << content.join
-          link << " #{@symbols[:arrow]} "
-          link << "(#{title}) " unless title.strip.empty?
-          link << @pastel.decorate(href, *@theme[:link])
-        end
-        link
+        link << "#{content} #{@symbols[:arrow]} " if content != href
+        link << "(#{title}) " unless title.strip.empty?
+        link << @pastel.decorate(href, *@theme[:link])
       end
 
       # Strip the mailto scheme from the href attribute
