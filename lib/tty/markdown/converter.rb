@@ -910,29 +910,23 @@ module TTY
       def convert_a(element, options)
         attributes = element.attr
         children = element.children
+        href = attributes["href"]
+        href = URI.parse(href).to if URI.parse(href).instance_of?(URI::MailTo)
         link = []
 
-        if URI.parse(attributes["href"]).instance_of?(URI::MailTo)
-          attributes["href"] = URI.parse(attributes["href"]).to
-        end
-
         if children.size == 1 && children[0].type == :text &&
-           children[0].value == attributes["href"]
-
+           children[0].value == href
           if !attributes["title"].nil? && !attributes["title"].strip.empty?
             link << "(#{attributes["title"]}) "
           end
-          link << @pastel.decorate(attributes["href"], *@theme[:link])
-
+          link << @pastel.decorate(href, *@theme[:link])
         elsif children.any? && (children[0].type != :text ||
                                 !children[0].value.strip.empty?)
-
           content = transform_children(element, options)
-
           link << content.join
           link << " #{@symbols[:arrow]} "
           link << "(#{attributes["title"]}) " if attributes["title"]
-          link << @pastel.decorate(attributes["href"], *@theme[:link])
+          link << @pastel.decorate(href, *@theme[:link])
         end
         link
       end
