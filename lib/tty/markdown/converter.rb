@@ -1080,10 +1080,24 @@ module TTY
       # @api private
       def fetch_or_add_footnote(name, content)
         @footnotes.fetch(name) do
-          @footnotes[name] = [content, @footnote_number].tap do
+          add_footnote(name, content).tap do
             @footnote_number += 1
           end
         end
+      end
+
+      # Add a footnote
+      #
+      # @param [String] name
+      #   the footnote name
+      # @param [String] content
+      #   the footnote content
+      #
+      # @return [Array<Integer, String>]
+      #
+      # @api private
+      def add_footnote(name, content)
+        @footnotes[name] = [content, @footnote_number]
       end
 
       # Convert a raw element
