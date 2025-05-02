@@ -97,7 +97,7 @@ module TTY
           mode: options[:mode]
         }
         @current_indent = 0
-        @footnote_no = 1
+        @footnote_number = 1
         @footnotes = {}
         @indent = options[:indent]
         @symbols = options[:symbols]
@@ -1059,18 +1059,31 @@ module TTY
       # @api private
       def convert_footnote(element, options)
         name = element.options[:name]
-        if (footnote = @footnotes[name])
-          number = footnote.last
-        else
-          number = @footnote_no
-          @footnote_no += 1
-          @footnotes[name] = [element.value, number]
-        end
-
+        content = element.value
+        footnote = fetch_or_add_footnote(name, content)
+        number = footnote.last
         @pastel.decorate(
           "#{@symbols[:bracket_left]}#{number}#{@symbols[:bracket_right]}",
           *@theme[:note]
         )
+      end
+
+      # Fetch or add a footnote
+      #
+      # @param [String] name
+      #   the footnote name
+      # @param [String] content
+      #   the footnote content
+      #
+      # @return [Array<Integer, String>]
+      #
+      # @api private
+      def fetch_or_add_footnote(name, content)
+        @footnotes.fetch(name) do
+          @footnotes[name] = [content, @footnote_number].tap do
+            @footnote_number += 1
+          end
+        end
       end
 
       # Convert a raw element
