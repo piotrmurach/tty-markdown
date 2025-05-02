@@ -1081,7 +1081,7 @@ module TTY
       def fetch_or_add_footnote(name, content)
         @footnotes.fetch(name) do
           add_footnote(name, content).tap do
-            @footnote_number += 1
+            increment_footnote_number
           end
         end
       end
@@ -1098,6 +1098,15 @@ module TTY
       # @api private
       def add_footnote(name, content)
         @footnotes[name] = [content, @footnote_number]
+      end
+
+      # Increment a footnote number
+      #
+      # @return [Integer]
+      #
+      # @api private
+      def increment_footnote_number
+        @footnote_number += 1
       end
 
       # Convert a raw element
