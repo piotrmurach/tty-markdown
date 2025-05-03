@@ -69,6 +69,14 @@ module TTY
       SPACE = " "
       private_constant :SPACE
 
+      # The src attribute name
+      #
+      # @return [String]
+      #
+      # @api private
+      SRC_ATTRIBUTE = "src"
+      private_constant :SRC_ATTRIBUTE
+
       # The title attribute name
       #
       # @return [String]
@@ -1138,7 +1146,7 @@ module TTY
       # @api private
       def convert_img(element, options)
         alt = element.attr[ALT_ATTRIBUTE]
-        src = element.attr["src"]
+        src = element.attr[SRC_ATTRIBUTE]
         link = [@symbols[:paren_left]]
         link << "#{alt} #{@symbols[:ndash]} " unless alt.to_s.empty?
         link << "#{src}#{@symbols[:paren_right]}"
