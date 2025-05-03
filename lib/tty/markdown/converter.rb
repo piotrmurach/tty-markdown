@@ -1147,10 +1147,10 @@ module TTY
       def convert_img(element, options)
         alt = element.attr[ALT_ATTRIBUTE]
         src = element.attr[SRC_ATTRIBUTE]
-        link = [@symbols[:paren_left]]
-        link << "#{alt} #{@symbols[:ndash]} " unless alt.to_s.empty?
-        link << "#{src}#{@symbols[:paren_right]}"
-        @pastel.decorate(link.join, *@theme[:image])
+        image = [@symbols[:paren_left]]
+        image << "#{alt} #{@symbols[:ndash]} " unless alt.to_s.empty?
+        image << "#{src}#{@symbols[:paren_right]}"
+        @pastel.decorate(image.join, *@theme[:image])
       end
 
       # Convert an HTML element
