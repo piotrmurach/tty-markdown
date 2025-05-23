@@ -1,62 +1,72 @@
 # frozen_string_literal: true
 
 RSpec.describe TTY::Markdown, ".parse" do
-  it "shows footnote references at the end of document" do
-    markdown = <<-TEXT
-Some text about Item1[^foo] and Item2[^bar]
+  context "when Markdown" do
+    it "converts footnotes to a list at the end of the output" do
+      markdown = <<-TEXT
+A text with two[^fn1] footnotes[^fn2].
 
-[^foo]: A first footnote
-[^bar]: A second footnote
-    TEXT
-    parsed = described_class.parse(markdown, color: :always)
+A text without footnotes.
 
-    expect(parsed).to eq([
-      "Some text about Item1\e[33m[1]\e[0m and Item2\e[33m[2]\e[0m",
-      "",
-      "\e[33m1.\e[0m A first footnote",
-      "\e[33m2.\e[0m A second footnote\n"
-    ].join("\n"))
-  end
+[^fn1]: The first footnote.
+[^fn2]: The second footnote.
+      TEXT
+      parsed = described_class.parse(markdown, color: :always)
 
-  it "reuses existing footnote references" do
-    markdown = <<-TEXT
-Some text about Item1[^foo] and Item2[^bar]
+      expect(parsed).to eq([
+        "A text with two\e[33m[1]\e[0m footnotes\e[33m[2]\e[0m.",
+        "",
+        "A text without footnotes.",
+        "",
+        "\e[33m1.\e[0m The first footnote.",
+        "\e[33m2.\e[0m The second footnote.\n"
+      ].join("\n"))
+    end
 
-Another line about Item1[^foo]
+    it "converts footnotes to a unique list" do
+      markdown = <<-TEXT
+A text with two[^fn1] footnotes[^fn2].
 
-[^foo]: A first footnote
-[^bar]: A second footnote
-    TEXT
-    parsed = described_class.parse(markdown, color: :always)
+A text with a reused footnote[^fn2].
 
-    expect(parsed).to eq([
-      "Some text about Item1\e[33m[1]\e[0m and Item2\e[33m[2]\e[0m",
-      "",
-      "Another line about Item1\e[33m[1]\e[0m",
-      "",
-      "\e[33m1.\e[0m A first footnote",
-      "\e[33m2.\e[0m A second footnote\n"
-    ].join("\n"))
-  end
+[^fn1]: The first footnote.
+[^fn2]: The second footnote.
+      TEXT
+      parsed = described_class.parse(markdown, color: :always)
 
-  it "indents footnotes" do
-    markdown = <<-TEXT
-### Header3
+      expect(parsed).to eq([
+        "A text with two\e[33m[1]\e[0m footnotes\e[33m[2]\e[0m.",
+        "",
+        "A text with a reused footnote\e[33m[2]\e[0m.",
+        "",
+        "\e[33m1.\e[0m The first footnote.",
+        "\e[33m2.\e[0m The second footnote.\n"
+      ].join("\n"))
+    end
 
-Some text about Item1[^foo] and Item2[^bar]
+    it "converts footnotes after the heading to an indented list" do
+      markdown = <<-TEXT
+### Heading
 
-[^foo]: A first footnote
-[^bar]: A second footnote
-    TEXT
-    parsed = described_class.parse(markdown, color: :always)
+A text with two[^fn1] footnotes[^fn2].
 
-    expect(parsed).to eq([
-      "    \e[36;1m\Header3\e[0m",
-      "",
-      "    Some text about Item1\e[33m[1]\e[0m and Item2\e[33m[2]\e[0m",
-      "",
-      "    \e[33m1.\e[0m A first footnote",
-      "    \e[33m2.\e[0m A second footnote\n"
-    ].join("\n"))
+A text without footnotes.
+
+[^fn1]: The first footnote.
+[^fn2]: The second footnote.
+      TEXT
+      parsed = described_class.parse(markdown, color: :always)
+
+      expect(parsed).to eq([
+        "    \e[36;1m\Heading\e[0m",
+        "",
+        "    A text with two\e[33m[1]\e[0m footnotes\e[33m[2]\e[0m.",
+        "",
+        "    A text without footnotes.",
+        "",
+        "    \e[33m1.\e[0m The first footnote.",
+        "    \e[33m2.\e[0m The second footnote.\n"
+      ].join("\n"))
+    end
   end
 end
