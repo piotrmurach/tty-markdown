@@ -185,6 +185,18 @@ module TTY
         end
       end
 
+      # Wrap the content in brackets
+      #
+      # @param [String] content
+      #   the content to wrap
+      #
+      # @return [String]
+      #
+      # @api private
+      def wrap_in_brackets(content)
+        "#{@symbols[:bracket_left]}#{content}#{@symbols[:bracket_right]}"
+      end
+
       # Transform an element children
       #
       # @param [Kramdown::Element] element
@@ -1062,10 +1074,7 @@ module TTY
         content = element.value
         footnote = fetch_or_add_footnote(name, content)
         number = footnote.last
-        @pastel.decorate(
-          "#{@symbols[:bracket_left]}#{number}#{@symbols[:bracket_right]}",
-          *@theme[:note]
-        )
+        @pastel.decorate(wrap_in_brackets(number), *@theme[:note])
       end
 
       # Fetch or add a footnote
