@@ -1,30 +1,28 @@
 # frozen_string_literal: true
 
 RSpec.describe TTY::Markdown, ".parse" do
-  it "displays image title and source location" do
-    markdown = <<-TEXT
-![Code highlight](assets/headers.png)
-    TEXT
-    parsed = described_class.parse(markdown, color: :always)
+  context "when Markdown" do
+    it "converts the image syntax with alternative text and source path" do
+      markdown = "![TTY logo](images/tty.png)"
+      parsed = described_class.parse(markdown, color: :always)
 
-    expect(parsed).to eq("\e[90m(Code highlight - assets/headers.png)\e[0m\n")
+      expect(parsed).to eq("\e[90m(TTY logo - images/tty.png)\e[0m\n")
+    end
+
+    it "converts the image syntax with the source path only" do
+      markdown = "![](images/tty.png)"
+      parsed = described_class.parse(markdown, color: :always)
+
+      expect(parsed).to eq("\e[90m(images/tty.png)\e[0m\n")
+    end
   end
 
-  it "displays image with source location only" do
-    markdown = <<-TEXT
-![](assets/headers.png)
-    TEXT
-    parsed = described_class.parse(markdown, color: :always)
+  context "when HTML" do
+    it "converts the <img> element with alternative text and source path" do
+      markdown = "<img alt=\"TTY logo\" src=\"images/tty.png\" />"
+      parsed = described_class.parse(markdown, color: :always)
 
-    expect(parsed).to eq("\e[90m(assets/headers.png)\e[0m\n")
-  end
-
-  it "converts html image element" do
-    markdown = <<-TEXT
-<img src="assets/headers.png" alt="Code highlight" />
-    TEXT
-    parsed = described_class.parse(markdown, color: :always)
-
-    expect(parsed).to eq("\e[90m(Code highlight - assets/headers.png)\e[0m\n")
+      expect(parsed).to eq("\e[90m(TTY logo - images/tty.png)\e[0m\n")
+    end
   end
 end
