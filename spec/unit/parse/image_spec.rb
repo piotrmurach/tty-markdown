@@ -24,5 +24,12 @@ RSpec.describe TTY::Markdown, ".parse" do
 
       expect(parsed).to eq("\e[90m(TTY logo - images/tty.png)\e[0m\n")
     end
+
+    it "converts the <img> element with the source path only" do
+      markdown = "<img src=\"images/tty.png\" />"
+      parsed = described_class.parse(markdown, color: :always)
+
+      expect(parsed).to eq("\e[90m(images/tty.png)\e[0m\n")
+    end
   end
 end
