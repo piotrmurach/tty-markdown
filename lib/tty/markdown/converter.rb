@@ -213,6 +213,18 @@ module TTY
         "#{@symbols[:bracket_left]}#{content}#{@symbols[:bracket_right]}"
       end
 
+      # Wrap the content in parentheses
+      #
+      # @param [String] content
+      #   the content to wrap
+      #
+      # @return [String]
+      #
+      # @api private
+      def wrap_in_parentheses(content)
+        "#{@symbols[:paren_left]}#{content}#{@symbols[:paren_right]}"
+      end
+
       # Transform an element children
       #
       # @param [Kramdown::Element] element
@@ -1156,10 +1168,10 @@ module TTY
       def convert_img(element, options)
         alt = element.attr[ALT_ATTRIBUTE].to_s
         src = element.attr[SRC_ATTRIBUTE].to_s
-        link = [@symbols[:paren_left]]
+        link = []
         link << "#{alt} #{@symbols[:ndash]} " unless alt.empty?
-        link << "#{src}#{@symbols[:paren_right]}"
-        @pastel.decorate(link.join, *@theme[:image])
+        link << src
+        @pastel.decorate(wrap_in_parentheses(link.join), *@theme[:image])
       end
 
       # Convert an HTML element
