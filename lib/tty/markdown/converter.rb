@@ -1155,7 +1155,7 @@ module TTY
       # @api private
       def convert_img(element, options)
         alt = element.attr[ALT_ATTRIBUTE].to_s
-        src = element.attr[SRC_ATTRIBUTE]
+        src = element.attr[SRC_ATTRIBUTE].to_s
         link = [@symbols[:paren_left]]
         link << "#{alt} #{@symbols[:ndash]} " unless alt.empty?
         link << "#{src}#{@symbols[:paren_right]}"
