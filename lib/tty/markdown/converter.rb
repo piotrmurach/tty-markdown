@@ -13,6 +13,14 @@ module TTY
     #
     # @api private
     class Converter < ::Kramdown::Converter::Base
+      # The alt attribute name
+      #
+      # @return [String]
+      #
+      # @api private
+      ALT_ATTRIBUTE = "alt"
+      private_constant :ALT_ATTRIBUTE
+
       # The empty string
       #
       # @return [String]
@@ -1138,7 +1146,7 @@ module TTY
       #
       # @api private
       def convert_img(element, options)
-        alt = element.attr["alt"]
+        alt = element.attr[ALT_ATTRIBUTE]
         src = element.attr["src"]
         link = [@symbols[:paren_left]]
         link << "#{alt} #{@symbols[:ndash]} " unless alt.to_s.empty?
