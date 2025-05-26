@@ -357,6 +357,23 @@ module TTY
         text.gsub(NEWLINE, "#{NEWLINE}#{indent}")
       end
 
+      # Convert a deleted element
+      #
+      # @param [Kramdown::Element] element
+      #   the html element
+      # @param [Hash] options
+      #   the html element options
+      #
+      # @return [Array<String>]
+      #
+      # @api private
+      def convert_del(element, options)
+        content = transform_children(element, options).join
+        content.chars.to_a.map do |char|
+          char + @symbols[:delete]
+        end
+      end
+
       # Convert a strong element
       #
       # @param [Kramdown::Element] element
@@ -1205,6 +1222,8 @@ module TTY
           convert_a(element, options)
         elsif element.value == "b"
           convert_b(element, options)
+        elsif element.value == "del"
+          convert_del(element, options)
         elsif element.value == "em"
           convert_em(element, options)
         elsif element.value == "i"
@@ -1213,10 +1232,6 @@ module TTY
           convert_img(element, options)
         elsif element.value == "strong"
           convert_strong(element, options)
-        elsif element.value == "del"
-          transform_children(element, options).join.chars.to_a.map do |char|
-            char + @symbols[:delete]
-          end
         elsif element.value == "br"
           NEWLINE
         elsif element.children.any?
