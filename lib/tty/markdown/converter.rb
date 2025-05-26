@@ -1222,6 +1222,8 @@ module TTY
           convert_a(element, options)
         elsif element.value == "b"
           convert_b(element, options)
+        elsif element.value == "br"
+          convert_br(element, options)
         elsif element.value == "del"
           convert_del(element, options)
         elsif element.value == "em"
@@ -1232,8 +1234,6 @@ module TTY
           convert_img(element, options)
         elsif element.value == "strong"
           convert_strong(element, options)
-        elsif element.value == "br"
-          NEWLINE
         elsif element.children.any?
           transform_children(element, options)
         else
