@@ -371,6 +371,7 @@ module TTY
         content = transform_children(element, options)
         decorate_each_line(content.join, @theme[:strong])
       end
+      alias convert_b convert_strong
 
       # Convert an emphasis element
       #
@@ -1199,14 +1200,16 @@ module TTY
       #
       # @api private
       def convert_html_element(element, options)
-        if %w[i em].include?(element.value)
+        if element.value == "a"
+          convert_a(element, options)
+        elsif element.value == "b"
+          convert_b(element, options)
+        elsif %w[i em].include?(element.value)
           convert_em(element, options)
-        elsif %w[b strong].include?(element.value)
-          convert_strong(element, options)
         elsif element.value == "img"
           convert_img(element, options)
-        elsif element.value == "a"
-          convert_a(element, options)
+        elsif element.value == "strong"
+          convert_strong(element, options)
         elsif element.value == "del"
           transform_children(element, options).join.chars.to_a.map do |char|
             char + @symbols[:delete]
