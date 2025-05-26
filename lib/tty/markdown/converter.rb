@@ -1199,9 +1199,7 @@ module TTY
       #
       # @api private
       def convert_html_element(element, options)
-        if element.value == "div"
-          transform_children(element, options)
-        elsif %w[i em].include?(element.value)
+        if %w[i em].include?(element.value)
           convert_em(element, options)
         elsif %w[b strong].include?(element.value)
           convert_strong(element, options)
