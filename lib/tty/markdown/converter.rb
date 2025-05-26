@@ -387,6 +387,7 @@ module TTY
         content = transform_children(element, options)
         decorate_each_line(content.join, @theme[:em])
       end
+      alias convert_i convert_em
 
       # Convert a blank element
       #
@@ -1204,8 +1205,10 @@ module TTY
           convert_a(element, options)
         elsif element.value == "b"
           convert_b(element, options)
-        elsif %w[i em].include?(element.value)
+        elsif element.value == "em"
           convert_em(element, options)
+        elsif element.value == "i"
+          convert_i(element, options)
         elsif element.value == "img"
           convert_img(element, options)
         elsif element.value == "strong"
