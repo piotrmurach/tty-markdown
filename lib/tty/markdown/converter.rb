@@ -21,6 +21,14 @@ module TTY
       ALT_ATTRIBUTE = "alt"
       private_constant :ALT_ATTRIBUTE
 
+      # The converted HTML elements
+      #
+      # @return [Array<String>]
+      #
+      # @api private
+      CONVERTED_HTML_ELEMENTS = %w[a b br del em i img strong].freeze
+      private_constant :CONVERTED_HTML_ELEMENTS
+
       # The empty string
       #
       # @return [String]
@@ -1218,22 +1226,8 @@ module TTY
       #
       # @api private
       def convert_html_element(element, options)
-        if element.value == "a"
-          convert_a(element, options)
-        elsif element.value == "b"
-          convert_b(element, options)
-        elsif element.value == "br"
-          convert_br(element, options)
-        elsif element.value == "del"
-          convert_del(element, options)
-        elsif element.value == "em"
-          convert_em(element, options)
-        elsif element.value == "i"
-          convert_i(element, options)
-        elsif element.value == "img"
-          convert_img(element, options)
-        elsif element.value == "strong"
-          convert_strong(element, options)
+        if CONVERTED_HTML_ELEMENTS.include?(element.value)
+          send(:"convert_#{element.value}", element, options)
         elsif element.children.any?
           transform_children(element, options)
         else
