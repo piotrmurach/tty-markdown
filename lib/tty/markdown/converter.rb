@@ -1257,11 +1257,7 @@ module TTY
       def convert_xml_comment(element, options)
         inline_level = element.options[:category] == :span
         content = strip_comment_delimiters(element.value)
-        comment = content.lines.map.with_index do |line, line_index|
-          (line_index.zero? && inline_level ? EMPTY : indentation) +
-            @pastel.decorate("#{@symbols[:hash]} #{line.chomp}",
-                             *@theme[:comment])
-        end.join(NEWLINE)
+        comment = build_comment(content, inline_level)
         inline_level ? comment : "#{comment}#{NEWLINE}"
       end
       alias convert_comment convert_xml_comment
@@ -1276,6 +1272,24 @@ module TTY
       # @api private
       def strip_comment_delimiters(comment)
         comment.gsub(COMMENT_DELIMITERS_PATTERN, EMPTY)
+      end
+
+      # Build a comment
+      #
+      # @param [String] content
+      #   the comment content
+      # @param [Boolean] inline_level
+      #   whether the comment level is inline
+      #
+      # @return [String]
+      #
+      # @api private
+      def build_comment(content, inline_level)
+        content.lines.map.with_index do |line, line_index|
+          (line_index.zero? && inline_level ? EMPTY : indentation) +
+            @pastel.decorate("#{@symbols[:hash]} #{line.chomp}",
+                             *@theme[:comment])
+        end.join(NEWLINE)
       end
     end # Parser
   end # Markdown
