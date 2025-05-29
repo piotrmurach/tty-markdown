@@ -21,6 +21,14 @@ module TTY
       ALT_ATTRIBUTE = "alt"
       private_constant :ALT_ATTRIBUTE
 
+      # The HTML comment delimiters pattern
+      #
+      # @return [Regexp]
+      #
+      # @api private
+      COMMENT_DELIMITERS_PATTERN = /^<!-{2,}\s*|-{2,}>$/.freeze
+      private_constant :COMMENT_DELIMITERS_PATTERN
+
       # The converted HTML elements
       #
       # @return [Array<String>]
@@ -1248,9 +1256,7 @@ module TTY
       # @api private
       def convert_xml_comment(element, options)
         inline_level = element.options[:category] == :span
-        content = element.value
-        content.gsub!(/^<!-{2,}\s*/, EMPTY) if content.start_with?("<!--")
-        content.gsub!(/-{2,}>$/, EMPTY) if content.end_with?("-->")
+        content = element.value.gsub(COMMENT_DELIMITERS_PATTERN, EMPTY)
         comment = content.lines.map.with_index do |line, line_index|
           (line_index.zero? && inline_level ? EMPTY : indentation) +
             @pastel.decorate("#{@symbols[:hash]} #{line.chomp}",
