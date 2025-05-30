@@ -1290,6 +1290,6 @@ module TTY
                              *@theme[:comment])
         end.join(NEWLINE)
       end
-    end # Parser
+    end # Converter
   end # Markdown
 end # TTY
