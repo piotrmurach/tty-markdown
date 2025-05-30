@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "kramdown/converter"
+require "kramdown/converter/base"
 require "kramdown/element"
 require "pastel"
 require "strings"
