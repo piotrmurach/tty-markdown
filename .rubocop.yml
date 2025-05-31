@@ -47,8 +47,6 @@ Metrics/ParameterLists:
 
 Metrics/PerceivedComplexity:
   Max: 5
-  AllowedPatterns:
-    - '\Aconvert_*'
 
 Naming/FileName:
   Exclude:
