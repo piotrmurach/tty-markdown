@@ -38,9 +38,6 @@ Metrics/BlockLength:
 Metrics/ClassLength:
   Enabled: false
 
-Metrics/CyclomaticComplexity:
-  Enabled: false
-
 Metrics/MethodLength:
   Exclude:
     - "lib/tty/markdown/converter.rb"
