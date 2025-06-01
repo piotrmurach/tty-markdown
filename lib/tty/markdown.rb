@@ -5,8 +5,8 @@ require "tty-color"
 require "tty-screen"
 
 require_relative "markdown/converter"
+require_relative "markdown/parser"
 require_relative "markdown/version"
-require_relative "markdown/kramdown_ext"
 
 module TTY
   # Responsible for converting Markdown to the terminal output
@@ -134,7 +134,7 @@ module TTY
       converter_options = {
         enabled: color_enabled(color),
         indent: indent,
-        input: "KramdownExt",
+        input: "TTYMarkdown",
         mode: mode,
         symbols: build_symbols(symbols),
         theme: build_theme(theme),

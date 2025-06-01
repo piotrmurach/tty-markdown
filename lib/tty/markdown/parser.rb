@@ -2,9 +2,9 @@
 
 require "kramdown/parser/kramdown"
 
-module Kramdown
-  module Parser
-    class KramdownExt < Kramdown::Parser::Kramdown
+module TTY
+  module Markdown
+    class Parser < Kramdown::Parser::Kramdown
       def initialize(source, options)
         super
 
@@ -18,6 +18,9 @@ module Kramdown
 
       define_parser(:codeblock_fenced_ext, FENCED_CODEBLOCK_START, nil,
                     "parse_codeblock_fenced")
-    end # KramdownExt
-  end # Parser
+    end # Parser
+  end # Markdown
 end # TTY
+
+# Add the TTY::Markdown::Parser to the available Kramdown parsers
+Kramdown::Parser.const_set(:TTYMarkdown, TTY::Markdown::Parser)
