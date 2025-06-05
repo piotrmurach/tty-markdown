@@ -59,6 +59,9 @@ RSpec/DescribedClass:
 RSpec/ExampleLength:
   Enabled: false
 
+RSpec/NestedGroups:
+  Enabled: false
+
 RSpec/SpecFilePathFormat:
   Enabled: false
 
