@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "pastel"
 require "rouge"
 
 module TTY
