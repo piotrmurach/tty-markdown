@@ -4,7 +4,7 @@ require "kramdown/converter/base"
 require "pastel"
 require "strings"
 
-require_relative "syntax_highlighter"
+require_relative "highlighter"
 
 module TTY
   module Markdown
@@ -457,7 +457,7 @@ module TTY
       def convert_codespan(element, options)
         highlighter_options = @color_options.merge(lang: element.options[:lang])
         code = Strings.wrap(element.value, available_width)
-        highlighted = SyntaxHighliter.highlight(code, **highlighter_options)
+        highlighted = Highlighter.highlight(code, **highlighter_options)
         highlighted.lines.map.with_index do |line, line_index|
           "#{indentation unless line_index.zero?}#{line.chomp}"
         end.join(NEWLINE)

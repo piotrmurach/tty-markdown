@@ -5,10 +5,10 @@ require "rouge"
 
 module TTY
   module Markdown
-    # Syntax highlighting for terminal code snippets
+    # Responsible for highlighting terminal code snippets
     #
     # @api private
-    module SyntaxHighliter
+    module Highlighter
       # Return all available language lexers
       #
       # @return [Array[String]]
@@ -66,6 +66,6 @@ module TTY
         end
       end
       module_function :highlight
-    end # SyntaxHighlighter
+    end # Highlighter
   end # Markdown
 end # TTY

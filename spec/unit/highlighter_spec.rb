@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe TTY::Markdown::SyntaxHighliter do
+RSpec.describe TTY::Markdown::Highlighter do
   let(:code) do
     <<-TEXT.chomp
 class Greeter
