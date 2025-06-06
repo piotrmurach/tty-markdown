@@ -7,7 +7,7 @@ module TTY
     # Responsible for highlighting terminal code snippets
     #
     # @api private
-    module Highlighter
+    class Highlighter
       # Highlight code snippet
       #
       # @param [String] code
@@ -21,8 +21,8 @@ module TTY
       #   the fallback coloring
       #
       # @api public
-      def highlight(code, mode: 256, lang: nil, enabled: nil,
-                    color: ->(line) { line })
+      def self.highlight(code, mode: 256, lang: nil, enabled: nil,
+                         color: ->(line) { line })
         lexer = Rouge::Lexer.find_fancy(lang, code) || Rouge::Lexers::PlainText
 
         if enabled == false
@@ -34,7 +34,6 @@ module TTY
           code.lines.map { |line| color.(line.chomp) }.join("\n")
         end
       end
-      module_function :highlight
     end # Highlighter
   end # Markdown
 end # TTY
