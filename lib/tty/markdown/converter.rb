@@ -122,11 +122,7 @@ module TTY
       def initialize(root, options = {})
         super
         @pastel = Pastel.new(enabled: options[:enabled])
-        @color_options = {
-          color: @pastel.yellow.detach,
-          enabled: options[:enabled],
-          mode: options[:mode]
-        }
+        @highlighter = build_highlighter(@pastel, options)
         @current_indent = 0
         @footnote_number = 1
         @footnotes = {}
@@ -162,6 +158,20 @@ module TTY
       # @api private
       def available_width
         @width - @current_indent
+      end
+
+      # Build a {TTY::Markdown::Highlighter} instance
+      #
+      # @param [Pastel] pastel
+      #   the pastel
+      # @param [Hash] options
+      #   the root element options
+      #
+      # @return [TTY::Markdown::Highlighter]
+      #
+      # @api private
+      def build_highlighter(pastel, options)
+        Highlighter.new(pastel, mode: options[:mode], styles: %i[yellow])
       end
 
       # Decorate each content line with styles
@@ -455,9 +465,9 @@ module TTY
       #
       # @api private
       def convert_codespan(element, options)
-        highlighter_options = @color_options.merge(lang: element.options[:lang])
         code = Strings.wrap(element.value, available_width)
-        highlighted = Highlighter.highlight(code, **highlighter_options)
+        language = element.options[:lang]
+        highlighted = @highlighter.highlight(code, language)
         highlighted.lines.map.with_index do |line, line_index|
           "#{indentation unless line_index.zero?}#{line.chomp}"
         end.join(NEWLINE)

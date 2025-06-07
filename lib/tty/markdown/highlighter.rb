@@ -8,30 +8,59 @@ module TTY
     #
     # @api private
     class Highlighter
-      # Highlight code snippet
+      # The newline character
       #
-      # @param [String] code
+      # @return [String]
+      #
+      # @api private
+      NEWLINE = "\n"
+      private_constant :NEWLINE
+
+      # Create a {TTY::Markdown::Highlighter} instance
+      #
+      # @example
+      #   highlighter = TTY::Markdown::Highlighter.new(pastel)
+      #
+      # @param [Pastel] pastel
+      #   the pastel
       # @param [Integer] mode
-      #   the color mode supported by the terminal
-      # @param [String] lang
-      #   the code snippet language
-      # @param [Boolean] enabled
-      #   whether or not coloring is enabled
-      # @param [Proc] color
-      #   the fallback coloring
+      #   the color mode
+      # @param [Array<Symbol>, Symbol] styles
+      #   the styles
       #
       # @api public
-      def self.highlight(code, mode: 256, lang: nil, enabled: nil,
-                         color: ->(line) { line })
-        lexer = Rouge::Lexer.find_fancy(lang, code) || Rouge::Lexers::PlainText
+      def initialize(pastel, mode: 256, styles: [])
+        @pastel = pastel
+        @mode = mode
+        @styles = styles
+      end
 
-        if enabled == false
-          code
-        elsif 256 <= mode
+      # Highlight the code snippet
+      #
+      # @example
+      #   highlighter.highlight("puts 'TTY Toolkit'", "ruby")
+      #
+      # @param [String] code
+      #   the code snippet
+      # @param [String, nil] language
+      #   the code language
+      #
+      # @return [String]
+      #
+      # @api public
+      def highlight(code, language = nil)
+        return code unless @pastel.enabled?
+
+        lexer = Rouge::Lexer.find_fancy(language, code) ||
+                Rouge::Lexers::PlainText
+
+        if @mode < 256
+          code.lines.map do |line|
+            @pastel.decorate(line.chomp, *@styles)
+          end.join(NEWLINE)
+        else
           formatter = Rouge::Formatters::Terminal256.new
           formatter.format(lexer.lex(code))
-        else
-          code.lines.map { |line| color.(line.chomp) }.join("\n")
         end
       end
     end # Highlighter

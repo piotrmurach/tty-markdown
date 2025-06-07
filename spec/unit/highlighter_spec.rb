@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.describe TTY::Markdown::Highlighter do
+  subject(:highlighter) do
+    described_class.new(pastel, mode: mode, styles: %i[blue])
+  end
+
   let(:code) do
     <<-TEXT.chomp
 class Greeter
@@ -14,8 +18,11 @@ end
 
   describe ".highlight" do
     context "when disabled" do
+      let(:pastel) { Pastel.new(enabled: false) }
+
       it "doesn't highlight code" do
-        highlighted = described_class.highlight(code, enabled: false)
+        highlighter = described_class.new(pastel)
+        highlighted = highlighter.highlight(code)
 
         expect(highlighted).to eq(code)
       end
@@ -25,16 +32,15 @@ end
       let(:color) { pastel.blue.detach }
       let(:mode) { 16 }
 
-      it "doesn't highlight code without color" do
-        highlighted = described_class.highlight(code, mode: mode)
+      it "doesn't highlight code without styles" do
+        highlighter = described_class.new(pastel, mode: mode)
+        highlighted = highlighter.highlight(code)
 
         expect(highlighted).to eq(code)
       end
 
-      it "highlights code with a custom color" do
-        highlighted = described_class.highlight(
-          code, color: color, mode: mode
-        )
+      it "highlights code with a custom style" do
+        highlighted = highlighter.highlight(code)
 
         expect(highlighted).to eq([
           "\e[34mclass Greeter\e[0m",
@@ -46,9 +52,7 @@ end
       end
 
       it "highlights code with the nil language" do
-        highlighted = described_class.highlight(
-          code, color: color, lang: nil, mode: mode
-        )
+        highlighted = highlighter.highlight(code, nil)
 
         expect(highlighted).to eq([
           "\e[34mclass Greeter\e[0m",
@@ -60,9 +64,7 @@ end
       end
 
       it "highlights code with the guess language" do
-        highlighted = described_class.highlight(
-          code, color: color, lang: "guess", mode: mode
-        )
+        highlighted = highlighter.highlight(code, "guess")
 
         expect(highlighted).to eq([
           "\e[34mclass Greeter\e[0m",
@@ -74,9 +76,7 @@ end
       end
 
       it "highlights code with the ruby language" do
-        highlighted = described_class.highlight(
-          code, color: color, lang: "ruby", mode: mode
-        )
+        highlighted = highlighter.highlight(code, "ruby")
 
         expect(highlighted).to eq([
           "\e[34mclass Greeter\e[0m",
@@ -88,9 +88,7 @@ end
       end
 
       it "highlights code with the unknown language" do
-        highlighted = described_class.highlight(
-          code, color: color, lang: "unknown", mode: mode
-        )
+        highlighted = highlighter.highlight(code, "unknown")
 
         expect(highlighted).to eq([
           "\e[34mclass Greeter\e[0m",
@@ -107,9 +105,7 @@ end
 
       context "without Ruby metadata" do
         it "highlights code as generic with the nil language" do
-          highlighted = described_class.highlight(
-            code, lang: nil, mode: mode
-          )
+          highlighted = highlighter.highlight(code, nil)
 
           expect(highlighted).to eq([
             "\e[38;5;230mclass Greeter\e[39m",
@@ -121,9 +117,7 @@ end
         end
 
         it "highlights code as generic with the guess language" do
-          highlighted = described_class.highlight(
-            code, lang: "guess", mode: mode
-          )
+          highlighted = highlighter.highlight(code, "guess")
 
           expect(highlighted).to eq([
             "\e[38;5;230mclass Greeter\e[39m",
@@ -135,9 +129,7 @@ end
         end
 
         it "highlights code as Ruby with the ruby language" do
-          highlighted = described_class.highlight(
-            code, lang: "ruby", mode: mode
-          )
+          highlighted = highlighter.highlight(code, "ruby")
 
           expect(highlighted).to eq([
             "\e[38;5;221;01mclass\e[39;00m\e[38;5;230m \e[39m" \
@@ -152,9 +144,7 @@ end
         end
 
         it "highlights code as generic with the unknown language" do
-          highlighted = described_class.highlight(
-            code, lang: "unknown", mode: mode
-          )
+          highlighted = highlighter.highlight(code, "unknown")
 
           expect(highlighted).to eq([
             "\e[38;5;230mclass Greeter\e[39m",
@@ -170,9 +160,7 @@ end
         let(:metadata) { "#!/usr/bin/env ruby" }
 
         it "highlights code as Ruby with the nil language" do
-          highlighted = described_class.highlight(
-            "#{metadata}\n#{code}", lang: nil, mode: mode
-          )
+          highlighted = highlighter.highlight("#{metadata}\n#{code}", nil)
 
           expect(highlighted).to eq([
             "\e[38;5;67;04m#!/usr/bin/env ruby\e[39;00m\e[38;5;230m\e[39m",
@@ -188,9 +176,7 @@ end
         end
 
         it "highlights code as Ruby with the guess language" do
-          highlighted = described_class.highlight(
-            "#{metadata}\n#{code}", lang: "guess", mode: mode
-          )
+          highlighted = highlighter.highlight("#{metadata}\n#{code}", "guess")
 
           expect(highlighted).to eq([
             "\e[38;5;67;04m#!/usr/bin/env ruby\e[39;00m\e[38;5;230m\e[39m",
@@ -206,9 +192,7 @@ end
         end
 
         it "highlights code as Ruby with the ruby language" do
-          highlighted = described_class.highlight(
-            "#{metadata}\n#{code}", lang: "ruby", mode: mode
-          )
+          highlighted = highlighter.highlight("#{metadata}\n#{code}", "ruby")
 
           expect(highlighted).to eq([
             "\e[38;5;67;04m#!/usr/bin/env ruby\e[39;00m\e[38;5;230m\e[39m",
@@ -224,9 +208,7 @@ end
         end
 
         it "highlights code as generic with the unknown language" do
-          highlighted = described_class.highlight(
-            "#{metadata}\n#{code}", lang: "unknown", mode: mode
-          )
+          highlighted = highlighter.highlight("#{metadata}\n#{code}", "unknown")
 
           expect(highlighted).to eq([
             "\e[38;5;230m#!/usr/bin/env ruby\e[39m",
