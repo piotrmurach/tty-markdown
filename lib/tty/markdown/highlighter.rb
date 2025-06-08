@@ -51,8 +51,7 @@ module TTY
       def highlight(code, language = nil)
         return code unless @pastel.enabled?
 
-        lexer = Rouge::Lexer.find_fancy(language, code) ||
-                Rouge::Lexers::PlainText
+        lexer = select_lexer(code, language)
 
         if @mode < 256
           code.lines.map do |line|
@@ -62,6 +61,22 @@ module TTY
           formatter = Rouge::Formatters::Terminal256.new
           formatter.format(lexer.lex(code))
         end
+      end
+
+      private
+
+      # Select a lexer
+      #
+      # @param [String] code
+      #   the code snippet
+      # @param [String, nil] language
+      #   the code language
+      #
+      # @return [Rouge::Lexer]
+      #
+      # @api private
+      def select_lexer(code, language)
+        Rouge::Lexer.find_fancy(language, code) || Rouge::Lexers::PlainText
       end
     end # Highlighter
   end # Markdown
