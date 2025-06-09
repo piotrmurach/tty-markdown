@@ -54,9 +54,7 @@ module TTY
         lexer = select_lexer(code, language)
 
         if @mode < 256
-          code.lines.map do |line|
-            @pastel.decorate(line.chomp, *@styles)
-          end.join(NEWLINE)
+          format_standard_terminal(lexer.lex(code))
         else
           formatter = Rouge::Formatters::Terminal256.new
           formatter.format(lexer.lex(code))
@@ -77,6 +75,21 @@ module TTY
       # @api private
       def select_lexer(code, language)
         Rouge::Lexer.find_fancy(language, code) || Rouge::Lexers::PlainText
+      end
+
+      # Format the lexer tokens with standard terminal colors
+      #
+      # @param [Enumerator] tokens
+      #   the lexer tokens
+      #
+      # @return [String]
+      #
+      # @api private
+      def format_standard_terminal(tokens)
+        code = tokens.map { |_token, value| value }.join
+        code.lines.map do |line|
+          @pastel.decorate(line.chomp, *@styles)
+        end.join(NEWLINE)
       end
     end # Highlighter
   end # Markdown
