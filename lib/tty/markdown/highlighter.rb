@@ -10,14 +10,6 @@ module TTY
     #
     # @api private
     class Highlighter
-      # The newline character
-      #
-      # @return [String]
-      #
-      # @api private
-      NEWLINE = "\n"
-      private_constant :NEWLINE
-
       # Create a {TTY::Markdown::Highlighter} instance
       #
       # @example
@@ -54,13 +46,12 @@ module TTY
         return code unless @pastel.enabled?
 
         lexer = select_lexer(code, language)
-
-        if @mode < 256
-          format_standard_terminal(lexer.lex(code))
-        else
-          formatter = Rouge::Formatters::Terminal256.new
-          formatter.format(lexer.lex(code))
-        end
+        formatter = if @mode < 256
+                      Formatter.new(@pastel, @styles)
+                    else
+                      Rouge::Formatters::Terminal256.new
+                    end
+        formatter.format(lexer.lex(code))
       end
 
       private
@@ -77,21 +68,6 @@ module TTY
       # @api private
       def select_lexer(code, language)
         Rouge::Lexer.find_fancy(language, code) || Rouge::Lexers::PlainText
-      end
-
-      # Format the lexer tokens with standard terminal colors
-      #
-      # @param [Enumerator] tokens
-      #   the lexer tokens
-      #
-      # @return [String]
-      #
-      # @api private
-      def format_standard_terminal(tokens)
-        code = tokens.map { |_token, value| value }.join
-        code.lines.map do |line|
-          @pastel.decorate(line.chomp, *@styles)
-        end.join(NEWLINE)
       end
     end # Highlighter
   end # Markdown
