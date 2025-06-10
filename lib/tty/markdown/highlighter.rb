@@ -2,6 +2,8 @@
 
 require "rouge"
 
+require_relative "formatter"
+
 module TTY
   module Markdown
     # Responsible for highlighting terminal code snippets
