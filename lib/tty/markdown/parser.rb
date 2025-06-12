@@ -3,7 +3,7 @@
 require "kramdown/parser/kramdown"
 
 module TTY
-  module Markdown
+  class Markdown
     # Responsible for parsing standard and extended Markdown syntax
     #
     # @api private

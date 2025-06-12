@@ -5,7 +5,7 @@ require "rouge"
 require_relative "formatter"
 
 module TTY
-  module Markdown
+  class Markdown
     # Responsible for highlighting terminal code snippets
     #
     # @api private

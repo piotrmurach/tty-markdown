@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module TTY
-  module Markdown
+  class Markdown
     # Responsible for formatting code snippets with standard terminal colors
     #
     # @api private

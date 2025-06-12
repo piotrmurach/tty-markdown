@@ -12,7 +12,7 @@ module TTY
   # Responsible for converting Markdown to the terminal output
   #
   # @api public
-  module Markdown
+  class Markdown
     SYMBOLS = {
       arrow: "»",
       bullet: "●",
@@ -123,14 +123,16 @@ module TTY
     #   the converted terminal output
     #
     # @api public
-    def parse(source,
-              color: :auto,
-              indent: 2,
-              mode: TTY::Color.mode,
-              symbols: {},
-              theme: {},
-              width: TTY::Screen.width,
-              **doc_opts)
+    def self.parse(
+      source,
+      color: :auto,
+      indent: 2,
+      mode: TTY::Color.mode,
+      symbols: {},
+      theme: {},
+      width: TTY::Screen.width,
+      **doc_opts
+    )
       converter_options = {
         enabled: color_enabled(color),
         indent: indent,
@@ -143,7 +145,6 @@ module TTY
       doc = Kramdown::Document.new(source, converter_options.merge(doc_opts))
       Converter.convert(doc.root, doc.options).join
     end
-    module_function :parse
 
     # Parse a markdown document
     #
@@ -159,10 +160,9 @@ module TTY
     #   the converted terminal output
     #
     # @api public
-    def parse_file(path, **options)
+    def self.parse_file(path, **options)
       parse(::File.read(path), **options)
     end
-    module_function :parse_file
 
     # Convert color option to Pastel option
     #
@@ -172,13 +172,12 @@ module TTY
     # @return [Boolean, nil]
     #
     # @api private
-    def color_enabled(color)
+    def self.color_enabled(color)
       case color.to_s
       when "always" then true
       when "never"  then false
       end
     end
-    module_function :color_enabled
     private_class_method :color_enabled
 
     # Build symbols hash from the provided symbols option
@@ -189,7 +188,7 @@ module TTY
     # @return [Hash{Symbol => String}]
     #
     # @api private
-    def build_symbols(symbols)
+    def self.build_symbols(symbols)
       case symbols
       when String, Symbol
         select_symbols(symbols)
@@ -200,7 +199,6 @@ module TTY
         SYMBOLS
       end
     end
-    module_function :build_symbols
     private_class_method :build_symbols
 
     # Select between ASCII or Unicode symbols
@@ -211,10 +209,9 @@ module TTY
     # @return [Hash{Symbol => String}]
     #
     # @api private
-    def select_symbols(name)
+    def self.select_symbols(name)
       name.to_s == "ascii" ? ASCII_SYMBOLS : SYMBOLS
     end
-    module_function :select_symbols
     private_class_method :select_symbols
 
     # Build theme hash from the provided theme option
@@ -225,12 +222,11 @@ module TTY
     # @return [Hash{Symbol => Array<Symbol>}]
     #
     # @api private
-    def build_theme(theme)
+    def self.build_theme(theme)
       THEME.merge(theme.to_h) do |*, new_style|
         Array(new_style).map(&:to_sym)
       end
     end
-    module_function :build_theme
     private_class_method :build_theme
   end # Markdown
 end # TTY

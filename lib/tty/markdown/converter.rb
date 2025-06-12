@@ -7,7 +7,7 @@ require "strings"
 require_relative "highlighter"
 
 module TTY
-  module Markdown
+  class Markdown
     # Responsible for converting a Markdown document into terminal output
     #
     # @api private
