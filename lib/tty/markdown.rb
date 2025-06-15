@@ -21,6 +21,14 @@ module TTY
     ALWAYS_COLOR = "always"
     private_constant :ALWAYS_COLOR
 
+    # The ASCII name
+    #
+    # @return [String]
+    #
+    # @api private
+    ASCII = "ascii"
+    private_constant :ASCII
+
     # The ASCII symbols
     #
     # @return [Hash{Symbol => String}]
@@ -252,7 +260,7 @@ module TTY
     #
     # @api private
     def self.select_symbols(name)
-      name.to_s == "ascii" ? ASCII_SYMBOLS : SYMBOLS
+      name.to_s == ASCII ? ASCII_SYMBOLS : SYMBOLS
     end
     private_class_method :select_symbols
 
