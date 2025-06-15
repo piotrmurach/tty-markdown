@@ -54,6 +54,14 @@ module TTY
     }.freeze
     private_constant :ASCII_SYMBOLS
 
+    # The input parser name
+    #
+    # @return [String]
+    #
+    # @api private
+    INPUT_PARSER = "TTYMarkdown"
+    private_constant :INPUT_PARSER
+
     # The Unicode symbols
     #
     # @return [Hash{Symbol => String}]
@@ -154,7 +162,7 @@ module TTY
       converter_options = {
         enabled: color_enabled(color),
         indent: indent,
-        input: "TTYMarkdown",
+        input: INPUT_PARSER,
         mode: mode,
         symbols: build_symbols(symbols),
         theme: build_theme(theme),
