@@ -70,6 +70,14 @@ module TTY
     INPUT_PARSER = "TTYMarkdown"
     private_constant :INPUT_PARSER
 
+    # The never color name
+    #
+    # @return [String]
+    #
+    # @api private
+    NEVER_COLOR = "never"
+    private_constant :NEVER_COLOR
+
     # The Unicode symbols
     #
     # @return [Hash{Symbol => String}]
@@ -209,7 +217,7 @@ module TTY
     def self.color_enabled(color)
       case color.to_s
       when ALWAYS_COLOR then true
-      when "never" then false
+      when NEVER_COLOR  then false
       end
     end
     private_class_method :color_enabled
