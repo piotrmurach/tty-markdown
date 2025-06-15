@@ -13,6 +13,14 @@ module TTY
   #
   # @api public
   class Markdown
+    # The always color name
+    #
+    # @return [String]
+    #
+    # @api private
+    ALWAYS_COLOR = "always"
+    private_constant :ALWAYS_COLOR
+
     # The ASCII symbols
     #
     # @return [Hash{Symbol => String}]
@@ -200,8 +208,8 @@ module TTY
     # @api private
     def self.color_enabled(color)
       case color.to_s
-      when "always" then true
-      when "never"  then false
+      when ALWAYS_COLOR then true
+      when "never" then false
       end
     end
     private_class_method :color_enabled
