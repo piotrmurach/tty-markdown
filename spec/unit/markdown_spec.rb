@@ -2,69 +2,79 @@
 
 require "tempfile"
 
-RSpec.describe TTY::Markdown, ".parse_file" do
-  context "when color is enabled" do
-    it "parses a Markdown file" do
-      markdown = <<-TEXT
+RSpec.describe TTY::Markdown do
+  let(:markdown) do
+    <<-TEXT
 # First Heading
 
-First *paragraph*
+First *paragraph*.
 
 ## Second Heading
 
-Second **paragraph**
+Second **paragraph**.
 
 ### Third Heading
 
-Third `paragraph`
-      TEXT
-      Tempfile.open("test.md") do |file|
-        file.write(markdown)
-        file.rewind
+Third `paragraph`.
 
-        parsed = described_class.parse_file(file, color: :always, mode: 256)
-
-        expect(parsed).to eq([
-          "\e[36;1;4mFirst Heading\e[0m",
-          "First \e[33mparagraph\e[0m",
-          "  \e[36;1mSecond Heading\e[0m",
-          "  Second \e[33;1mparagraph\e[0m",
-          "    \e[36;1mThird Heading\e[0m",
-          "    Third \e[38;5;230mparagraph\e[39m\n"
-        ].join("\n\n"))
-      end
-    end
+***
+    TEXT
+  end
+  let(:options) do
+    {
+      color: color,
+      indent: 4,
+      mode: 16,
+      symbols: :ascii,
+      theme: {em: :blue},
+      width: 24
+    }
   end
 
-  context "when color is disabled" do
-    it "parses a Markdown file" do
-      markdown = <<-TEXT
-# First Heading
+  describe ".parse_file" do
+    context "when color is enabled" do
+      let(:color) { :always }
 
-First *paragraph*
+      it "parses a Markdown file" do
+        Tempfile.open("test.md") do |file|
+          file.write(markdown)
+          file.rewind
 
-## Second Heading
+          parsed = described_class.parse_file(file, **options)
 
-Second **paragraph**
+          expect(parsed).to eq([
+            "\e[36;1;4mFirst Heading\e[0m",
+            "First \e[34mparagraph\e[0m.",
+            "    \e[36;1mSecond Heading\e[0m",
+            "    Second \e[33;1mparagraph\e[0m.",
+            "        \e[36;1mThird Heading\e[0m",
+            "        Third \e[33mparagraph\e[0m.",
+            "\e[33m*----------------------*\e[0m\n"
+          ].join("\n\n"))
+        end
+      end
+    end
 
-### Third Heading
+    context "when color is disabled" do
+      let(:color) { :never }
 
-Third `paragraph`
-      TEXT
-      Tempfile.open("test.md") do |file|
-        file.write(markdown)
-        file.rewind
+      it "parses a Markdown file" do
+        Tempfile.open("test.md") do |file|
+          file.write(markdown)
+          file.rewind
 
-        parsed = described_class.parse_file(file, color: :never)
+          parsed = described_class.parse_file(file, **options)
 
-        expect(parsed).to eq([
-          "First Heading",
-          "First paragraph",
-          "  Second Heading",
-          "  Second paragraph",
-          "    Third Heading",
-          "    Third paragraph\n"
-        ].join("\n\n"))
+          expect(parsed).to eq([
+            "First Heading",
+            "First paragraph.",
+            "    Second Heading",
+            "    Second paragraph.",
+            "        Third Heading",
+            "        Third paragraph.",
+            "*----------------------*\n"
+          ].join("\n\n"))
+        end
       end
     end
   end
