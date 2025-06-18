@@ -147,43 +147,92 @@ module TTY
     }.freeze
     private_constant :THEME
 
-    # Parse a markdown string
+    # Parse Markdown content
     #
     # @example
-    #   TTY::Markdown.parse("# Header")
+    #   TTY::Markdown.parse("# TTY Toolkit")
     #
-    # @param [String] source
-    #   the source with markdown
-    # @param [String, Symbol] color
-    #   the output coloring support out of always, auto or never
-    # @param [Integer] indent
-    #   the converted output indent
-    # @param [Integer] mode
-    #   the number of supported colors
-    # @param [Hash, String, Symbol, nil] symbols
-    #   the converted output symbols
-    # @param [Hash{Symbol => Array, String, Symbol}, nil] theme
-    #   the converted output color theme
-    # @param [Integer] width
-    #   the width at which to wrap content
-    # @param [Hash] doc_opts
-    #   the markdown document parser options
+    # @example
+    #   TTY::Markdown.parse("# TTY Toolkit", mode: 16)
+    #
+    # @param [String] content
+    #   the Markdown content
+    # @param [Hash] options
+    #   the conversion options
     #
     # @return [String]
     #   the converted terminal output
     #
+    # @see #initialize
+    #
     # @api public
-    def self.parse(
-      source,
+    def self.parse(content, **options)
+      new(**options).parse(content)
+    end
+
+    # Parse a Markdown file
+    #
+    # @example
+    #   TTY::Markdown.parse_file("example.md")
+    #
+    # @example
+    #   TTY::Markdown.parse_file("example.md", mode: 16)
+    #
+    # @param [String] path
+    #   the Markdown file path
+    # @param [Hash] options
+    #   the conversion options
+    #
+    # @return [String]
+    #   the converted terminal output
+    #
+    # @see #initialize
+    #
+    # @api public
+    def self.parse_file(path, **options)
+      new(**options).parse_file(path)
+    end
+
+    # Create a {TTY::Markdown} instance
+    #
+    # @example
+    #   tty_markdown = TTY::Markdown.new
+    #
+    # @example
+    #   tty_markdown = TTY::Markdown.new(mode: 16)
+    #
+    # @example
+    #   tty_markdown = TTY::Markdown.new(symbols: :ascii)
+    #
+    # @example
+    #   tty_markdown = TTY::Markdown.new(theme: {link: :blue})
+    #
+    # @param [String, Symbol] color
+    #   the color support out of always, auto or never
+    # @param [Integer] indent
+    #   the output indent
+    # @param [Integer] mode
+    #   the color mode
+    # @param [Hash, String, Symbol, nil] symbols
+    #   the output symbols
+    # @param [Hash{Symbol => Array, String, Symbol}, nil] theme
+    #   the color theme
+    # @param [Integer] width
+    #   the maximum width
+    # @param [Hash] document_options
+    #   the document parser options
+    #
+    # @api public
+    def initialize(
       color: :auto,
       indent: 2,
       mode: TTY::Color.mode,
       symbols: {},
       theme: {},
       width: TTY::Screen.width,
-      **doc_opts
+      **document_options
     )
-      converter_options = {
+      @converter_options = {
         enabled: color_enabled(color),
         indent: indent,
         input: INPUT_PARSER,
@@ -191,28 +240,43 @@ module TTY
         symbols: build_symbols(symbols),
         theme: build_theme(theme),
         width: width
-      }
-      doc = Kramdown::Document.new(source, converter_options.merge(doc_opts))
-      Converter.convert(doc.root, doc.options).join
+      }.merge(document_options)
     end
 
-    # Parse a markdown document
+    # Parse Markdown content
     #
     # @example
-    #   TTY::Markdown.parse_file("example.md")
+    #   tty_markdown.parse("# TTY Toolkit")
     #
-    # @param [String] path
-    #   the file path
-    # @param [Hash] options
-    #   the conversion options
+    # @param [String] content
+    #   the Markdown content
     #
     # @return [String]
     #   the converted terminal output
     #
     # @api public
-    def self.parse_file(path, **options)
-      parse(::File.read(path), **options)
+    def parse(content)
+      document = Kramdown::Document.new(content, @converter_options)
+      Converter.convert(document.root, document.options).join
     end
+
+    # Parse a Markdown file
+    #
+    # @example
+    #   tty_markdown.parse_file("example.md")
+    #
+    # @param [String] path
+    #   the Markdown file path
+    #
+    # @return [String]
+    #   the converted terminal output
+    #
+    # @api public
+    def parse_file(path)
+      parse(::File.read(path))
+    end
+
+    private
 
     # Convert color option to Pastel option
     #
@@ -222,13 +286,12 @@ module TTY
     # @return [Boolean, nil]
     #
     # @api private
-    def self.color_enabled(color)
+    def color_enabled(color)
       case color.to_s
       when ALWAYS_COLOR then true
       when NEVER_COLOR  then false
       end
     end
-    private_class_method :color_enabled
 
     # Build symbols hash from the provided symbols option
     #
@@ -238,7 +301,7 @@ module TTY
     # @return [Hash{Symbol => String}]
     #
     # @api private
-    def self.build_symbols(symbols)
+    def build_symbols(symbols)
       case symbols
       when String, Symbol
         select_symbols(symbols)
@@ -249,7 +312,6 @@ module TTY
         SYMBOLS
       end
     end
-    private_class_method :build_symbols
 
     # Select between ASCII or Unicode symbols
     #
@@ -259,10 +321,9 @@ module TTY
     # @return [Hash{Symbol => String}]
     #
     # @api private
-    def self.select_symbols(name)
+    def select_symbols(name)
       name.to_s == ASCII ? ASCII_SYMBOLS : SYMBOLS
     end
-    private_class_method :select_symbols
 
     # Build theme hash from the provided theme option
     #
@@ -272,11 +333,10 @@ module TTY
     # @return [Hash{Symbol => Array<Symbol>}]
     #
     # @api private
-    def self.build_theme(theme)
+    def build_theme(theme)
       THEME.merge(theme.to_h) do |*, new_style|
         Array(new_style).map(&:to_sym)
       end
     end
-    private_class_method :build_theme
   end # Markdown
 end # TTY
