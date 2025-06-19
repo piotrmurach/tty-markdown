@@ -1,5 +1,11 @@
 # Change log
 
+## unreleased
+
+### Added
+
+* Add the ability to instantiate the TTY::Markdown
+
 ## [v0.7.2] - 2023-03-12
 
 ### Changed
