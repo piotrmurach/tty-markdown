@@ -4,8 +4,8 @@ require "kramdown/document"
 require "tty-color"
 require "tty-screen"
 
+require_relative "markdown/color"
 require_relative "markdown/converter"
-require_relative "markdown/error"
 require_relative "markdown/parser"
 require_relative "markdown/version"
 
