@@ -14,14 +14,6 @@ module TTY
   #
   # @api public
   class Markdown
-    # The always color name
-    #
-    # @return [String]
-    #
-    # @api private
-    ALWAYS_COLOR = "always"
-    private_constant :ALWAYS_COLOR
-
     # The ASCII name
     #
     # @return [String]
@@ -78,14 +70,6 @@ module TTY
     # @api private
     INPUT_PARSER = "TTYMarkdown"
     private_constant :INPUT_PARSER
-
-    # The never color name
-    #
-    # @return [String]
-    #
-    # @api private
-    NEVER_COLOR = "never"
-    private_constant :NEVER_COLOR
 
     # The Unicode symbols
     #
@@ -164,6 +148,9 @@ module TTY
     # @return [String]
     #   the converted terminal output
     #
+    # @raise [TTY::Markdown::Error]
+    #   when the option value is invalid
+    #
     # @see #initialize
     #
     # @api public
@@ -186,6 +173,9 @@ module TTY
     #
     # @return [String]
     #   the converted terminal output
+    #
+    # @raise [TTY::Markdown::Error]
+    #   when the option value is invalid
     #
     # @see #initialize
     #
@@ -223,6 +213,9 @@ module TTY
     # @param [Hash] document_options
     #   the document parser options
     #
+    # @raise [TTY::Markdown::Error]
+    #   when the option value is invalid
+    #
     # @api public
     def initialize(
       color: :auto,
@@ -234,7 +227,7 @@ module TTY
       **document_options
     )
       @converter_options = {
-        enabled: color_enabled(color),
+        enabled: Color.new(color).to_enabled,
         indent: indent,
         input: INPUT_PARSER,
         mode: mode,
@@ -278,21 +271,6 @@ module TTY
     end
 
     private
-
-    # Convert color option to Pastel option
-    #
-    # @param [String, Symbol] color
-    #   the color option to convert
-    #
-    # @return [Boolean, nil]
-    #
-    # @api private
-    def color_enabled(color)
-      case color.to_s
-      when ALWAYS_COLOR then true
-      when NEVER_COLOR  then false
-      end
-    end
 
     # Build symbols hash from the provided symbols option
     #

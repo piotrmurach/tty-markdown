@@ -119,6 +119,19 @@ Third `paragraph`.
     end
   end
 
+  describe "#initialize" do
+    context "when color is invalid" do
+      let(:color) { :unknown }
+
+      it "raises an error" do
+        expect { instance }.to raise_error(
+          TTY::Markdown::Error,
+          "invalid color: :unknown. Use the :always, :auto or :never value."
+        )
+      end
+    end
+  end
+
   describe "#parse" do
     context "when color is enabled" do
       let(:color) { :always }
