@@ -6,6 +6,11 @@
 
 * Add the ability to instantiate the TTY::Markdown
 
+### Changed
+
+* Change the TTY::Markdown instantiation to raise the TTY::Markdown::Error
+  when configuring an invalid color option value
+
 ## [v0.7.2] - 2023-03-12
 
 ### Changed
