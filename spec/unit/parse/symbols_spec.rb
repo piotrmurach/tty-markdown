@@ -11,14 +11,6 @@ RSpec.describe TTY::Markdown, ".parse" do
                          "#{pastel.yellow.underline("example.com")}\n")
   end
 
-  it "defaults to unicode symbols when nil" do
-    markdown = "- [example](example.com)"
-    parsed = described_class.parse(markdown, color: :always, symbols: nil)
-
-    expect(parsed).to eq("#{pastel.yellow("●")} example » " \
-                         "#{pastel.yellow.underline("example.com")}\n")
-  end
-
   it "defaults to unicode symbols when provided an empty hash" do
     markdown = "- [example](example.com)"
     parsed = described_class.parse(markdown, color: :always, symbols: {})

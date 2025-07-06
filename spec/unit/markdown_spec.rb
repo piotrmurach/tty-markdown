@@ -130,6 +130,17 @@ Third `paragraph`.
         )
       end
     end
+
+    context "when symbols are invalid" do
+      it "raises an error" do
+        expect {
+          described_class.new(symbols: :unknown)
+        }.to raise_error(
+          TTY::Markdown::Error,
+          "invalid symbols name: :unknown. Use the :ascii or :unicode name."
+        )
+      end
+    end
   end
 
   describe "#parse" do

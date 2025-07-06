@@ -15,55 +15,6 @@ module TTY
   #
   # @api public
   class Markdown
-    # The ASCII name
-    #
-    # @return [String]
-    #
-    # @api private
-    ASCII = "ascii"
-    private_constant :ASCII
-
-    # The ASCII symbols
-    #
-    # @return [Hash{Symbol => String}]
-    #
-    # @api private
-    ASCII_SYMBOLS = {
-      arrow: "->",
-      bullet: "*",
-      diamond: "*",
-      bar: "│",
-      pipe: "|",
-      line: "-",
-      hellip: "...",
-      laquo: "<<",
-      laquo_space: "<< ",
-      raquo: ">>",
-      raquo_space: " >>",
-      ndash: "-",
-      mdash: "--",
-      lsquo: "\"",
-      rsquo: "\"",
-      ldquo: "\"",
-      rdquo: "\"",
-      top_left: "+",
-      top_right: "+",
-      top_center: "+",
-      mid_left: "+",
-      mid_right: "+",
-      mid_center: "+",
-      bottom_right: "+",
-      bottom_left: "+",
-      bottom_center: "+",
-      paren_left: "(",
-      paren_right: ")",
-      bracket_left: "[",
-      bracket_right: "]",
-      hash: "#",
-      delete: "\u0336"
-    }.freeze
-    private_constant :ASCII_SYMBOLS
-
     # The input parser name
     #
     # @return [String]
@@ -71,47 +22,6 @@ module TTY
     # @api private
     INPUT_PARSER = "TTYMarkdown"
     private_constant :INPUT_PARSER
-
-    # The Unicode symbols
-    #
-    # @return [Hash{Symbol => String}]
-    #
-    # @api private
-    SYMBOLS = {
-      arrow: "»",
-      bullet: "●",
-      bar: "┃",
-      diamond: "◈",
-      pipe: "│",
-      line: "─",
-      hellip: "…",
-      laquo: "«",
-      laquo_space: "« ",
-      raquo: "»",
-      raquo_space: " »",
-      ndash: "-",
-      mdash: "\u2014",
-      lsquo: "‘",
-      rsquo: "’",
-      ldquo: "“",
-      rdquo: "”",
-      top_left: "┌",
-      top_right: "┐",
-      top_center: "┬",
-      mid_left: "├",
-      mid_right: "┤",
-      mid_center: "┼",
-      bottom_right: "┘",
-      bottom_left: "└",
-      bottom_center: "┴",
-      paren_left: "(",
-      paren_right: ")",
-      bracket_left: "[",
-      bracket_right: "]",
-      hash: "#",
-      delete: "\u0336"
-    }.freeze
-    private_constant :SYMBOLS
 
     # The color theme
     #
@@ -232,7 +142,7 @@ module TTY
         indent: indent,
         input: INPUT_PARSER,
         mode: mode,
-        symbols: build_symbols(symbols),
+        symbols: Symbols.from(symbols),
         theme: build_theme(theme),
         width: width
       }.merge(document_options)
@@ -272,38 +182,6 @@ module TTY
     end
 
     private
-
-    # Build symbols hash from the provided symbols option
-    #
-    # @param [Hash, String, Symbol, nil] symbols
-    #   the converted output symbols
-    #
-    # @return [Hash{Symbol => String}]
-    #
-    # @api private
-    def build_symbols(symbols)
-      case symbols
-      when String, Symbol
-        select_symbols(symbols)
-      when Hash
-        base_symbols = select_symbols(symbols[:base])
-        base_symbols.merge(symbols[:override].to_h)
-      else
-        SYMBOLS
-      end
-    end
-
-    # Select between ASCII or Unicode symbols
-    #
-    # @param [String, Symbol, nil] name
-    #   the symbols name
-    #
-    # @return [Hash{Symbol => String}]
-    #
-    # @api private
-    def select_symbols(name)
-      name.to_s == ASCII ? ASCII_SYMBOLS : SYMBOLS
-    end
 
     # Build theme hash from the provided theme option
     #
