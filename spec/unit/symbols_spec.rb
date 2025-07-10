@@ -260,4 +260,42 @@ RSpec.describe TTY::Markdown::Symbols do
       end
     end
   end
+
+  describe "#wrap_in_parentheses" do
+    subject(:symbols) { described_class.from(name) }
+
+    context "when ASCII" do
+      let(:name) { :ascii }
+
+      it "wraps nil in parentheses" do
+        expect(symbols.wrap_in_parentheses(nil)).to eq("()")
+      end
+
+      it "wraps an empty string in parentheses" do
+        expect(symbols.wrap_in_parentheses("")).to eq("()")
+      end
+
+      it "wraps content in parentheses" do
+        expect(symbols.wrap_in_parentheses("TTY Toolkit"))
+          .to eq("(TTY Toolkit)")
+      end
+    end
+
+    context "when Unicode" do
+      let(:name) { :unicode }
+
+      it "wraps nil in parentheses" do
+        expect(symbols.wrap_in_parentheses(nil)).to eq("()")
+      end
+
+      it "wraps an empty string in parentheses" do
+        expect(symbols.wrap_in_parentheses("")).to eq("()")
+      end
+
+      it "wraps content in parentheses" do
+        expect(symbols.wrap_in_parentheses("TTY Toolkit"))
+          .to eq("(TTY Toolkit)")
+      end
+    end
+  end
 end
