@@ -244,6 +244,21 @@ module TTY
         end
       end
 
+      # Wrap the content in brackets
+      #
+      # @example
+      #   symbols.wrap_in_brackets("TTY Toolkit")
+      #
+      # @param [String] content
+      #   the content
+      #
+      # @return [String]
+      #
+      # @api public
+      def wrap_in_brackets(content)
+        "#{self[:bracket_left]}#{content}#{self[:bracket_right]}"
+      end
+
       private
 
       # Validate the symbols names

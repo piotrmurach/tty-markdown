@@ -224,4 +224,40 @@ RSpec.describe TTY::Markdown::Symbols do
       )
     end
   end
+
+  describe "#wrap_in_brackets" do
+    subject(:symbols) { described_class.from(name) }
+
+    context "when ASCII" do
+      let(:name) { :ascii }
+
+      it "wraps nil in brackets" do
+        expect(symbols.wrap_in_brackets(nil)).to eq("[]")
+      end
+
+      it "wraps an empty string in brackets" do
+        expect(symbols.wrap_in_brackets("")).to eq("[]")
+      end
+
+      it "wraps content in brackets" do
+        expect(symbols.wrap_in_brackets("TTY Toolkit")).to eq("[TTY Toolkit]")
+      end
+    end
+
+    context "when Unicode" do
+      let(:name) { :unicode }
+
+      it "wraps nil in brackets" do
+        expect(symbols.wrap_in_brackets(nil)).to eq("[]")
+      end
+
+      it "wraps an empty string in brackets" do
+        expect(symbols.wrap_in_brackets("")).to eq("[]")
+      end
+
+      it "wraps content in brackets" do
+        expect(symbols.wrap_in_brackets("TTY Toolkit")).to eq("[TTY Toolkit]")
+      end
+    end
+  end
 end
