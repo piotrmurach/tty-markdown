@@ -226,30 +226,6 @@ module TTY
         end
       end
 
-      # Wrap the content in brackets
-      #
-      # @param [String] content
-      #   the content to wrap
-      #
-      # @return [String]
-      #
-      # @api private
-      def wrap_in_brackets(content)
-        "#{@symbols[:bracket_left]}#{content}#{@symbols[:bracket_right]}"
-      end
-
-      # Wrap the content in parentheses
-      #
-      # @param [String] content
-      #   the content to wrap
-      #
-      # @return [String]
-      #
-      # @api private
-      def wrap_in_parentheses(content)
-        "#{@symbols[:paren_left]}#{content}#{@symbols[:paren_right]}"
-      end
-
       # Transform an element children
       #
       # @param [Kramdown::Element] element
@@ -1146,7 +1122,7 @@ module TTY
         content = element.value
         footnote = fetch_or_add_footnote(name, content)
         number = footnote.last
-        @pastel.decorate(wrap_in_brackets(number), *@theme[:note])
+        @pastel.decorate(@symbols.wrap_in_brackets(number), *@theme[:note])
       end
 
       # Fetch or add a footnote
@@ -1213,7 +1189,7 @@ module TTY
         alt = element.attr[ALT_ATTRIBUTE].to_s
         src = element.attr[SRC_ATTRIBUTE].to_s
         image = build_image(alt, src)
-        @pastel.decorate(wrap_in_parentheses(image), *@theme[:image])
+        @pastel.decorate(@symbols.wrap_in_parentheses(image), *@theme[:image])
       end
 
       # Build an image
