@@ -8,6 +8,7 @@ require_relative "markdown/color"
 require_relative "markdown/converter"
 require_relative "markdown/parser"
 require_relative "markdown/symbols"
+require_relative "markdown/theme"
 require_relative "markdown/version"
 
 module TTY
