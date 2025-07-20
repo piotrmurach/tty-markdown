@@ -24,26 +24,6 @@ module TTY
     INPUT_PARSER = "TTYMarkdown"
     private_constant :INPUT_PARSER
 
-    # The color theme
-    #
-    # @return [Hash{Symbol => Array<Symbol>, Symbol}]
-    #
-    # @api private
-    THEME = {
-      em: :yellow,
-      header: %i[cyan bold],
-      hr: :yellow,
-      link: %i[yellow underline],
-      list: :yellow,
-      strong: %i[yellow bold],
-      table: :yellow,
-      quote: :yellow,
-      image: :bright_black,
-      note: :yellow,
-      comment: :bright_black
-    }.freeze
-    private_constant :THEME
-
     # Parse Markdown content
     #
     # @example
@@ -144,7 +124,7 @@ module TTY
         input: INPUT_PARSER,
         mode: mode,
         symbols: Symbols.from(symbols),
-        theme: build_theme(theme),
+        theme: Theme.from(theme),
         width: width
       }.merge(document_options)
     end
@@ -180,22 +160,6 @@ module TTY
     # @api public
     def parse_file(path)
       parse(::File.read(path))
-    end
-
-    private
-
-    # Build theme hash from the provided theme option
-    #
-    # @param [Hash{Symbol => Array, String, Symbol}, nil] theme
-    #   the converted output theme
-    #
-    # @return [Hash{Symbol => Array<Symbol>}]
-    #
-    # @api private
-    def build_theme(theme)
-      THEME.merge(theme.to_h) do |*, new_style|
-        Array(new_style).map(&:to_sym)
-      end
     end
   end # Markdown
 end # TTY

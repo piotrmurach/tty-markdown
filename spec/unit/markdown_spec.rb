@@ -141,6 +141,18 @@ Third `paragraph`.
         )
       end
     end
+
+    context "when the theme is invalid" do
+      it "raises an error" do
+        expect {
+          described_class.new(theme: :unknown)
+        }.to raise_error(
+          TTY::Markdown::Error,
+          "invalid theme: :unknown. " \
+          "Use the hash with the element name and style."
+        )
+      end
+    end
   end
 
   describe "#parse" do
