@@ -265,17 +265,17 @@ Here's a complete list of element names with corresponding styles:
 
 | Name       | Style                   |
 |------------|-------------------------|
-| `:comment` | `:bright_black`         |
-| `:em`      | `:yellow`               |
+| `:comment` | `%i[bright_black]`      |
+| `:em`      | `%i[yellow]`            |
 | `:header`  | `%i[cyan bold]`         |
-| `:hr`      | `:yellow`               |
-| `:image`   | `:bright_black`         |
+| `:hr`      | `%i[yellow]`            |
+| `:image`   | `%i[bright_black]`      |
 | `:link`    | `%i[yellow underline]`  |
-| `:list`    | `:yellow`               |
-| `:note`    | `:yellow`               |
-| `:quote`   | `:yellow`               |
+| `:list`    | `%i[yellow]`            |
+| `:note`    | `%i[yellow]`            |
+| `:quote`   | `%i[yellow]`            |
 | `:strong`  | `%i[yellow bold]`       |
-| `:table`   | `:yellow`               |
+| `:table`   | `%i[yellow]`            |
 
 Read the [pastel](https://github.com/piotrmurach/pastel#3-supported-colors)
 documentation for all supported styles.
