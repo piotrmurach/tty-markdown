@@ -460,7 +460,7 @@ module TTY
       #
       # @api private
       def convert_codeblock(element, options)
-        "#{indentation}#{convert_codespan(element, options)}"
+        "#{indentation}#{convert_codespan(element, options)}#{NEWLINE}"
       end
 
       # Convert a blockquote element
@@ -1042,7 +1042,7 @@ module TTY
       # @api private
       def convert_math(element, options)
         if element.options[:category] == :block
-          convert_codeblock(element, options) + NEWLINE
+          convert_codeblock(element, options)
         else
           convert_codespan(element, options)
         end

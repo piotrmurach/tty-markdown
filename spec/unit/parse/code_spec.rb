@@ -33,7 +33,7 @@ RSpec.describe TTY::Markdown, ".parse" do
         "\e[33mclass Greeter\e[0m",
         "\e[33m  def say\e[0m",
         "\e[33m  end\e[0m",
-        "\e[33mend\e[0m"
+        "\e[33mend\e[0m\n"
       ].join("\n"))
     end
 
@@ -52,7 +52,7 @@ end
         "\e[33mclass Greeter\e[0m",
         "\e[33m  def say\e[0m",
         "\e[33m  end\e[0m",
-        "\e[33mend\e[0m"
+        "\e[33mend\e[0m\n"
       ].join("\n"))
     end
 
@@ -72,7 +72,7 @@ end
         "\e[38;5;230m  def say\e[39m",
         "\e[38;5;230m  end\e[39m",
         "\e[38;5;230mend\e[39m",
-        "\e[38;5;230m\e[39m"
+        "\e[38;5;230m\e[39m\n"
       ].join("\n"))
     end
 
@@ -91,7 +91,7 @@ end
         "\e[33mclass Greeter\e[0m",
         "\e[33m  def say\e[0m",
         "\e[33m  end\e[0m",
-        "\e[33mend\e[0m"
+        "\e[33mend\e[0m\n"
       ].join("\n"))
     end
 
@@ -113,7 +113,7 @@ end
         "\e[38;5;153msay\e[39m\e[38;5;230m\e[39m\n",
         "\e[38;5;230m  \e[39m\e[38;5;221;01mend\e[39;00m\e[38;5;230m\e[39m\n",
         "\e[38;5;230m\e[39m\e[38;5;221;01mend\e[39;00m\e[38;5;230m\e[39m\n",
-        "\e[38;5;230m\e[39m"
+        "\e[38;5;230m\e[39m\n"
       ].join)
     end
 
@@ -134,7 +134,7 @@ end
         "",
         "\e[33m  puts \"saying\"\e[0m",
         "",
-        "\e[33mend\e[0m"
+        "\e[33mend\e[0m\n"
       ].join("\n"))
     end
 
@@ -155,7 +155,7 @@ end
         "    \e[33mclass Greeter\e[0m",
         "    \e[33m  def say\e[0m",
         "    \e[33m  end\e[0m",
-        "    \e[33mend\e[0m"
+        "    \e[33mend\e[0m\n"
       ].join("\n"))
     end
 
@@ -178,7 +178,7 @@ end
         "    \e[33mclass Greeter\e[0m",
         "    \e[33m  def say\e[0m",
         "    \e[33m  end\e[0m",
-        "    \e[33mend\e[0m"
+        "    \e[33mend\e[0m\n"
       ].join("\n"))
     end
 
@@ -194,7 +194,7 @@ lexer = Rouge::Lexer.find_fancy(lang, code) || Rouge::Lexers::PlainText
 
       expect(parsed).to eq([
         "\e[33mlexer = Rouge::Lexer.find_fancy(lang, code) || \e[0m",
-        "\e[33mRouge::Lexers::PlainText\e[0m"
+        "\e[33mRouge::Lexers::PlainText\e[0m\n"
       ].join("\n"))
     end
 
@@ -213,7 +213,7 @@ lexer = Rouge::Lexer.find_fancy(lang, code) || Rouge::Lexers::PlainText
       expect(parsed).to eq([
         "    \e[36;1mlexer\e[0m\n",
         "    \e[33mlexer = Rouge::Lexer.find_fancy(lang, code) \e[0m",
-        "    \e[33m|| Rouge::Lexers::PlainText\e[0m"
+        "    \e[33m|| Rouge::Lexers::PlainText\e[0m\n"
       ].join("\n"))
     end
 
@@ -232,7 +232,7 @@ end
         "class Greeter",
         "  def say",
         "  end",
-        "end"
+        "end\n"
       ].join("\n"))
     end
   end
