@@ -4,6 +4,7 @@ RSpec.describe TTY::Markdown::Theme do
   describe ".from" do
     let(:element_to_style) do
       {
+        code: %i[yellow],
         comment: %i[bright_black],
         em: %i[yellow],
         header: %i[cyan bold],

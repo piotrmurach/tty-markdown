@@ -14,6 +14,7 @@ module TTY
       #
       # @api private
       ELEMENT_TO_STYLE = {
+        code: %i[yellow],
         comment: %i[bright_black],
         em: %i[yellow],
         header: %i[cyan bold],
