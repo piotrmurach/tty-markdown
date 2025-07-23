@@ -265,6 +265,7 @@ Here's a complete list of element names with corresponding styles:
 
 | Name       | Style                   |
 |------------|-------------------------|
+| `:code`    | `%i[yellow]`            |
 | `:comment` | `%i[bright_black]`      |
 | `:em`      | `%i[yellow]`            |
 | `:header`  | `%i[cyan bold]`         |
