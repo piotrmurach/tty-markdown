@@ -171,7 +171,11 @@ module TTY
       #
       # @api private
       def build_highlighter(pastel, options)
-        Highlighter.new(pastel, mode: options[:mode], styles: %i[yellow])
+        Highlighter.new(
+          pastel,
+          mode: options[:mode],
+          styles: options[:theme][:code]
+        )
       end
 
       # Decorate each content line with styles

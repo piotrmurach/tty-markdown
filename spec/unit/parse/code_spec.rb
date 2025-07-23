@@ -46,6 +46,15 @@ end
 
           expect(parsed).to eq("Some \e[33mputs 5 + 5\e[0m code.\n")
         end
+
+        it "converts code with a custom style" do
+          markdown = "Some `puts 5 + 5` code."
+          parsed = described_class.parse(
+            markdown, color: :always, mode: mode, theme: {code: %i[blue bold]}
+          )
+
+          expect(parsed).to eq("Some \e[34;1mputs 5 + 5\e[0m code.\n")
+        end
       end
 
       context "when code block" do
@@ -89,6 +98,29 @@ end
           ].join("\n"))
         end
 
+        it "converts fenced code with a custom style" do
+          markdown = <<-TEXT
+```
+class Greeter
+  def say
+    "hello"
+  end
+end
+```
+          TEXT
+          parsed = described_class.parse(
+            markdown, color: :always, mode: mode, theme: {code: %i[blue bold]}
+          )
+
+          expect(parsed).to eq([
+            "\e[34;1mclass Greeter\e[0m",
+            "\e[34;1m  def say\e[0m",
+            "\e[34;1m    \"hello\"\e[0m",
+            "\e[34;1m  end\e[0m",
+            "\e[34;1mend\e[0m\n"
+          ].join("\n"))
+        end
+
         it "converts fenced code with a language indicator" do
           markdown = <<-TEXT
 ```ruby
@@ -107,6 +139,29 @@ end
             "\e[33m    \"hello\"\e[0m",
             "\e[33m  end\e[0m",
             "\e[33mend\e[0m\n"
+          ].join("\n"))
+        end
+
+        it "converts fenced code with a language indicator and custom style" do
+          markdown = <<-TEXT
+```ruby
+class Greeter
+  def say
+    "hello"
+  end
+end
+```
+          TEXT
+          parsed = described_class.parse(
+            markdown, color: :always, mode: mode, theme: {code: %i[blue bold]}
+          )
+
+          expect(parsed).to eq([
+            "\e[34;1mclass Greeter\e[0m",
+            "\e[34;1m  def say\e[0m",
+            "\e[34;1m    \"hello\"\e[0m",
+            "\e[34;1m  end\e[0m",
+            "\e[34;1mend\e[0m\n"
           ].join("\n"))
         end
 
