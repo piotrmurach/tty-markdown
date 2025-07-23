@@ -5,6 +5,7 @@
 ### Added
 
 * Add the ability to instantiate the TTY::Markdown
+* Add the code style configuration to the default theme
 
 ### Changed
 
