@@ -74,8 +74,10 @@ module TTY
         @formatter ||=
           if @mode < 256
             Formatter.new(@pastel, @styles)
-          else
+          elsif @mode == 256
             Rouge::Formatters::Terminal256.new
+          else
+            Rouge::Formatters::TerminalTruecolor.new
           end
       end
     end # Highlighter

@@ -221,5 +221,169 @@ end
         end
       end
     end
+
+    context "when truecolor mode" do
+      let(:mode) { 2**24 }
+
+      context "without Ruby metadata" do
+        it "highlights code as generic with the nil language" do
+          highlighted = highlighter.highlight(code, nil)
+
+          expect(highlighted).to eq([
+            "\e[38;2;250;246;228mclass Greeter\e[39m",
+            "\e[38;2;250;246;228m  def say\e[39m",
+            "\e[38;2;250;246;228m    \"hello\"\e[39m",
+            "\e[38;2;250;246;228m  end\e[39m",
+            "\e[38;2;250;246;228mend\e[39m"
+          ].join("\n"))
+        end
+
+        it "highlights code as generic with the guess language" do
+          highlighted = highlighter.highlight(code, "guess")
+
+          expect(highlighted).to eq([
+            "\e[38;2;250;246;228mclass Greeter\e[39m",
+            "\e[38;2;250;246;228m  def say\e[39m",
+            "\e[38;2;250;246;228m    \"hello\"\e[39m",
+            "\e[38;2;250;246;228m  end\e[39m",
+            "\e[38;2;250;246;228mend\e[39m"
+          ].join("\n"))
+        end
+
+        it "highlights code as Ruby with the ruby language" do
+          highlighted = highlighter.highlight(code, "ruby")
+
+          expect(highlighted).to eq([
+            "\e[38;2;246;221;98m\e[1mclass\e[39;00m" \
+            "\e[38;2;250;246;228m \e[39m" \
+            "\e[38;2;178;253;109m\e[1mGreeter\e[39;00m" \
+            "\e[38;2;250;246;228m\e[39m",
+            "\e[38;2;250;246;228m  \e[39m" \
+            "\e[38;2;246;221;98m\e[1mdef\e[39;00m" \
+            "\e[38;2;250;246;228m \e[39m" \
+            "\e[38;2;168;225;254msay\e[39m" \
+            "\e[38;2;250;246;228m\e[39m",
+            "\e[38;2;250;246;228m    \e[39m" \
+            "\e[38;2;255;240;166m\e[1m\"hello\"\e[39;00m" \
+            "\e[38;2;250;246;228m\e[39m",
+            "\e[38;2;250;246;228m  \e[39m" \
+            "\e[38;2;246;221;98m\e[1mend\e[39;00m" \
+            "\e[38;2;250;246;228m\e[39m",
+            "\e[38;2;250;246;228m\e[39m" \
+            "\e[38;2;246;221;98m\e[1mend\e[39;00m"
+          ].join("\n"))
+        end
+
+        it "highlights code as generic with the unknown language" do
+          highlighted = highlighter.highlight(code, "unknown")
+
+          expect(highlighted).to eq([
+            "\e[38;2;250;246;228mclass Greeter\e[39m",
+            "\e[38;2;250;246;228m  def say\e[39m",
+            "\e[38;2;250;246;228m    \"hello\"\e[39m",
+            "\e[38;2;250;246;228m  end\e[39m",
+            "\e[38;2;250;246;228mend\e[39m"
+          ].join("\n"))
+        end
+      end
+
+      context "with Ruby metadata" do
+        let(:metadata) { "#!/usr/bin/env ruby" }
+
+        it "highlights code as Ruby with the nil language" do
+          highlighted = highlighter.highlight("#{metadata}\n#{code}", nil)
+
+          expect(highlighted).to eq([
+            "\e[38;2;108;139;159m\e[1m#!/usr/bin/env ruby\e[39;00m" \
+            "\e[38;2;250;246;228m\e[39m",
+            "\e[38;2;250;246;228m\e[39m" \
+            "\e[38;2;246;221;98m\e[1mclass\e[39;00m" \
+            "\e[38;2;250;246;228m \e[39m" \
+            "\e[38;2;178;253;109m\e[1mGreeter\e[39;00m" \
+            "\e[38;2;250;246;228m\e[39m",
+            "\e[38;2;250;246;228m  \e[39m" \
+            "\e[38;2;246;221;98m\e[1mdef\e[39;00m" \
+            "\e[38;2;250;246;228m \e[39m" \
+            "\e[38;2;168;225;254msay\e[39m" \
+            "\e[38;2;250;246;228m\e[39m",
+            "\e[38;2;250;246;228m    \e[39m" \
+            "\e[38;2;255;240;166m\e[1m\"hello\"\e[39;00m" \
+            "\e[38;2;250;246;228m\e[39m",
+            "\e[38;2;250;246;228m  \e[39m" \
+            "\e[38;2;246;221;98m\e[1mend\e[39;00m" \
+            "\e[38;2;250;246;228m\e[39m",
+            "\e[38;2;250;246;228m\e[39m" \
+            "\e[38;2;246;221;98m\e[1mend\e[39;00m"
+          ].join("\n"))
+        end
+
+        it "highlights code as Ruby with the guess language" do
+          highlighted = highlighter.highlight("#{metadata}\n#{code}", "guess")
+
+          expect(highlighted).to eq([
+            "\e[38;2;108;139;159m\e[1m#!/usr/bin/env ruby\e[39;00m" \
+            "\e[38;2;250;246;228m\e[39m",
+            "\e[38;2;250;246;228m\e[39m" \
+            "\e[38;2;246;221;98m\e[1mclass\e[39;00m" \
+            "\e[38;2;250;246;228m \e[39m" \
+            "\e[38;2;178;253;109m\e[1mGreeter\e[39;00m" \
+            "\e[38;2;250;246;228m\e[39m",
+            "\e[38;2;250;246;228m  \e[39m" \
+            "\e[38;2;246;221;98m\e[1mdef\e[39;00m" \
+            "\e[38;2;250;246;228m \e[39m" \
+            "\e[38;2;168;225;254msay\e[39m" \
+            "\e[38;2;250;246;228m\e[39m",
+            "\e[38;2;250;246;228m    \e[39m" \
+            "\e[38;2;255;240;166m\e[1m\"hello\"\e[39;00m" \
+            "\e[38;2;250;246;228m\e[39m",
+            "\e[38;2;250;246;228m  \e[39m" \
+            "\e[38;2;246;221;98m\e[1mend\e[39;00m" \
+            "\e[38;2;250;246;228m\e[39m",
+            "\e[38;2;250;246;228m\e[39m" \
+            "\e[38;2;246;221;98m\e[1mend\e[39;00m"
+          ].join("\n"))
+        end
+
+        it "highlights code as Ruby with the ruby language" do
+          highlighted = highlighter.highlight("#{metadata}\n#{code}", "ruby")
+
+          expect(highlighted).to eq([
+            "\e[38;2;108;139;159m\e[1m#!/usr/bin/env ruby\e[39;00m" \
+            "\e[38;2;250;246;228m\e[39m",
+            "\e[38;2;250;246;228m\e[39m" \
+            "\e[38;2;246;221;98m\e[1mclass\e[39;00m" \
+            "\e[38;2;250;246;228m \e[39m" \
+            "\e[38;2;178;253;109m\e[1mGreeter\e[39;00m" \
+            "\e[38;2;250;246;228m\e[39m",
+            "\e[38;2;250;246;228m  \e[39m" \
+            "\e[38;2;246;221;98m\e[1mdef\e[39;00m" \
+            "\e[38;2;250;246;228m \e[39m" \
+            "\e[38;2;168;225;254msay\e[39m" \
+            "\e[38;2;250;246;228m\e[39m",
+            "\e[38;2;250;246;228m    \e[39m" \
+            "\e[38;2;255;240;166m\e[1m\"hello\"\e[39;00m" \
+            "\e[38;2;250;246;228m\e[39m",
+            "\e[38;2;250;246;228m  \e[39m" \
+            "\e[38;2;246;221;98m\e[1mend\e[39;00m" \
+            "\e[38;2;250;246;228m\e[39m",
+            "\e[38;2;250;246;228m\e[39m" \
+            "\e[38;2;246;221;98m\e[1mend\e[39;00m"
+          ].join("\n"))
+        end
+
+        it "highlights code as generic with the unknown language" do
+          highlighted = highlighter.highlight("#{metadata}\n#{code}", "unknown")
+
+          expect(highlighted).to eq([
+            "\e[38;2;250;246;228m#!/usr/bin/env ruby\e[39m",
+            "\e[38;2;250;246;228mclass Greeter\e[39m",
+            "\e[38;2;250;246;228m  def say\e[39m",
+            "\e[38;2;250;246;228m    \"hello\"\e[39m",
+            "\e[38;2;250;246;228m  end\e[39m",
+            "\e[38;2;250;246;228mend\e[39m"
+          ].join("\n"))
+        end
+      end
+    end
   end
 end
