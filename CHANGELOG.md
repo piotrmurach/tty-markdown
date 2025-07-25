@@ -6,6 +6,7 @@
 
 * Add the ability to instantiate the TTY::Markdown
 * Add the code style configuration to the default theme
+* Add the ability to format code elements in truecolor
 
 ### Changed
 
