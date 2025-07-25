@@ -350,5 +350,79 @@ end
         end
       end
     end
+
+    context "when truecolor mode" do
+      let(:mode) { 2**24 }
+
+      context "when inline code" do
+        it "converts code marked with a double backtick" do
+          markdown = "Some `puts 5 + 5` code."
+          parsed = described_class.parse(markdown, color: :always, mode: mode)
+
+          expect(parsed).to eq(
+            "Some \e[38;2;250;246;228mputs 5 + 5\e[39m code.\n"
+          )
+        end
+      end
+
+      context "when code block" do
+        it "converts fenced code without a language indicator" do
+          markdown = <<-TEXT
+```
+class Greeter
+  def say
+    "hello"
+  end
+end
+```
+          TEXT
+          parsed = described_class.parse(markdown, color: :always, mode: mode)
+
+          expect(parsed).to eq([
+            "\e[38;2;250;246;228mclass Greeter\e[39m",
+            "\e[38;2;250;246;228m  def say\e[39m",
+            "\e[38;2;250;246;228m    \"hello\"\e[39m",
+            "\e[38;2;250;246;228m  end\e[39m",
+            "\e[38;2;250;246;228mend\e[39m",
+            "\e[38;2;250;246;228m\e[39m\n"
+          ].join("\n"))
+        end
+
+        it "converts fenced code with a language indicator" do
+          markdown = <<-TEXT
+```ruby
+class Greeter
+  def say
+    "hello"
+  end
+end
+```
+          TEXT
+          parsed = described_class.parse(markdown, color: :always, mode: mode)
+
+          expect(parsed).to eq([
+            "\e[38;2;246;221;98m\e[1mclass\e[39;00m" \
+            "\e[38;2;250;246;228m \e[39m" \
+            "\e[38;2;178;253;109m\e[1mGreeter\e[39;00m" \
+            "\e[38;2;250;246;228m\e[39m",
+            "\e[38;2;250;246;228m  \e[39m" \
+            "\e[38;2;246;221;98m\e[1mdef\e[39;00m" \
+            "\e[38;2;250;246;228m \e[39m" \
+            "\e[38;2;168;225;254msay\e[39m" \
+            "\e[38;2;250;246;228m\e[39m",
+            "\e[38;2;250;246;228m    \e[39m" \
+            "\e[38;2;255;240;166m\e[1m\"hello\"\e[39;00m" \
+            "\e[38;2;250;246;228m\e[39m",
+            "\e[38;2;250;246;228m  \e[39m" \
+            "\e[38;2;246;221;98m\e[1mend\e[39;00m" \
+            "\e[38;2;250;246;228m\e[39m",
+            "\e[38;2;250;246;228m\e[39m" \
+            "\e[38;2;246;221;98m\e[1mend\e[39;00m" \
+            "\e[38;2;250;246;228m\e[39m",
+            "\e[38;2;250;246;228m\e[39m\n"
+          ].join("\n"))
+        end
+      end
+    end
   end
 end
