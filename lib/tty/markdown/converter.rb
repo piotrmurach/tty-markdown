@@ -374,9 +374,7 @@ module TTY
       # @api private
       def convert_del(element, options)
         content = transform_children(element, options).join
-        content.chars.to_a.map do |char|
-          char + @symbols[:delete]
-        end
+        decorate_each_line(content, @theme[:delete])
       end
 
       # Convert a strong element
