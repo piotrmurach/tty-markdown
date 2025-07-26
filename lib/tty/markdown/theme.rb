@@ -16,6 +16,7 @@ module TTY
       ELEMENT_TO_STYLE = {
         code: %i[yellow],
         comment: %i[bright_black],
+        delete: %i[red],
         em: %i[yellow],
         header: %i[cyan bold],
         hr: %i[yellow],
