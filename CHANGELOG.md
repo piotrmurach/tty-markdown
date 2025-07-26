@@ -13,6 +13,8 @@
 * Change the TTY::Markdown instantiation to raise the TTY::Markdown::Error
   when configuring an invalid color, symbols or theme option value
 * Change the code block conversion to always append a newline
+* Change the del conversion to replace the delete symbol with
+  the theme delete style
 
 ## [v0.7.2] - 2023-03-12
 
