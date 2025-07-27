@@ -39,6 +39,60 @@ Content after the level 3 heading.
       ].join("\n"))
     end
 
+    it "converts level 1, 2 and 3 headings with the custom heading1 style" do
+      markdown = <<-TEXT
+# Heading1
+Content after the level 1 heading.
+
+## Heading2
+Content after the level 2 heading.
+
+### Heading3
+Content after the level 3 heading.
+      TEXT
+      parsed = described_class.parse(
+        markdown, color: :always, theme: {heading1: :blue}
+      )
+
+      expect(parsed).to eq([
+        "\e[34mHeading1\e[0m",
+        "Content after the level 1 heading.",
+        "",
+        "  \e[36;1mHeading2\e[0m",
+        "  Content after the level 2 heading.",
+        "",
+        "    \e[36;1mHeading3\e[0m",
+        "    Content after the level 3 heading.\n"
+      ].join("\n"))
+    end
+
+    it "converts level 1, 2 and 3 headings with the custom header style" do
+      markdown = <<-TEXT
+# Heading1
+Content after the level 1 heading.
+
+## Heading2
+Content after the level 2 heading.
+
+### Heading3
+Content after the level 3 heading.
+      TEXT
+      parsed = described_class.parse(
+        markdown, color: :always, theme: {header: :blue}
+      )
+
+      expect(parsed).to eq([
+        "\e[36;1;4mHeading1\e[0m",
+        "Content after the level 1 heading.",
+        "",
+        "  \e[34mHeading2\e[0m",
+        "  Content after the level 2 heading.",
+        "",
+        "    \e[34mHeading3\e[0m",
+        "    Content after the level 3 heading.\n"
+      ].join("\n"))
+    end
+
     it "converts the heading followed by content within the allowed width" do
       markdown = "### Heading3\n#{"x" * 21}"
       parsed = described_class.parse(markdown, color: :always, width: 20)

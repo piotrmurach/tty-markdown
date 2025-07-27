@@ -319,8 +319,7 @@ module TTY
         level = element.options[:level]
         indent_content = options[:parent].type == :root
         indent_by(level - 1) if indent_content
-        styles = @theme[:header].dup
-        styles << :underline if level == 1
+        styles = @theme[level == 1 ? :heading1 : :header]
         content = transform_children(element, options)
         content.join.lines.map do |line|
           "#{indentation}#{@pastel.decorate(line.chomp, *styles)}#{NEWLINE}"
