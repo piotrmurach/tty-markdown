@@ -263,21 +263,22 @@ TTY::Markdown.parse(markdown_string, theme: {link: :magenta, list: %i[magenta bo
 
 Here's a complete list of element names with corresponding styles:
 
-| Name       | Style                   |
-|------------|-------------------------|
-| `:code`    | `%i[yellow]`            |
-| `:comment` | `%i[bright_black]`      |
-| `:delete`  | `%i[red]`               |
-| `:em`      | `%i[yellow]`            |
-| `:header`  | `%i[cyan bold]`         |
-| `:hr`      | `%i[yellow]`            |
-| `:image`   | `%i[bright_black]`      |
-| `:link`    | `%i[yellow underline]`  |
-| `:list`    | `%i[yellow]`            |
-| `:note`    | `%i[yellow]`            |
-| `:quote`   | `%i[yellow]`            |
-| `:strong`  | `%i[yellow bold]`       |
-| `:table`   | `%i[yellow]`            |
+| Name        | Style                     |
+|-------------|---------------------------|
+| `:code`     | `%i[yellow]`              |
+| `:comment`  | `%i[bright_black]`        |
+| `:delete`   | `%i[red]`                 |
+| `:em`       | `%i[yellow]`              |
+| `:header`   | `%i[cyan bold]`           |
+| `:heading1` | `%i[cyan bold underline]` |
+| `:hr`       | `%i[yellow]`              |
+| `:image`    | `%i[bright_black]`        |
+| `:link`     | `%i[yellow underline]`    |
+| `:list`     | `%i[yellow]`              |
+| `:note`     | `%i[yellow]`              |
+| `:quote`    | `%i[yellow]`              |
+| `:strong`   | `%i[yellow bold]`         |
+| `:table`    | `%i[yellow]`              |
 
 Read the [pastel](https://github.com/piotrmurach/pastel#3-supported-colors)
 documentation for all supported styles.
