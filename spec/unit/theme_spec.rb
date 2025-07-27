@@ -9,6 +9,7 @@ RSpec.describe TTY::Markdown::Theme do
         delete: %i[red],
         em: %i[yellow],
         header: %i[cyan bold],
+        heading1: %i[cyan bold underline],
         hr: %i[yellow],
         image: %i[bright_black],
         link: %i[yellow underline],
