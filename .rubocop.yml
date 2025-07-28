@@ -27,9 +27,6 @@ Layout/SpaceInsideHashLiteralBraces:
 Lint/UnusedMethodArgument:
   Enabled: false
 
-Metrics/AbcSize:
-  Max: 30
-
 Metrics/BlockLength:
   Exclude:
     - "spec/**/*"
