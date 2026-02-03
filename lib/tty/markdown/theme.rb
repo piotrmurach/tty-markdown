@@ -49,7 +49,7 @@ module TTY
       #
       # @api public
       def self.from(theme)
-        new(build_theme(theme))
+        new(validate_names(build_theme(theme)))
       end
 
       # Build the theme hash
@@ -72,6 +72,25 @@ module TTY
       end
       private_class_method :build_theme
 
+      # Validate the elements names
+      #
+      # @param [Hash{Symbol => Array<Symbol>}] value
+      #   the theme value
+      #
+      # @return [Hash{Symbol => Array<Symbol>}]
+      #
+      # @raise [TTY::Markdown::Error]
+      #   when the element name is invalid
+      #
+      # @api private
+      def self.validate_names(value)
+        unknown_names = value.keys - ELEMENT_TO_STYLE.keys
+        return value if unknown_names.empty?
+
+        raise_name_error(*unknown_names)
+      end
+      private_class_method :validate_names
+
       # Raise the theme value error
       #
       # @param [Object] value
@@ -89,17 +108,31 @@ module TTY
       end
       private_class_method :raise_value_error
 
-      # Create a {TTY::Markdown::Theme} instance
+      # Raise the element name error
       #
-      # @param [Hash{Symbol => Array<Symbol>}] theme
-      #   the theme configuration
+      # @param [Array<Symbol>] names
+      #   the elements names
+      #
+      # @return [void]
       #
       # @raise [TTY::Markdown::Error]
       #   when the element name is invalid
       #
       # @api private
+      def self.raise_name_error(*names)
+        raise Error, "invalid theme element name#{"s" if names.size > 1}: " \
+                     "#{names.map(&:inspect).join(", ")}."
+      end
+      private_class_method :raise_name_error
+
+      # Create a {TTY::Markdown::Theme} instance
+      #
+      # @param [Hash{Symbol => Array<Symbol>}] theme
+      #   the theme configuration
+      #
+      # @api private
       def initialize(theme)
-        @theme = validate(theme)
+        @theme = theme
       end
       private_class_method :new
 
@@ -116,42 +149,6 @@ module TTY
       # @api public
       def [](name)
         @theme[name]
-      end
-
-      private
-
-      # Validate the elements names
-      #
-      # @param [Hash{Symbol => Array<Symbol>}] value
-      #   the theme value
-      #
-      # @return [Hash{Symbol => Array<Symbol>}]
-      #
-      # @raise [TTY::Markdown::Error]
-      #   when the element name is invalid
-      #
-      # @api private
-      def validate(value)
-        unknown_names = value.keys - ELEMENT_TO_STYLE.keys
-        return value if unknown_names.empty?
-
-        raise_name_error(*unknown_names)
-      end
-
-      # Raise the element name error
-      #
-      # @param [Array<Symbol>] names
-      #   the elements names
-      #
-      # @return [void]
-      #
-      # @raise [TTY::Markdown::Error]
-      #   when the element name is invalid
-      #
-      # @api private
-      def raise_name_error(*names)
-        raise Error, "invalid theme element name#{"s" if names.size > 1}: " \
-                     "#{names.map(&:inspect).join(", ")}."
       end
     end # Theme
   end # Markdown
