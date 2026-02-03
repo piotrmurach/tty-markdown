@@ -127,7 +127,7 @@ module TTY
       #
       # @api public
       def self.from(symbols)
-        new(build_symbols(symbols))
+        new(validate_names(build_symbols(symbols)))
       end
 
       # Build the symbols hash
@@ -153,6 +153,25 @@ module TTY
         end
       end
       private_class_method :build_symbols
+
+      # Validate the symbols names
+      #
+      # @param [Hash{Symbol => String}] value
+      #   the symbols value
+      #
+      # @return [Hash{Symbol => String}]
+      #
+      # @raise [TTY::Markdown::Error]
+      #   when the symbol name is invalid
+      #
+      # @api private
+      def self.validate_names(value)
+        unknown_names = value.keys - NAME_TO_ASCII.keys
+        return value if unknown_names.empty?
+
+        raise_name_error(*unknown_names)
+      end
+      private_class_method :validate_names
 
       # Select either ASCII or Unicode symbols
       #
@@ -191,6 +210,23 @@ module TTY
       end
       private_class_method :raise_value_error
 
+      # Raise the symbol name error
+      #
+      # @param [Array<Symbol>] names
+      #   the symbols names
+      #
+      # @return [void]
+      #
+      # @raise [TTY::Markdown::Error]
+      #   when the symbol name is invalid
+      #
+      # @api private
+      def self.raise_name_error(*names)
+        raise Error, "invalid symbol name#{"s" if names.size > 1}: " \
+                     "#{names.map(&:inspect).join(", ")}."
+      end
+      private_class_method :raise_name_error
+
       # Raise the symbols name error
       #
       # @param [String, Symbol] name
@@ -213,12 +249,9 @@ module TTY
       # @param [Hash{Symbol => String}] symbols
       #   the symbols configuration
       #
-      # @raise [TTY::Markdown::Error]
-      #   when the symbol name is invalid
-      #
       # @api private
       def initialize(symbols)
-        @symbols = validate(symbols)
+        @symbols = symbols
       end
       private_class_method :new
 
@@ -265,42 +298,6 @@ module TTY
       # @api public
       def wrap_in_parentheses(content)
         "#{self[:paren_left]}#{content}#{self[:paren_right]}"
-      end
-
-      private
-
-      # Validate the symbols names
-      #
-      # @param [Hash{Symbol => String}] value
-      #   the symbols value
-      #
-      # @return [Hash{Symbol => String}]
-      #
-      # @raise [TTY::Markdown::Error]
-      #   when the symbol name is invalid
-      #
-      # @api private
-      def validate(value)
-        unknown_names = value.keys - NAME_TO_ASCII.keys
-        return value if unknown_names.empty?
-
-        raise_name_error(*unknown_names)
-      end
-
-      # Raise the symbol name error
-      #
-      # @param [Array<Symbol>] names
-      #   the symbols names
-      #
-      # @return [void]
-      #
-      # @raise [TTY::Markdown::Error]
-      #   when the symbol name is invalid
-      #
-      # @api private
-      def raise_name_error(*names)
-        raise Error, "invalid symbol name#{"s" if names.size > 1}: " \
-                     "#{names.map(&:inspect).join(", ")}."
       end
     end # Symbols
   end # Markdown
