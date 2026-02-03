@@ -14,9 +14,9 @@ module TTY
       #
       # @api private
       FENCED_CODEBLOCK_MATCH = /
-        ^[ ]{0,3}(([~`]){3,})\s*?((\S+?)(?:\?\S*)?)?\s*?\n
+        ^ {0,3}(([~`]){3,})\s*?((\S+?)(?:\?\S*)?)?\s*?\n
         (.*?)
-        ^[ ]{0,3}\1\2*\s*?\n
+        ^ {0,3}\1\2*\s*?\n
       /mx.freeze
 
       # The fenced code block start pattern
@@ -24,7 +24,7 @@ module TTY
       # @return [Regexp]
       #
       # @api private
-      FENCED_CODEBLOCK_START = /^[ ]{0,3}[~`]{3,}/.freeze
+      FENCED_CODEBLOCK_START = /^ {0,3}[~`]{3,}/.freeze
       private_constant :FENCED_CODEBLOCK_START
 
       define_parser(:codeblock_fenced_extension, FENCED_CODEBLOCK_START, nil,
