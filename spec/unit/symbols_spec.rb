@@ -196,32 +196,18 @@ RSpec.describe TTY::Markdown::Symbols do
   end
 
   describe "#[]" do
-    it "fetches a symbol by name" do
-      symbols = described_class.from(:ascii)
+    subject(:symbols) { described_class.from(:ascii) }
 
+    it "retrieves a symbol by name" do
       expect(symbols[:arrow]).to eq("->")
     end
 
-    it "raises an error when fetching a symbol by name as a string" do
-      symbols = described_class.from(:ascii)
-
-      expect {
-        symbols["arrow"]
-      }.to raise_error(
-        TTY::Markdown::Error,
-        "invalid symbol name: \"arrow\"."
-      )
+    it "retrieves a symbol by name as a string" do
+      expect(symbols["arrow"]).to eq("->")
     end
 
-    it "raises an error when fetching a symbol by an unknown name" do
-      symbols = described_class.from(:ascii)
-
-      expect {
-        symbols[:unknown]
-      }.to raise_error(
-        TTY::Markdown::Error,
-        "invalid symbol name: :unknown."
-      )
+    it "doesn't retrieve a symbol by an unknown name" do
+      expect(symbols[:unknown]).to be_nil
     end
   end
 

@@ -222,7 +222,7 @@ module TTY
       end
       private_class_method :new
 
-      # Fetch a symbol by name
+      # Retrieve a symbol by name
       #
       # @example
       #   symbols[:arrow]
@@ -230,16 +230,11 @@ module TTY
       # @param [Symbol] name
       #   the symbol name
       #
-      # @return [String]
-      #
-      # @raise [TTY::Markdown::Error]
-      #   when the symbol name is invalid
+      # @return [String, nil]
       #
       # @api public
       def [](name)
-        @symbols.fetch(name) do
-          raise_name_error(name)
-        end
+        @symbols[name.to_sym]
       end
 
       # Wrap the content in brackets
