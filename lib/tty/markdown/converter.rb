@@ -122,14 +122,14 @@ module TTY
       # @api public
       def initialize(root, options = {})
         super
-        @pastel = Pastel.new(enabled: options[:enabled])
-        @highlighter = build_highlighter(@pastel, options)
+        pastel = Pastel.new(enabled: options[:enabled])
+        @decorator = Decorator.new(pastel, options[:theme])
+        @highlighter = build_highlighter(pastel, options)
         @current_indent = 0
         @footnote_number = 1
         @footnotes = {}
         @indent = options[:indent]
         @symbols = options[:symbols]
-        @theme = options[:theme]
         @width = options[:width]
       end
 
@@ -177,22 +177,6 @@ module TTY
           mode: options[:mode],
           styles: options[:theme][:code]
         )
-      end
-
-      # Decorate each content line with styles
-      #
-      # @param [String] content
-      #   the content to decorate
-      # @param [Array<Symbol>] styles
-      #   the styles to decorate with
-      #
-      # @return [String]
-      #
-      # @api private
-      def decorate_each_line(content, styles)
-        content.lines.map do |line|
-          @pastel.decorate(line.chomp, *styles)
-        end.join(NEWLINE)
       end
 
       # Indent content by the indentation level
@@ -320,10 +304,10 @@ module TTY
         level = element.options[:level]
         indent_content = options[:parent].type == :root
         indent_by(level - 1) if indent_content
-        styles = @theme[level == 1 ? :heading1 : :header]
+        theme = level == 1 ? :heading1 : :header
         content = transform_children(element, options)
         content.join.lines.map do |line|
-          "#{indentation}#{@pastel.decorate(line.chomp, *styles)}#{NEWLINE}"
+          "#{indentation}#{@decorator.decorate(line.chomp, theme)}#{NEWLINE}"
         end
       end
 
@@ -374,7 +358,7 @@ module TTY
       # @api private
       def convert_del(element, options)
         content = transform_children(element, options).join
-        decorate_each_line(content, @theme[:delete])
+        @decorator.decorate_each_line(content, :delete)
       end
 
       # Convert a strong element
@@ -388,8 +372,8 @@ module TTY
       #
       # @api private
       def convert_strong(element, options)
-        content = transform_children(element, options)
-        decorate_each_line(content.join, @theme[:strong])
+        content = transform_children(element, options).join
+        @decorator.decorate_each_line(content, :strong)
       end
       alias convert_b convert_strong
 
@@ -404,8 +388,8 @@ module TTY
       #
       # @api private
       def convert_em(element, options)
-        content = transform_children(element, options)
-        decorate_each_line(content.join, @theme[:em])
+        content = transform_children(element, options).join
+        @decorator.decorate_each_line(content, :em)
       end
       alias convert_i convert_em
 
@@ -476,7 +460,7 @@ module TTY
       #
       # @api private
       def convert_blockquote(element, options)
-        bar = @pastel.decorate(@symbols[:bar], *@theme[:quote])
+        bar = @decorator.decorate(@symbols[:bar], :quote)
         prefix = "#{indentation}#{bar}  "
         content = transform_children(element, options)
         content.join.lines.map do |line|
@@ -518,7 +502,7 @@ module TTY
         index = options[:index] + 1
         parent_type = options[:parent].type
         prefix_type = parent_type == :ol ? "#{index}." : @symbols[:bullet]
-        prefix = "#{@pastel.decorate(prefix_type, *@theme[:list])} "
+        prefix = "#{@decorator.decorate(prefix_type, :list)} "
         options[:strip] = true
         content = transform_children(element, options)
         "#{indentation}#{prefix}#{content.join}"
@@ -761,7 +745,7 @@ module TTY
           border << (@symbols[:line] * (column_width + 2))
         end
         border << @symbols[:"#{location}_right"]
-        @pastel.decorate(border.join, *@theme[:table])
+        @decorator.decorate(border.join, :table)
       end
 
       # Convert a table body element
@@ -942,7 +926,7 @@ module TTY
       #
       # @api private
       def decorate_table_cell(content, add_indentation)
-        pipe = @pastel.decorate(@symbols[:pipe], *@theme[:table])
+        pipe = @decorator.decorate(@symbols[:pipe], :table)
         prefix = add_indentation ? "#{indentation}#{pipe} " : EMPTY
         suffix = " #{pipe} "
         content.lines.map do |line|
@@ -979,7 +963,7 @@ module TTY
         inner_line_width = @width - (@symbols[:diamond].length * 2)
         inner_line = @symbols[:line] * inner_line_width
         line = "#{@symbols[:diamond]}#{inner_line}#{@symbols[:diamond]}"
-        "#{@pastel.decorate(line, *@theme[:hr])}#{NEWLINE}"
+        "#{@decorator.decorate(line, :hr)}#{NEWLINE}"
       end
 
       # Convert an anchor element
@@ -1029,7 +1013,7 @@ module TTY
         link = []
         link << "#{content} #{@symbols[:arrow]} " if content != href
         link << "(#{title}) " unless title.strip.empty?
-        link << @pastel.decorate(href, *@theme[:link])
+        link << @decorator.decorate(href, :link)
       end
 
       # Convert a math element
@@ -1124,7 +1108,7 @@ module TTY
         content = element.value
         footnote = fetch_or_add_footnote(name, content)
         number = footnote.last
-        @pastel.decorate(@symbols.wrap_in_brackets(number), *@theme[:note])
+        @decorator.decorate(@symbols.wrap_in_brackets(number), :note)
       end
 
       # Fetch or add a footnote
@@ -1191,7 +1175,7 @@ module TTY
         alt = element.attr[ALT_ATTRIBUTE].to_s
         src = element.attr[SRC_ATTRIBUTE].to_s
         image = build_image(alt, src)
-        @pastel.decorate(@symbols.wrap_in_parentheses(image), *@theme[:image])
+        @decorator.decorate(@symbols.wrap_in_parentheses(image), :image)
       end
 
       # Build an image
@@ -1274,8 +1258,7 @@ module TTY
       def build_comment(content, inline_level)
         content.lines.map.with_index do |line, line_index|
           (line_index.zero? && inline_level ? EMPTY : indentation) +
-            @pastel.decorate("#{@symbols[:hash]} #{line.chomp}",
-                             *@theme[:comment])
+            @decorator.decorate("#{@symbols[:hash]} #{line.chomp}", :comment)
         end.join(NEWLINE)
       end
     end # Converter
