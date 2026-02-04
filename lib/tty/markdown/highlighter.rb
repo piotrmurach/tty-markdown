@@ -2,7 +2,9 @@
 
 require "rouge"
 
+require_relative "decorator"
 require_relative "formatter"
+require_relative "theme"
 
 module TTY
   class Markdown
@@ -73,7 +75,7 @@ module TTY
       def formatter
         @formatter ||=
           if @mode < 256
-            Formatter.new(@pastel, @styles)
+            Formatter.new(Decorator.new(@pastel, Theme.from({code: @styles})))
           elsif @mode == 256
             Rouge::Formatters::Terminal256.new
           else

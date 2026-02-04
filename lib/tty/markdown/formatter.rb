@@ -6,28 +6,17 @@ module TTY
     #
     # @api private
     class Formatter
-      # The newline character
-      #
-      # @return [String]
-      #
-      # @api private
-      NEWLINE = "\n"
-      private_constant :NEWLINE
-
       # Create a {TTY::Markdown::Formatter} instance
       #
       # @example
-      #   formatter = TTY::Markdown::Formatter.new(pastel, %i[yellow])
+      #   formatter = TTY::Markdown::Formatter.new(decorator)
       #
-      # @param [Pastel] pastel
-      #   the pastel
-      # @param [Array<Symbol>, Symbol] styles
-      #   the styles
+      # @param [TTY::Markdown::Decorator] decorator
+      #   the decorator
       #
       # @api public
-      def initialize(pastel, styles)
-        @pastel = pastel
-        @styles = styles
+      def initialize(decorator)
+        @decorator = decorator
       end
 
       # Format the Rouge lexer tokens
@@ -43,9 +32,7 @@ module TTY
       # @api public
       def format(tokens)
         code = tokens.map { |_token, value| value }.join
-        code.lines.map do |line|
-          @pastel.decorate(line.chomp, *@styles)
-        end.join(NEWLINE)
+        @decorator.decorate_each_line(code, :code)
       end
     end # Formatter
   end # Markdown

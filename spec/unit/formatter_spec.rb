@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
 RSpec.describe TTY::Markdown::Formatter do
-  subject(:formatter) { described_class.new(pastel, styles) }
+  subject(:formatter) { described_class.new(decorator) }
 
   let(:code) { "class Greeter\n  def say\n    \"hello\"\n  end\nend" }
+  let(:decorator) { TTY::Markdown::Decorator.new(pastel, theme) }
   let(:pastel) { Pastel.new(enabled: true) }
-  let(:styles) { %i[blue bold] }
+  let(:theme) { TTY::Markdown::Theme.from({code: %i[blue bold]}) }
 
   describe "#format" do
     context "with the plain text lexer" do
