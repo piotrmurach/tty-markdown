@@ -124,7 +124,7 @@ module TTY
         super
         pastel = Pastel.new(enabled: options[:enabled])
         @decorator = Decorator.new(pastel, options[:theme])
-        @highlighter = build_highlighter(pastel, options)
+        @highlighter = Highlighter.new(@decorator, mode: options[:mode])
         @current_indent = 0
         @footnote_number = 1
         @footnotes = {}
@@ -159,24 +159,6 @@ module TTY
       # @api private
       def available_width
         @width - @current_indent
-      end
-
-      # Build a {TTY::Markdown::Highlighter} instance
-      #
-      # @param [Pastel] pastel
-      #   the pastel
-      # @param [Hash] options
-      #   the root element options
-      #
-      # @return [TTY::Markdown::Highlighter]
-      #
-      # @api private
-      def build_highlighter(pastel, options)
-        Highlighter.new(
-          pastel,
-          mode: options[:mode],
-          styles: options[:theme][:code]
-        )
       end
 
       # Indent content by the indentation level

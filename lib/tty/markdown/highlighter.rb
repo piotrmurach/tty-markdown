@@ -2,9 +2,7 @@
 
 require "rouge"
 
-require_relative "decorator"
 require_relative "formatter"
-require_relative "theme"
 
 module TTY
   class Markdown
@@ -15,20 +13,17 @@ module TTY
       # Create a {TTY::Markdown::Highlighter} instance
       #
       # @example
-      #   highlighter = TTY::Markdown::Highlighter.new(pastel)
+      #   highlighter = TTY::Markdown::Highlighter.new(decorator)
       #
-      # @param [Pastel] pastel
-      #   the pastel
+      # @param [TTY::Markdown::Decorator] decorator
+      #   the decorator
       # @param [Integer] mode
       #   the color mode
-      # @param [Array<Symbol>, Symbol] styles
-      #   the styles
       #
       # @api public
-      def initialize(pastel, mode: 256, styles: [])
-        @pastel = pastel
+      def initialize(decorator, mode: 256)
+        @decorator = decorator
         @mode = mode
-        @styles = styles
       end
 
       # Highlight the code snippet
@@ -45,7 +40,7 @@ module TTY
       #
       # @api public
       def highlight(code, language = nil)
-        return code unless @pastel.enabled?
+        return code unless @decorator.enabled?
 
         lexer = select_lexer(code, language)
         formatter.format(lexer.lex(code))
@@ -75,7 +70,7 @@ module TTY
       def formatter
         @formatter ||=
           if @mode < 256
-            Formatter.new(Decorator.new(@pastel, Theme.from({code: @styles})))
+            Formatter.new(@decorator)
           elsif @mode == 256
             Rouge::Formatters::Terminal256.new
           else

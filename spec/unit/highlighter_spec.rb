@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe TTY::Markdown::Highlighter do
-  subject(:highlighter) do
-    described_class.new(pastel, mode: mode, styles: %i[blue])
-  end
+  subject(:highlighter) { described_class.new(decorator, mode: mode) }
 
   let(:code) do
     <<-TEXT.chomp
@@ -14,14 +12,16 @@ class Greeter
 end
     TEXT
   end
+  let(:decorator) { TTY::Markdown::Decorator.new(pastel, theme) }
   let(:pastel) { Pastel.new(enabled: true) }
+  let(:theme) { TTY::Markdown::Theme.from({code: %i[blue]}) }
 
   describe ".highlight" do
     context "when disabled" do
       let(:pastel) { Pastel.new(enabled: false) }
 
       it "doesn't highlight code" do
-        highlighter = described_class.new(pastel)
+        highlighter = described_class.new(decorator)
         highlighted = highlighter.highlight(code)
 
         expect(highlighted).to eq(code)
@@ -29,11 +29,12 @@ end
     end
 
     context "when 16-color mode" do
-      let(:color) { pastel.blue.detach }
       let(:mode) { 16 }
 
       it "doesn't highlight code without styles" do
-        highlighter = described_class.new(pastel, mode: mode)
+        theme = TTY::Markdown::Theme.from({code: []})
+        decorator = TTY::Markdown::Decorator.new(pastel, theme)
+        highlighter = described_class.new(decorator, mode: mode)
         highlighted = highlighter.highlight(code)
 
         expect(highlighted).to eq(code)
