@@ -4,6 +4,7 @@ require "kramdown/converter/base"
 require "pastel"
 require "strings"
 
+require_relative "decorator"
 require_relative "highlighter"
 
 module TTY
