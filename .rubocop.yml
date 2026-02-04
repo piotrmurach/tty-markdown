@@ -56,6 +56,9 @@ RSpec/DescribedClass:
 RSpec/ExampleLength:
   Enabled: false
 
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
 RSpec/NestedGroups:
   Enabled: false
 
