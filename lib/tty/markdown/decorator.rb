@@ -30,6 +30,18 @@ module TTY
         @theme = theme
       end
 
+      # Detect whether text decoration is enabled
+      #
+      # @example
+      #   decorator.enabled?
+      #
+      # @return [Boolean]
+      #
+      # @api public
+      def enabled?
+        @pastel.enabled?
+      end
+
       # Decorate text with theme element styles
       #
       # @example
