@@ -220,6 +220,33 @@ Text after the level 6 heading.
 
         expect(parsed).to eq("\e[36;1;4mHeading\e[0m\n")
       end
+
+      it "converts a level 2 heading" do
+        parsed = described_class.parse("Heading\n-------", color: :always)
+
+        expect(parsed).to eq("  \e[36;1mHeading\e[0m\n")
+      end
+
+      it "converts level 1 and 2 headings" do
+        markdown = <<-TEXT
+Heading 1
+=========
+Text after the level 1 heading.
+
+Heading 2
+---------
+Text after the level 2 heading.
+        TEXT
+        parsed = described_class.parse(markdown, color: :always)
+
+        expect(parsed).to eq([
+          "\e[36;1;4mHeading 1\e[0m",
+          "Text after the level 1 heading.",
+          "",
+          "  \e[36;1mHeading 2\e[0m",
+          "  Text after the level 2 heading.\n"
+        ].join("\n"))
+      end
     end
   end
 end
