@@ -94,6 +94,16 @@ Text after the level 6 heading.
         ].join("\n"))
       end
 
+      it "converts a heading with Markdown text" do
+        markdown = "## A *Clearly* **Visible** Heading"
+        parsed = described_class.parse(markdown, color: :always)
+
+        expect(parsed).to eq(
+          "  \e[36;1mA \e[33mClearly\e[0m " \
+          "\e[33;1mVisible\e[0m\e[36;1m Heading\e[0m\n"
+        )
+      end
+
       it "converts level 1 to 6 headings with the custom heading1 style" do
         markdown = <<-TEXT
 # Heading 1
@@ -246,6 +256,16 @@ Text after the level 2 heading.
           "  \e[36;1mHeading 2\e[0m",
           "  Text after the level 2 heading.\n"
         ].join("\n"))
+      end
+
+      it "converts a heading with Markdown text" do
+        markdown = "A *Clearly* **Visible** Heading\n---"
+        parsed = described_class.parse(markdown, color: :always)
+
+        expect(parsed).to eq(
+          "  \e[36;1mA \e[33mClearly\e[0m " \
+          "\e[33;1mVisible\e[0m\e[36;1m Heading\e[0m\n"
+        )
       end
     end
   end
