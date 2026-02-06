@@ -286,7 +286,7 @@ module TTY
         level = element.options[:level]
         indent_content = options[:parent].type == :root
         indent_by(level - 1) if indent_content
-        theme = level == 1 ? :heading1 : :header
+        theme = :"h#{level}"
         content = transform_children(element, options)
         content.join.lines.map do |line|
           "#{indentation}#{@decorator.decorate(line.chomp, theme)}#{NEWLINE}"

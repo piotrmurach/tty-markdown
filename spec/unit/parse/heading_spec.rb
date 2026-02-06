@@ -118,7 +118,7 @@ Text after the level 6 heading.
         )
       end
 
-      it "converts level 1 to 6 headings with the custom heading1 style" do
+      it "converts level 1 to 6 headings with the custom h1 style" do
         markdown = <<-TEXT
 # Heading 1
 Text after the level 1 heading.
@@ -139,7 +139,7 @@ Text after the level 5 heading.
 Text after the level 6 heading.
         TEXT
         parsed = described_class.parse(
-          markdown, color: :always, theme: {heading1: %i[blue]}
+          markdown, color: :always, theme: {h1: %i[blue]}
         )
 
         expect(parsed).to eq([
@@ -163,7 +163,7 @@ Text after the level 6 heading.
         ].join("\n"))
       end
 
-      it "converts level 1 to 6 headings with the custom header style" do
+      it "converts level 1 to 6 headings with custom h2 to h6 styles" do
         markdown = <<-TEXT
 # Heading 1
 Text after the level 1 heading.
@@ -184,7 +184,15 @@ Text after the level 5 heading.
 Text after the level 6 heading.
         TEXT
         parsed = described_class.parse(
-          markdown, color: :always, theme: {header: %i[blue]}
+          markdown,
+          color: :always,
+          theme: {
+            h2: %i[blue],
+            h3: %i[green],
+            h4: %i[magenta],
+            h5: %i[red],
+            h6: %i[yellow]
+          }
         )
 
         expect(parsed).to eq([
@@ -194,16 +202,16 @@ Text after the level 6 heading.
           "  \e[34mHeading 2\e[0m",
           "  Text after the level 2 heading.",
           "",
-          "    \e[34mHeading 3\e[0m",
+          "    \e[32mHeading 3\e[0m",
           "    Text after the level 3 heading.",
           "",
-          "      \e[34mHeading 4\e[0m",
+          "      \e[35mHeading 4\e[0m",
           "      Text after the level 4 heading.",
           "",
-          "        \e[34mHeading 5\e[0m",
+          "        \e[31mHeading 5\e[0m",
           "        Text after the level 5 heading.",
           "",
-          "          \e[34mHeading 6\e[0m",
+          "          \e[33mHeading 6\e[0m",
           "          Text after the level 6 heading.\n"
         ].join("\n"))
       end
