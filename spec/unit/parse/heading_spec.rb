@@ -17,6 +17,12 @@ RSpec.describe TTY::Markdown, ".parse" do
         expect(parsed).to eq("Heading\n")
       end
 
+      it "converts a level 1 heading without any space" do
+        parsed = described_class.parse("#Heading", color: :always)
+
+        expect(parsed).to eq("\e[36;1;4mHeading\e[0m\n")
+      end
+
       it "converts a level 1 heading" do
         parsed = described_class.parse("# Heading", color: :always)
 
