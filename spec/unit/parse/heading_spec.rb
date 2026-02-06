@@ -118,6 +118,54 @@ Text after the level 6 heading.
         )
       end
 
+      it "converts a level 1 heading with a custom style" do
+        parsed = described_class.parse(
+          "# Heading", color: :always, theme: {h1: %i[blue]}
+        )
+
+        expect(parsed).to eq("\e[34mHeading\e[0m\n")
+      end
+
+      it "converts a level 2 heading with a custom style" do
+        parsed = described_class.parse(
+          "## Heading", color: :always, theme: {h2: %i[blue]}
+        )
+
+        expect(parsed).to eq("  \e[34mHeading\e[0m\n")
+      end
+
+      it "converts a level 3 heading with a custom style" do
+        parsed = described_class.parse(
+          "### Heading", color: :always, theme: {h3: %i[blue]}
+        )
+
+        expect(parsed).to eq("    \e[34mHeading\e[0m\n")
+      end
+
+      it "converts a level 4 heading with a custom style" do
+        parsed = described_class.parse(
+          "#### Heading", color: :always, theme: {h4: %i[blue]}
+        )
+
+        expect(parsed).to eq("      \e[34mHeading\e[0m\n")
+      end
+
+      it "converts a level 5 heading with a custom style" do
+        parsed = described_class.parse(
+          "##### Heading", color: :always, theme: {h5: %i[blue]}
+        )
+
+        expect(parsed).to eq("        \e[34mHeading\e[0m\n")
+      end
+
+      it "converts a level 6 heading with a custom style" do
+        parsed = described_class.parse(
+          "###### Heading", color: :always, theme: {h6: %i[blue]}
+        )
+
+        expect(parsed).to eq("          \e[34mHeading\e[0m\n")
+      end
+
       it "converts level 1 to 6 headings with the custom h1 style" do
         markdown = <<-TEXT
 # Heading 1
