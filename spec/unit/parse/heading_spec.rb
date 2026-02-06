@@ -337,6 +337,45 @@ Text after the level 2 heading.
           "\e[33;1mVisible\e[0m\e[36;1m Heading\e[0m\n"
         )
       end
+
+      it "converts a level 1 heading with a custom style" do
+        parsed = described_class.parse(
+          "Heading\n=======", color: :always, theme: {h1: %i[blue]}
+        )
+
+        expect(parsed).to eq("\e[34mHeading\e[0m\n")
+      end
+
+      it "converts a level 2 heading with a custom style" do
+        parsed = described_class.parse(
+          "Heading\n-------", color: :always, theme: {h2: %i[blue]}
+        )
+
+        expect(parsed).to eq("  \e[34mHeading\e[0m\n")
+      end
+
+      it "converts level 1 and 2 headings with custom h1 and h2 styles" do
+        markdown = <<-TEXT
+Heading 1
+=========
+Text after the level 1 heading.
+
+Heading 2
+---------
+Text after the level 2 heading.
+        TEXT
+        parsed = described_class.parse(
+          markdown, color: :always, theme: {h1: %i[blue], h2: %i[green]}
+        )
+
+        expect(parsed).to eq([
+          "\e[34mHeading 1\e[0m",
+          "Text after the level 1 heading.",
+          "",
+          "  \e[32mHeading 2\e[0m",
+          "  Text after the level 2 heading.\n"
+        ].join("\n"))
+      end
     end
   end
 end
