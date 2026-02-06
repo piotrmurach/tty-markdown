@@ -3,6 +3,14 @@
 RSpec.describe TTY::Markdown, ".parse" do
   context "when Markdown" do
     context "when ATX" do
+      it "converts an empty level 1 heading" do
+        expect(described_class.parse("#")).to eq("#\n")
+      end
+
+      it "converts a blank level 1 heading" do
+        expect(described_class.parse("#\t ")).to eq("#\n")
+      end
+
       it "converts a level 1 heading when color is disabled" do
         parsed = described_class.parse("# Heading", color: :never)
 
