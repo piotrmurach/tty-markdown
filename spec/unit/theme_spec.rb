@@ -14,8 +14,6 @@ RSpec.describe TTY::Markdown::Theme do
         h4: %i[cyan bold],
         h5: %i[cyan bold],
         h6: %i[cyan bold],
-        header: %i[cyan bold],
-        heading1: %i[cyan bold underline],
         hr: %i[yellow],
         image: %i[bright_black],
         link: %i[yellow underline],
@@ -61,45 +59,45 @@ RSpec.describe TTY::Markdown::Theme do
       it "overrides the theme element with a style as a string" do
         theme = described_class.from({comment: "blue"})
 
-        expect([theme[:comment], theme[:em], theme[:header]])
+        expect([theme[:comment], theme[:em], theme[:h2]])
           .to eq([%i[blue], %i[yellow], %i[cyan bold]])
       end
 
       it "overrides the theme element with a style as a symbol" do
         theme = described_class.from({comment: :blue})
 
-        expect([theme[:comment], theme[:em], theme[:header]])
+        expect([theme[:comment], theme[:em], theme[:h2]])
           .to eq([%i[blue], %i[yellow], %i[cyan bold]])
       end
 
       it "overrides the theme element with a style as strings" do
         theme = described_class.from({comment: %w[blue underline]})
 
-        expect([theme[:comment], theme[:em], theme[:header]])
+        expect([theme[:comment], theme[:em], theme[:h2]])
           .to eq([%i[blue underline], %i[yellow], %i[cyan bold]])
       end
 
       it "overrides the theme element with a style as symbols" do
         theme = described_class.from({comment: %i[blue underline]})
 
-        expect([theme[:comment], theme[:em], theme[:header]])
+        expect([theme[:comment], theme[:em], theme[:h2]])
           .to eq([%i[blue underline], %i[yellow], %i[cyan bold]])
       end
 
       it "overrides the theme element with a style as a string and symbol" do
         theme = described_class.from({comment: ["blue", :underline]})
 
-        expect([theme[:comment], theme[:em], theme[:header]])
+        expect([theme[:comment], theme[:em], theme[:h2]])
           .to eq([%i[blue underline], %i[yellow], %i[cyan bold]])
       end
 
       it "overrides theme elements with styles as a string and symbol" do
         theme = described_class.from({
           comment: "blue",
-          header: [:magenta, "underline"]
+          h2: [:magenta, "underline"]
         })
 
-        expect([theme[:comment], theme[:em], theme[:header]])
+        expect([theme[:comment], theme[:em], theme[:h2]])
           .to eq([%i[blue], %i[yellow], %i[magenta underline]])
       end
 
