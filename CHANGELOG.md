@@ -4,22 +4,22 @@
 
 ### Added
 
-* Add the ability to instantiate the TTY::Markdown
-* Add the code, delete, h1, h2, h3, h4, h5 and h6 styles configuration to
-  the default theme
-* Add the ability to format code elements in truecolor
+* Add the ability to instantiate the `TTY::Markdown`.
+* Add the `code`, `delete`, `h1`, `h2`, `h3`, `h4`, `h5` and `h6` styles
+  configuration to the default theme.
+* Add the ability to format code elements in truecolor.
 
 ### Changed
 
-* Change the TTY::Markdown instantiation to raise the TTY::Markdown::Error
-  when configuring an invalid color, symbols or theme option value
-* Change the code block conversion to always append a newline
-* Change the del conversion to replace the delete symbol with
-  the theme delete style
+* Change the `TTY::Markdown` instantiation to raise the `TTY::Markdown::Error`
+  when configuring an invalid `color`, `symbols` or `theme` option value.
+* Change the code block conversion to always append a newline.
+* Change the del conversion to replace the `delete` symbol with
+  the theme `delete` style.
 
 ### Removed
 
-* Remove the header style from the theme configuration
+* Remove the `header` style from the theme configuration.
 
 ## [v0.7.2] - 2023-03-12
 
