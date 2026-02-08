@@ -269,6 +269,12 @@ Here's a complete list of element names with corresponding styles:
 | `:comment`  | `%i[bright_black]`        |
 | `:delete`   | `%i[red]`                 |
 | `:em`       | `%i[yellow]`              |
+| `:h1`       | `%i[cyan bold underline]` |
+| `:h2`       | `%i[cyan bold]`           |
+| `:h3`       | `%i[cyan bold]`           |
+| `:h4`       | `%i[cyan bold]`           |
+| `:h5`       | `%i[cyan bold]`           |
+| `:h6`       | `%i[cyan bold]`           |
 | `:header`   | `%i[cyan bold]`           |
 | `:heading1` | `%i[cyan bold underline]` |
 | `:hr`       | `%i[yellow]`              |
