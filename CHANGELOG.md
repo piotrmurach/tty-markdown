@@ -5,8 +5,8 @@
 ### Added
 
 * Add the ability to instantiate the TTY::Markdown
-* Add the code, delete, h1, h2, h3, h4, h5, h6 and heading1 styles
-  configuration to the default theme
+* Add the code, delete, h1, h2, h3, h4, h5 and h6 styles configuration to
+  the default theme
 * Add the ability to format code elements in truecolor
 
 ### Changed
