@@ -17,6 +17,10 @@
 * Change the del conversion to replace the delete symbol with
   the theme delete style
 
+### Removed
+
+* Remove the header style from the theme configuration
+
 ## [v0.7.2] - 2023-03-12
 
 ### Changed
