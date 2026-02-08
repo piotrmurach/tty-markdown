@@ -275,8 +275,6 @@ Here's a complete list of element names with corresponding styles:
 | `:h4`       | `%i[cyan bold]`           |
 | `:h5`       | `%i[cyan bold]`           |
 | `:h6`       | `%i[cyan bold]`           |
-| `:header`   | `%i[cyan bold]`           |
-| `:heading1` | `%i[cyan bold underline]` |
 | `:hr`       | `%i[yellow]`              |
 | `:image`    | `%i[bright_black]`        |
 | `:link`     | `%i[yellow underline]`    |
