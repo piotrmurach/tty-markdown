@@ -9,6 +9,15 @@ RSpec.describe TTY::Markdown, ".parse" do
       expect(parsed).to eq("A paragraph of text.\n")
     end
 
+    it "converts a multiline paragraph" do
+      markdown = "A paragraph of text\nthat is split into two lines."
+      parsed = described_class.parse(markdown)
+
+      expect(parsed).to eq(
+        "A paragraph of text\nthat is split into two lines.\n"
+      )
+    end
+
     it "converts paragraphs" do
       markdown = <<-TEXT
 The first paragraph of text
