@@ -2,6 +2,13 @@
 
 RSpec.describe TTY::Markdown, ".parse" do
   context "when Markdown" do
+    it "converts a paragraph" do
+      markdown = "A paragraph of text."
+      parsed = described_class.parse(markdown)
+
+      expect(parsed).to eq("A paragraph of text.\n")
+    end
+
     it "converts paragraphs" do
       markdown = <<-TEXT
 The first paragraph of text
