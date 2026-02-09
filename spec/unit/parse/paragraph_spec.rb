@@ -1,57 +1,59 @@
 # frozen_string_literal: true
 
 RSpec.describe TTY::Markdown, ".parse" do
-  it "converts multiline paragraphs" do
-    markdown = <<-TEXT
-This is a first paragraph
-that spans two lines.
+  context "when Markdown" do
+    it "converts paragraphs" do
+      markdown = <<-TEXT
+The first paragraph of text
+that is split into two lines.
 
-And this is a next one.
-    TEXT
-    parsed = described_class.parse(markdown)
+The second paragraph of text.
+      TEXT
+      parsed = described_class.parse(markdown)
 
-    expect(parsed).to eq([
-      "This is a first paragraph",
-      "that spans two lines.",
-      "",
-      "And this is a next one.\n"
-    ].join("\n"))
-  end
+      expect(parsed).to eq([
+        "The first paragraph of text",
+        "that is split into two lines.",
+        "",
+        "The second paragraph of text.\n"
+      ].join("\n"))
+    end
 
-  it "wraps text to specified width with indentation" do
-    markdown = <<-TEXT
-### header
+    it "converts paragraphs after the heading" do
+      markdown = <<-TEXT
+### Heading
+The first paragraph of text
+that is split into two lines.
 
-Human madness is oftentimes a cunning and most feline thing. When you think it fled, it may have but become transfigured into some still subtler form.
-    TEXT
-    parsed = described_class.parse(markdown, color: :always, width: 50)
+The second paragraph of text.
+      TEXT
+      parsed = described_class.parse(markdown, color: :always)
 
-    expect(parsed).to eq([
-      "    \e[36;1mheader\e[0m",
-      "",
-      "    Human madness is oftentimes a cunning and ",
-      "    most feline thing. When you think it fled, it ",
-      "    may have but become transfigured into some ",
-      "    still subtler form.\n"
-    ].join("\n"))
-  end
+      expect(parsed).to eq([
+        "    \e[36;1mHeading\e[0m",
+        "    The first paragraph of text",
+        "    that is split into two lines.",
+        "",
+        "    The second paragraph of text.\n"
+      ].join("\n"))
+    end
 
-  it "converts multiline pragraphs within header section" do
-    markdown = <<-TEXT
-### header
-This is a first paragraph
-that spans two lines.
+    it "converts a paragraph after the heading within the allowed width" do
+      markdown = <<-TEXT
+### Heading
 
-And this is a next one.
-    TEXT
-    parsed = described_class.parse(markdown, color: :always)
+To produce a mighty book, you must choose a mighty theme.
+      TEXT
+      parsed = described_class.parse(markdown, color: :always, width: 20)
 
-    expect(parsed).to eq([
-      "    \e[36;1mheader\e[0m",
-      "    This is a first paragraph",
-      "    that spans two lines.",
-      "",
-      "    And this is a next one.\n"
-    ].join("\n"))
+      expect(parsed).to eq([
+        "    \e[36;1mHeading\e[0m",
+        "",
+        "    To produce a ",
+        "    mighty book, ",
+        "    you must choose ",
+        "    a mighty theme.\n"
+      ].join("\n"))
+    end
   end
 end
