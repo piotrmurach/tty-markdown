@@ -50,6 +50,22 @@ RSpec.describe TTY::Markdown, ".parse" do
       )
     end
 
+    it "converts a paragraph with spaces and tabs" do
+      markdown = "A   paragraph \tof\ttext."
+      parsed = described_class.parse(markdown)
+
+      expect(parsed).to eq("A   paragraph \tof\ttext.\n")
+    end
+
+    it "converts a multiline paragraph with spaces and tabs" do
+      markdown = "A   paragraph \tof\ttext\nthat\t is \tsplit into  two\tlines."
+      parsed = described_class.parse(markdown)
+
+      expect(parsed).to eq(
+        "A   paragraph \tof\ttext\nthat\t is \tsplit into  two\tlines.\n"
+      )
+    end
+
     it "converts paragraphs" do
       markdown = <<-TEXT
 The first paragraph of text
