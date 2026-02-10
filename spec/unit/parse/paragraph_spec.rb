@@ -73,12 +73,28 @@ RSpec.describe TTY::Markdown, ".parse" do
       expect(parsed).to eq("A paragraph of text.\n")
     end
 
+    it "converts a paragraph with a trailing space and a tab" do
+      markdown = "A paragraph of text. \t"
+      parsed = described_class.parse(markdown)
+
+      expect(parsed).to eq("A paragraph of text.\n")
+    end
+
     it "converts a multiline paragraph with three trailing spaces" do
       markdown = "A paragraph of text   \nthat is split into two lines.   "
       parsed = described_class.parse(markdown)
 
       expect(parsed).to eq(
         "A paragraph of text \n\nthat is split into two lines.\n"
+      )
+    end
+
+    it "converts a multiline paragraph with a trailing space and a tab" do
+      markdown = "A paragraph of text \t\nthat is split into two lines. \t"
+      parsed = described_class.parse(markdown)
+
+      expect(parsed).to eq(
+        "A paragraph of text \t\nthat is split into two lines.\n"
       )
     end
 
