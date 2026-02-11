@@ -148,6 +148,40 @@ The second paragraph of text.
       ].join("\n"))
     end
 
+    it "converts a paragraph with Markdown" do
+      markdown = "*A paragraph of text.*"
+      parsed = described_class.parse(markdown, color: :always)
+
+      expect(parsed).to eq("\e[33mA paragraph of text.\e[0m\n")
+    end
+
+    it "converts a multiline paragraph with Markdown" do
+      markdown = "*A paragraph of text that\nis split into two lines.*"
+      parsed = described_class.parse(markdown, color: :always)
+
+      expect(parsed).to eq([
+        "\e[33mA paragraph of text that\e[0m",
+        "\e[33mis split into two lines.\e[0m\n"
+      ].join("\n"))
+    end
+
+    it "converts a multiline paragraph with Markdown after the heading" do
+      markdown = <<-TEXT
+### Heading
+
+*A paragraph of text that
+is split into two lines.*
+      TEXT
+      parsed = described_class.parse(markdown, color: :always)
+
+      expect(parsed).to eq([
+        "    \e[36;1mHeading\e[0m",
+        "",
+        "    \e[33mA paragraph of text that\e[0m",
+        "\e[33m    is split into two lines.\e[0m\n"
+      ].join("\n"))
+    end
+
     it "converts a paragraph after the heading within the allowed width" do
       markdown = <<-TEXT
 ### Heading
