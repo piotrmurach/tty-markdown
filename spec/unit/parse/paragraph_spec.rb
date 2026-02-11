@@ -105,6 +105,13 @@ RSpec.describe TTY::Markdown, ".parse" do
       expect(parsed).to eq("The first paragraph.\n\nThe second paragraph.\n")
     end
 
+    it "converts paragraphs separated by blank lines" do
+      markdown = "The first paragraph.\n   \n \t\n\t\nThe second paragraph."
+      parsed = described_class.parse(markdown)
+
+      expect(parsed).to eq("The first paragraph.\n\nThe second paragraph.\n")
+    end
+
     it "converts paragraphs" do
       markdown = <<-TEXT
 The first paragraph of text
