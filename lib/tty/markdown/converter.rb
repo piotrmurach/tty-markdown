@@ -53,14 +53,6 @@ module TTY
       HREF_ATTRIBUTE = "href"
       private_constant :HREF_ATTRIBUTE
 
-      # The indented HTML elements
-      #
-      # @return [Array<Symbol>]
-      #
-      # @api private
-      INDENTED_HTML_ELEMENTS = %i[blockquote li].freeze
-      private_constant :INDENTED_HTML_ELEMENTS
-
       # The mailto scheme pattern
       #
       # @return [Regexp]
@@ -305,10 +297,14 @@ module TTY
       # @api private
       def convert_p(element, options)
         parent_type = options[:parent].type
-        indent_content = !INDENTED_HTML_ELEMENTS.include?(parent_type)
-        options[:indent] = parent_type == :blockquote ? 0 : @current_indent
-        content = transform_children(element, options)
-        "#{indentation if indent_content}#{content.join}#{NEWLINE}"
+        blockquote_parent = parent_type == :blockquote
+        li_parent = parent_type == :li
+        content = transform_children(element, options).join
+        return "#{content}#{NEWLINE}" if blockquote_parent
+
+        content.lines.map.with_index do |line, line_index|
+          "#{indentation unless line_index.zero? && li_parent}#{line}"
+        end.join + NEWLINE
       end
 
       # Convert a text element
@@ -323,9 +319,7 @@ module TTY
       # @api private
       def convert_text(element, options)
         text = Strings.wrap(element.value, available_width)
-        text = text.chomp if options[:strip]
-        indent = SPACE * options[:indent]
-        text.gsub(NEWLINE, "#{NEWLINE}#{indent}")
+        options[:strip] ? text.chomp : text
       end
 
       # Convert a deleted element
@@ -1238,8 +1232,9 @@ module TTY
       #
       # @api private
       def build_comment(content, inline_level)
-        content.lines.map.with_index do |line, line_index|
-          (line_index.zero? && inline_level ? EMPTY : indentation) +
+        comment_indentation = inline_level ? EMPTY : indentation
+        content.lines.map do |line|
+          comment_indentation +
             @decorator.decorate("#{@symbols[:hash]} #{line.chomp}", :comment)
         end.join(NEWLINE)
       end
