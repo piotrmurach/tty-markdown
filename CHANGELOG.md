@@ -17,6 +17,10 @@
 * Change the del conversion to replace the `delete` symbol with
   the theme `delete` style.
 
+### Fixed
+
+* Fix the indentation of multiline paragraphs with formatted elements.
+
 ### Removed
 
 * Remove the `header` style from the theme configuration.
