@@ -178,7 +178,7 @@ is split into two lines.*
         "    \e[36;1mHeading\e[0m",
         "",
         "    \e[33mA paragraph of text that\e[0m",
-        "\e[33m    is split into two lines.\e[0m\n"
+        "    \e[33mis split into two lines.\e[0m\n"
       ].join("\n"))
     end
 
