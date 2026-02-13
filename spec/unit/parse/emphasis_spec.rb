@@ -3,6 +3,13 @@
 RSpec.describe TTY::Markdown, ".parse" do
   context "when Markdown" do
     context "with an asterisk" do
+      it "converts empty text" do
+        markdown = "Some ** text."
+        parsed = described_class.parse(markdown)
+
+        expect(parsed).to eq("Some ** text.\n")
+      end
+
       it "converts text" do
         markdown = "Some *easily noticeable* text."
         parsed = described_class.parse(markdown, color: :always)
@@ -12,6 +19,13 @@ RSpec.describe TTY::Markdown, ".parse" do
     end
 
     context "with an underscore" do
+      it "converts empty text" do
+        markdown = "Some __ text."
+        parsed = described_class.parse(markdown)
+
+        expect(parsed).to eq("Some __ text.\n")
+      end
+
       it "converts text" do
         markdown = "Some _easily noticeable_ text."
         parsed = described_class.parse(markdown, color: :always)
