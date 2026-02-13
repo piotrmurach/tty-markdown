@@ -2,30 +2,33 @@
 
 RSpec.describe TTY::Markdown, ".parse" do
   context "when Markdown" do
-    it "converts text marked with a single asterisk" do
-      parsed = described_class.parse(
-        "Some *easily noticeable* text", color: :always
-      )
+    context "with an asterisk" do
+      it "converts text" do
+        markdown = "Some *easily noticeable* text."
+        parsed = described_class.parse(markdown, color: :always)
 
-      expect(parsed).to eq("Some \e[33measily noticeable\e[0m text\n")
+        expect(parsed).to eq("Some \e[33measily noticeable\e[0m text.\n")
+      end
     end
   end
 
   context "when HTML" do
-    it "converts text marked with the <em> element" do
-      parsed = described_class.parse(
-        "Some <em>easily noticeable</em> text", color: :always
-      )
+    context "with an <em> element" do
+      it "converts text" do
+        markdown = "Some <em>easily noticeable</em> text."
+        parsed = described_class.parse(markdown, color: :always)
 
-      expect(parsed).to eq("Some \e[33measily noticeable\e[0m text\n")
+        expect(parsed).to eq("Some \e[33measily noticeable\e[0m text.\n")
+      end
     end
 
-    it "converts text marked with the <i> element" do
-      parsed = described_class.parse(
-        "Some <i>easily noticeable</i> text", color: :always
-      )
+    context "with an <i> element" do
+      it "converts text" do
+        markdown = "Some <i>easily noticeable</i> text."
+        parsed = described_class.parse(markdown, color: :always)
 
-      expect(parsed).to eq("Some \e[33measily noticeable\e[0m text\n")
+        expect(parsed).to eq("Some \e[33measily noticeable\e[0m text.\n")
+      end
     end
   end
 end
