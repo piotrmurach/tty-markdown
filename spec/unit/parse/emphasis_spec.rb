@@ -10,6 +10,13 @@ RSpec.describe TTY::Markdown, ".parse" do
         expect(parsed).to eq("Some ** text.\n")
       end
 
+      it "converts blank text" do
+        markdown = "Some *\t* text."
+        parsed = described_class.parse(markdown)
+
+        expect(parsed).to eq("Some *\t* text.\n")
+      end
+
       it "converts text" do
         markdown = "Some *easily noticeable* text."
         parsed = described_class.parse(markdown, color: :always)
@@ -24,6 +31,13 @@ RSpec.describe TTY::Markdown, ".parse" do
         parsed = described_class.parse(markdown)
 
         expect(parsed).to eq("Some __ text.\n")
+      end
+
+      it "converts blank text" do
+        markdown = "Some _\t_ text."
+        parsed = described_class.parse(markdown)
+
+        expect(parsed).to eq("Some _\t_ text.\n")
       end
 
       it "converts text" do
