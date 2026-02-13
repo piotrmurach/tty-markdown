@@ -10,6 +10,15 @@ RSpec.describe TTY::Markdown, ".parse" do
         expect(parsed).to eq("Some \e[33measily noticeable\e[0m text.\n")
       end
     end
+
+    context "with an underscore" do
+      it "converts text" do
+        markdown = "Some _easily noticeable_ text."
+        parsed = described_class.parse(markdown, color: :always)
+
+        expect(parsed).to eq("Some \e[33measily noticeable\e[0m text.\n")
+      end
+    end
   end
 
   context "when HTML" do
