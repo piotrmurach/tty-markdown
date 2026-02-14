@@ -38,6 +38,13 @@ RSpec.describe TTY::Markdown, ".parse" do
         expect(parsed).to eq("Some *easily noticeable * text.\n")
       end
 
+      it "converts text when color is disabled" do
+        markdown = "Some *easily noticeable* text."
+        parsed = described_class.parse(markdown, color: :never)
+
+        expect(parsed).to eq("Some easily noticeable text.\n")
+      end
+
       it "converts text" do
         markdown = "Some *easily noticeable* text."
         parsed = described_class.parse(markdown, color: :always)
@@ -80,6 +87,13 @@ RSpec.describe TTY::Markdown, ".parse" do
         parsed = described_class.parse(markdown)
 
         expect(parsed).to eq("Some _easily noticeable _ text.\n")
+      end
+
+      it "converts text when color is disabled" do
+        markdown = "Some _easily noticeable_ text."
+        parsed = described_class.parse(markdown, color: :never)
+
+        expect(parsed).to eq("Some easily noticeable text.\n")
       end
 
       it "converts text" do
