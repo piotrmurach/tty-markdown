@@ -51,6 +51,13 @@ RSpec.describe TTY::Markdown, ".parse" do
 
         expect(parsed).to eq("Some \e[33measily noticeable\e[0m text.\n")
       end
+
+      it "converts text without spaces around delimiters" do
+        markdown = "Some*easily noticeable*text."
+        parsed = described_class.parse(markdown, color: :always)
+
+        expect(parsed).to eq("Some\e[33measily noticeable\e[0mtext.\n")
+      end
     end
 
     context "with an underscore" do
@@ -101,6 +108,13 @@ RSpec.describe TTY::Markdown, ".parse" do
         parsed = described_class.parse(markdown, color: :always)
 
         expect(parsed).to eq("Some \e[33measily noticeable\e[0m text.\n")
+      end
+
+      it "converts text without spaces around delimiters" do
+        markdown = "Some_easily noticeable_text."
+        parsed = described_class.parse(markdown)
+
+        expect(parsed).to eq("Some_easily noticeable_text.\n")
       end
     end
   end
