@@ -58,6 +58,13 @@ RSpec.describe TTY::Markdown, ".parse" do
 
         expect(parsed).to eq("Some\e[33measily noticeable\e[0mtext.\n")
       end
+
+      it "converts a delimited number" do
+        markdown = "Some 1*000*000*000 lines of text."
+        parsed = described_class.parse(markdown, color: :always)
+
+        expect(parsed).to eq("Some 1\e[33m000\e[0m000*000 lines of text.\n")
+      end
     end
 
     context "with an underscore" do
@@ -115,6 +122,13 @@ RSpec.describe TTY::Markdown, ".parse" do
         parsed = described_class.parse(markdown)
 
         expect(parsed).to eq("Some_easily noticeable_text.\n")
+      end
+
+      it "converts a delimited number" do
+        markdown = "Some 1_000_000_000 lines of text."
+        parsed = described_class.parse(markdown)
+
+        expect(parsed).to eq("Some 1_000_000_000 lines of text.\n")
       end
     end
   end
