@@ -65,6 +65,34 @@ RSpec.describe TTY::Markdown, ".parse" do
 
         expect(parsed).to eq("Some 1\e[33m000\e[0m000*000 lines of text.\n")
       end
+
+      it "converts text with two leading delimiters" do
+        markdown = "Some **easily noticeable* text."
+        parsed = described_class.parse(markdown, color: :always)
+
+        expect(parsed).to eq("Some \e[33m*easily noticeable\e[0m text.\n")
+      end
+
+      it "converts text with a single internal delimiter" do
+        markdown = "Some *easily*noticeable* text."
+        parsed = described_class.parse(markdown, color: :always)
+
+        expect(parsed).to eq("Some \e[33measily\e[0mnoticeable* text.\n")
+      end
+
+      it "converts text with a single internal space-around delimiter" do
+        markdown = "Some *easily * noticeable* text."
+        parsed = described_class.parse(markdown, color: :always)
+
+        expect(parsed).to eq("Some \e[33measily * noticeable\e[0m text.\n")
+      end
+
+      it "converts text with two trailing delimiters" do
+        markdown = "Some *easily noticeable** text."
+        parsed = described_class.parse(markdown)
+
+        expect(parsed).to eq("Some *easily noticeable** text.\n")
+      end
     end
 
     context "with an underscore" do
@@ -129,6 +157,34 @@ RSpec.describe TTY::Markdown, ".parse" do
         parsed = described_class.parse(markdown)
 
         expect(parsed).to eq("Some 1_000_000_000 lines of text.\n")
+      end
+
+      it "converts text with two leading delimiters" do
+        markdown = "Some __easily noticeable_ text."
+        parsed = described_class.parse(markdown, color: :always)
+
+        expect(parsed).to eq("Some \e[33m_easily noticeable\e[0m text.\n")
+      end
+
+      it "converts text with a single internal delimiter" do
+        markdown = "Some _easily_noticeable_ text."
+        parsed = described_class.parse(markdown, color: :always)
+
+        expect(parsed).to eq("Some \e[33measily_noticeable\e[0m text.\n")
+      end
+
+      it "converts text with a single internal space-around delimiter" do
+        markdown = "Some _easily _ noticeable_ text."
+        parsed = described_class.parse(markdown, color: :always)
+
+        expect(parsed).to eq("Some \e[33measily _ noticeable\e[0m text.\n")
+      end
+
+      it "converts text with two trailing delimiters" do
+        markdown = "Some _easily noticeable__ text."
+        parsed = described_class.parse(markdown)
+
+        expect(parsed).to eq("Some _easily noticeable__ text.\n")
       end
     end
   end
