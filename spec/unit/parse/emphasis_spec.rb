@@ -24,6 +24,13 @@ RSpec.describe TTY::Markdown, ".parse" do
         expect(parsed).to eq("Some *** text.\n")
       end
 
+      it "converts text with a leading space" do
+        markdown = "Some * easily noticeable* text."
+        parsed = described_class.parse(markdown)
+
+        expect(parsed).to eq("Some * easily noticeable* text.\n")
+      end
+
       it "converts text" do
         markdown = "Some *easily noticeable* text."
         parsed = described_class.parse(markdown, color: :always)
@@ -52,6 +59,13 @@ RSpec.describe TTY::Markdown, ".parse" do
         parsed = described_class.parse(markdown)
 
         expect(parsed).to eq("Some ___ text.\n")
+      end
+
+      it "converts text with a leading space" do
+        markdown = "Some _ easily noticeable_ text."
+        parsed = described_class.parse(markdown)
+
+        expect(parsed).to eq("Some _ easily noticeable_ text.\n")
       end
 
       it "converts text" do
