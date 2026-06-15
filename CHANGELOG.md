@@ -16,6 +16,7 @@
 * Change the code block conversion to always append a newline.
 * Change the del conversion to replace the `delete` symbol with
   the theme `delete` style.
+* Change the `rouge` dependency constraint to allow `5.x`.
 
 ### Fixed
 
