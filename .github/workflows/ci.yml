@@ -5,13 +5,11 @@ on:
     branches:
       - master
     paths-ignore:
-      - "examples/**"
       - "*.md"
   pull_request:
     branches:
       - master
     paths-ignore:
-      - "examples/**"
       - "*.md"
 jobs:
   tests:
