@@ -5,11 +5,13 @@ on:
     branches:
       - master
     paths-ignore:
+      - appveyor.yml
       - "**.md"
   pull_request:
     branches:
       - master
     paths-ignore:
+      - appveyor.yml
       - "**.md"
 jobs:
   tests:
