@@ -7,12 +7,14 @@ on:
     paths-ignore:
       - appveyor.yml
       - "**.md"
+      - "**.txt"
   pull_request:
     branches:
       - master
     paths-ignore:
       - appveyor.yml
       - "**.md"
+      - "**.txt"
 jobs:
   tests:
     name: Ruby ${{ matrix.ruby }}
