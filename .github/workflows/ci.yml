@@ -16,6 +16,8 @@ on:
       - "**.md"
       - "**.txt"
   workflow_dispatch:
+permissions:
+  contents: read
 jobs:
   tests:
     name: Ruby ${{ matrix.ruby }}
