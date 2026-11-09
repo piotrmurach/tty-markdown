@@ -20,7 +20,7 @@ permissions:
   contents: read
 jobs:
   tests:
-    name: Ruby ${{ matrix.ruby }}
+    name: Ruby ${{ matrix.ruby }}${{ matrix.coverage && ' + coverage' || '' }}
     runs-on: ${{ matrix.os || 'ubuntu-latest' }}
     strategy:
       fail-fast: false
