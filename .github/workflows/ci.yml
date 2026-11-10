@@ -73,5 +73,5 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
-      - name: Run tests
+      - name: Run tests${{ matrix.coverage && ' and report coverage' || '' }}
         run: bundle exec rake ci
