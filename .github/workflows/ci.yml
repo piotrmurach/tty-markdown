@@ -28,7 +28,6 @@ jobs:
         ruby:
           - "3.2"
           - "3.3"
-          - "3.4"
           - "4.0"
           - ruby-head
           - jruby-9.4
@@ -52,12 +51,13 @@ jobs:
           - ruby: "2.6"
             os: ubuntu-24.04
           - ruby: "2.7"
-            coverage: true
             os: ubuntu-24.04
           - ruby: "3.0"
             os: ubuntu-24.04
           - ruby: "3.1"
             os: ubuntu-24.04
+          - ruby: "3.4"
+            coverage: true
           - ruby: jruby-9.2
             os: ubuntu-22.04
           - ruby: jruby-9.3
