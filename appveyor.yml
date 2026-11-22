@@ -6,16 +6,6 @@ skip_commits:
     - "**/*.md"
     - "**/*.txt"
 build: off
-install:
-  - SET PATH=C:\Ruby%ruby_version%\bin;%PATH%
-  - gem install bundler -v '< 2.0'
-  - bundle install
-before_test:
-  - ruby -v
-  - gem -v
-  - bundle -v
-test_script:
-  - bundle exec rake ci
 environment:
   matrix:
     - ruby_version: "200"
@@ -32,3 +22,13 @@ environment:
     - ruby_version: "25-x64"
     - ruby_version: "26"
     - ruby_version: "26-x64"
+install:
+  - SET PATH=C:\Ruby%ruby_version%\bin;%PATH%
+  - gem install bundler -v '< 2.0'
+  - bundle install
+before_test:
+  - ruby -v
+  - gem -v
+  - bundle -v
+test_script:
+  - bundle exec rake ci
