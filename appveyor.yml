@@ -24,6 +24,7 @@ environment:
     - ruby_version: "26-x64"
 install:
   - SET PATH=C:\Ruby%ruby_version%\bin;%PATH%
+  - SET SSL_CERT_FILE=C:\Ruby26-x64\ssl\cert.pem
   - bundle install
 before_test:
   - ruby -v
