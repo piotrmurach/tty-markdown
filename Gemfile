@@ -14,14 +14,11 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("2.1.0")
   gem "rspec-benchmark", "~> 0.6.0"
 end
 
-if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("2.7.0")
+if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.4.0")
   gem "coveralls_reborn", "~> 0.29.0"
+  gem "irb", "~> 1.16"
   gem "rubocop-performance", "~> 1.26"
   gem "rubocop-rake", "~> 0.7.1"
   gem "rubocop-rspec", "~> 3.9"
   gem "simplecov", "~> 0.22.0"
-end
-
-if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.4.0")
-  gem "irb", "~> 1.16"
 end
