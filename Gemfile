@@ -8,7 +8,6 @@ if RUBY_VERSION == "2.0.0"
   gem "json", "2.4.1"
   gem "kramdown", "1.16.2"
 end
-gem "yardstick", "~> 0.9.9"
 
 if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("2.1.0")
   gem "rspec-benchmark", "~> 0.6.0"
@@ -21,4 +20,5 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.4.0")
   gem "rubocop-rake", "~> 0.7.1"
   gem "rubocop-rspec", "~> 3.9"
   gem "simplecov", "~> 0.22.0"
+  gem "yardstick", "~> 0.9.9"
 end
